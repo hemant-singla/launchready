@@ -13,13 +13,15 @@
 ![Launch view with the USB controller delay scenario: timeline of software-ready ranges against launch dates](docs/img/launch-usb-delay.png)
 
 ## What it is
+The start page tells one story in order: a short intro, one worked example (original plan → after a supplier delay → after recovery), then a workspace to try it yourself, then assumptions and background. Every affected launch gets one plain sentence explaining why, e.g. *"Halo 77" may miss its 18 Jan launch: 20 of its 60 test boards depend on a delayed USB 3.2 controller delivery…"* (built by `explain()` in `src/lab.js` from calculated values).
+
 A TV launch needs two things at once: software that's ready, and parts to build both the test boards and the TVs. They're usually tracked in different tools (issue trackers on one side, ERP and spreadsheets on the other). LaunchReady joins them:
 - **Launch view:** Ready / At risk / Blocked for 16 models, with the reasons from both sides; filters by line, chipset and status.
 - **Software team view:** each component team's code submission against the deadline, new vs reused code, open tickets by severity and age, and an estimated software-ready **range** per chipset.
 - **Supply view:** stock by warehouse (including what's already allocated), supplier deliveries and delays, rejected shipments, approved substitutes, and which build gets which units.
 - **What-if lab (start page):** pick any supplier shipment and move its date (14 days early to 60 days late), reject it or remove its date, or move a launch. All 16 launches recalculate as you drag, with the knock-on chain: parts → testing → software → launch. Launch dates can also be dragged on the timeline (or moved with ← / →).
 - **Scenarios:** a USB controller delay, two launches competing for one part, and a delivery with no date. They stack with the lab. *Reset demo* restores the original data, filters, decisions and log.
-- **Recovery workflow (simulated agent):** detect the change → pull the records → find affected launches → compare recovery options → recommend one with evidence and trade-offs → you approve or reject. Approving applies the action to the demo data and every view recalculates; rejecting changes nothing. Both go in the activity log.
+- **Recovery workflow (simulated agent):** detect the change → pull the records → find affected launches → compare recovery options → recommend one with evidence and trade-offs → you approve or reject. Each option reads as action → expected result → trade-off → approval needed; unresolved launches stay listed. Approving applies the action to the demo data and every view recalculates; rejecting changes nothing. Both go in the activity log.
 - **Affected first:** with a disruption active, every view puts affected launches, chipsets and parts first, says why each matters, and offers *Affected only / Show all*. Launch details link to the software and supply evidence.
 - **60-second tour:** a skippable walk through one delay, its impact, the recovery comparison and an approval.
 

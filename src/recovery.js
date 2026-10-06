@@ -71,7 +71,8 @@ function describe(opt, data) {
     return {
       title: `Move ${n(opt.qty)} ${opt.part} from ${opt.from} to ${opt.toChipset}`,
       detail: `${opt.from} was bought for ${d.forChipset} and lands ${fmtDate(d.eta, true)}. Re-pegged units reach the plant ${fmtDate(opt.arrive, true)} (${cfg.transferDays}-day transfer).`,
-      tradeoffs: [`${d.forChipset} keeps ${n(d.qty - opt.qty)} of ${n(d.qty)} from this order`, 'Needs procurement to re-peg the purchase order'],
+      tradeoffs: [`${d.forChipset} keeps ${n(d.qty - opt.qty)} of ${n(d.qty)} from this order (checked: its launches stay as they are)`],
+      approval: `Procurement, to re-peg the order; ${d.forChipset} program owner informed`,
     };
   }
   if (opt.type === 'substitute') {
@@ -80,13 +81,15 @@ function describe(opt, data) {
       title: `Build ${opt.chipset} test boards with substitute ${s.part}`,
       detail: `${n(s.qty)} units of ${s.part} are free and approved for ${opt.chipset}. The ${s.driverTeam} team must port the driver first (${s.driverChangeDays[0]}–${s.driverChangeDays[1]} days), then validate it in testing (${s.validationDays[0]}–${s.validationDays[1]} days).`,
       tradeoffs: [`Firmware work for the ${s.driverTeam} team`, 'Wider software date range (driver work is uncertain)', 'Production still uses the original part'],
+      approval: `${s.driverTeam} software lead (driver work) and quality (validation plan)`,
     };
   }
   const m = data.models.find((x) => x.id === opt.model);
   return {
     title: `Move ${m.name} launch to ${fmtDate(opt.date, true)}`,
     detail: `${opt.days} days later than planned (${fmtDate(m.launchDate, true)}). The earliest date that restores the original verdict.`,
-    tradeoffs: ['Customer-facing date change: needs product and sales sign-off', `${opt.days} days of sales lost or moved`],
+    tradeoffs: ['Customer-facing date change', `${opt.days} days of sales lost or moved`],
+    approval: 'Product and sales leadership (launch date change)',
   };
 }
 

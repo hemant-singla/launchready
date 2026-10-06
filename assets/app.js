@@ -8,11 +8,11 @@ import { openTickets } from '../src/software.js';
 import { stockSummary } from '../src/supply.js';
 import { fmtDate, daysBetween, addDays } from '../src/dates.js';
 import { renderAgent, agentClick, agentChange, initAgent, resetAgent, agentSetStep, agentApproveSelected, agentOutcome } from './agent.js';
-import { computeWith, affectedBy } from '../src/recovery.js';
+import { computeWith, affectedBy, recoveryOptions } from '../src/recovery.js';
 import { initialDemo, decide } from '../src/demo.js';
 import { startTour, tourClick, endTour, initTour } from './tour.js';
 import { renderTimeline } from './timeline.js';
-import { applyLab, knockOn, mainReason } from '../src/lab.js';
+import { applyLab, knockOn, mainReason, explain } from '../src/lab.js';
 
 const state = { base: null, data: null, active: [], result: null, baseline: null, filters: { line: '', chipset: '', status: '', part: '' }, open: new Set(), lab: null, demo: initialDemo(), affectedOnly: true };
 const LAB0 = { delivery: 'DL-UC3-01', mode: 'delay', delay: 0, model: 'HAL-77', shift: 0 };
@@ -102,7 +102,7 @@ function renderLaunch() {
         ? `<ul>${side.reasons.map((x) => `<li>${prettyDates(x)}</li>`).join('')}</ul>` : '<p>No issues found.</p>'}</div>`;
       return `<article class="launch-item ${m.status} ${isOpen ? 'open' : ''}">
         <button type="button" class="launch-row" data-model="${m.id}" aria-expanded="${isOpen}">
-          <span class="model"><strong>${esc(m.name)}</strong><small>${esc(m.segment)}</small>${aff(m) ? `<small class="why"><b>Affected:</b> ${prettyDates(mainReason(m, r) || `software ready ${range(m.eta.early, m.eta.late)}, later than planned`)}</small>` : ''}</span>
+          <span class="model"><strong>${esc(m.name)}</strong><small>${esc(m.segment)}</small>${aff(m) ? `<small class="why">${esc(m.status === 'ready' ? `Software now expected ${fmtDate(m.eta.early, true)}–${fmtDate(m.eta.late, true)}, later than planned but inside the buffer.` : explain(m, r, state.data))}</small>` : ''}</span>
           <span data-label="Chipset">${esc(m.chipset)}${chip.isNew ? ' <em class="tag">new</em>' : ''}</span>
           <span data-label="Launch">${fmtDate(m.launchDate)}</span>
           <span data-label="Software ready">${range(m.eta.early, m.eta.late)}</span>
@@ -306,7 +306,6 @@ function syncLabControls() {
   if (d.eta) { dateIn.min = addDays(d.eta, DELAY_MIN); dateIn.max = addDays(d.eta, DELAY_MAX); if (document.activeElement !== dateIn) dateIn.value = addDays(d.eta, l.delay); }
   $('#lab-date-hint').textContent = d.eta ? `Allowed: ${fmtDate(dateIn.min, true)} – ${fmtDate(dateIn.max, true)}` : '';
   $('#lab-date-hint').classList.remove('bad');
-  $('#lab-cta').hidden = !state.affected.models.length;
 }
 
 let lastStatus = {};
@@ -336,36 +335,44 @@ function renderIntro() {
     if (lastStatus[m.id] && lastStatus[m.id] !== m.status) { t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
     lastStatus[m.id] = m.status;
   }
-  // the knock-on trail, stage by stage
+  // Three questions a visitor asks: which launches, what changed, what next?
   const effects = knockOn(base, r, state.data);
   const STAGES = [['parts', 'Parts'], ['testing', 'Testing'], ['software', 'Software'], ['launch', 'Launch']];
-  if (!state.active.length && !labChanged()) {
-    $('#lab-trail').innerHTML = `<p class="trail-empty">Change something on the left. The knock-on effects appear here, step by step: <b>parts</b> → <b>testing</b> → <b>software</b> → <b>launch</b>.</p>`;
-  } else if (!effects.length) {
-    $('#lab-trail').innerHTML = `<p class="trail-empty">No knock-on effect. Free stock and schedule slack absorb this change. Try a bigger shift, or a shipment that's already tight.</p>`;
+  const attention = r.models.filter((m) => state.affected.models.includes(m.id));
+  if (!state.active.length && !labChanged() && !state.demo.actions.length) {
+    $('#lab-trail').innerHTML = `<p class="trail-empty">Change something on the left, or press <b>Try a supplier delay</b>. You'll see which launches need attention, what changed step by step (<b>parts</b> → <b>testing</b> → <b>software</b> → <b>launch</b>), and what you can do next.</p>`;
+  } else if (!effects.length && !attention.length) {
+    $('#lab-trail').innerHTML = `<p class="trail-empty">No launch is affected. Free stock and schedule slack absorb this change. Try a bigger shift, or a shipment that's already tight.</p>`;
   } else {
-    $('#lab-trail').innerHTML = `<ol class="trail-steps">${STAGES.map(([k, t]) => {
-      const items = effects.filter((e) => e.stage === k);
-      return `<li class="ts ${items.length ? 'hit' : ''}"><h4>${t}</h4>${items.length ? `<ul>${items.slice(0, 4).map((e) => `<li class="${e.status}">${esc(e.text)}${e.why ? `<small>${prettyDates(e.why)}</small>` : ''}</li>`).join('')}${items.length > 4 ? `<li class="more">+${items.length - 4} more</li>` : ''}</ul>` : '<p>No change</p>'}</li>`;
-    }).join('')}</ol>`;
+    $('#lab-trail').innerHTML = `
+      <div class="qa"><h4>Which launches need attention?</h4>${attention.length ? `<ul class="attn">${attention.map((m) => `<li>${pill(m.status)}<span>${esc(m.status === 'ready' ? `${m.name}: software now expected ${fmtDate(m.eta.early, true)}–${fmtDate(m.eta.late, true)}, later than planned but still inside the buffer.` : explain(m, r, state.data))}</span></li>`).join('')}</ul>` : '<p class="trail-empty">None: every launch is back on plan.</p>'}</div>
+      ${effects.length ? `<div class="qa"><h4>What changed, step by step?</h4><ol class="trail-steps">${STAGES.map(([k, t]) => {
+        const items = effects.filter((e) => e.stage === k);
+        return `<li class="ts ${items.length ? 'hit' : ''}"><h5>${t}</h5>${items.length ? `<ul>${items.slice(0, 4).map((e) => `<li class="${e.status}">${esc(e.text)}</li>`).join('')}${items.length > 4 ? `<li class="more">+${items.length - 4} more</li>` : ''}</ul>` : '<p>No change</p>'}</li>`;
+      }).join('')}</ol></div>` : ''}
+      ${attention.some((m) => m.status !== 'ready') ? `<div class="qa next"><div><h4>What can we do next?</h4><p>Compare recovery options, each with its expected result, trade-off and who must approve it.</p></div><a class="button accent" id="lab-cta" href="#agent">Compare recovery options →</a></div>` : ''}`;
   }
 
-  // The chain below the hero: the USB delay scenario's numbers, computed (not typed).
-  if ($('#chain').dataset.built) return;
-  const usb = computeAll(SCENARIOS.usbDelay.apply(state.base));
-  const tb = usb.lines.find((l) => l.id === 'TB:Volga-X:UC-300');
-  const vx = usb.chipsets['Volga-X'];
-  const halo = usb.models.find((m) => m.id === 'HAL-77');
-  const dl = SCENARIOS.usbDelay.apply(state.base).deliveries.find((d) => d.id === 'DL-UC3-01');
-  const steps = [
-    ['Supplier slips', `USB controller shipment moves from ${fmtDate(dl.originalEta, true)} to ${fmtDate(dl.eta, true)}`, 'Procurement'],
-    ['Fewer test boards', `${tb.lateQty} of ${tb.qty} Volga-X test boards can't be built on time`, 'Supply planner'],
-    ['Testing starts late', `Volga-X testing moves from ${fmtDate(vx.plannedTestStart, true)} to ${fmtDate(vx.eta.testStart, true)} (+${vx.eta.slipDays} days)`, 'Test team'],
-    ['Software date slips', `Ready ${fmtDate(halo.eta.early, true)} – ${fmtDate(halo.eta.late, true)}, against a ${fmtDate(addDays(halo.launchDate, -state.data.config.bufferDays), true)} cutoff`, 'USB software lead'],
-    ['Launch at risk', `${halo.name} goes from Ready to ${LABEL[halo.status]}. Options: move stock, use a substitute, or move the date`, 'Launch manager'],
-  ];
-  $('#chain').innerHTML = steps.map(([t, d, who], i) => `<li class="chain-step"><span class="cs-n">${i + 1}</span><h3>${esc(t)}</h3><p>${esc(d)}</p><span class="cs-who">Seen by: ${esc(who)}</span></li>`).join('');
-  $('#chain').dataset.built = '1';
+  // The example story: original plan, after the delay, after the recommended
+  // recovery. Everything is calculated from the USB delay scenario.
+  if ($('#story').dataset.built) return;
+  const usbData = SCENARIOS.usbDelay.apply(state.base);
+  const usb = computeAll(usbData);
+  const rec = recoveryOptions(state.baseline, usbData).recommended;
+  const fixed = rec ? computeWith(usbData, [rec]).result : null;
+  const cfg = state.base.config;
+  const card = (title, res, data, extra) => {
+    const m = res.models.find((x) => x.id === 'HAL-77');
+    const c = res.chipsets[m.chipset];
+    const cutoff = addDays(m.launchDate, -cfg.bufferDays);
+    return `<li class="story-step ${m.status}"><span class="kicker">${title}</span><p class="story-status">${pill(m.status)} <strong>${esc(m.name)}</strong> launches ${fmtDate(m.launchDate, true)}</p>
+      <p>${esc(m.status === 'ready' ? `On track: testing starts ${fmtDate(c.eta.testStart, true)} and the software is expected ${fmtDate(m.eta.early, true)}–${fmtDate(m.eta.late, true)}, before the ${fmtDate(cutoff, true)} cutoff.` : explain(m, res, data))}</p>${extra}</li>`;
+  };
+  const dl = usbData.deliveries.find((d) => d.id === 'DL-UC3-01');
+  $('#story').innerHTML = card('1 · Original plan', state.baseline, state.base, '') +
+    card('2 · After the delay', usb, usbData, `<p class="story-note">USB controller delivery moved ${fmtDate(dl.originalEta, true)} → <mark>${fmtDate(dl.eta, true)}</mark></p>`) +
+    (rec ? card('3 · After recovery', fixed, usbData, `<p class="story-note"><b>Action:</b> ${esc(rec.title)}<br><b>Trade-off:</b> ${esc(rec.tradeoffs[0])}<br><b>Approval:</b> ${esc(rec.approval)}</p>`) : '');
+  $('#story').dataset.built = '1';
 }
 
 // Lab inputs: recompute and refresh only the start page (no full re-render).
@@ -406,6 +413,13 @@ document.addEventListener('click', (e) => {
   const ts = e.target.closest('[data-tour-start]');
   if (ts) return startTour();
   if (tourClick(e)) return;
+  const go = e.target.closest('[data-preset-go]');
+  if (go) {
+    if (currentView() !== 'intro') { history.pushState(null, '', '#intro'); render(); }
+    labUpdate({ ...LAB0, ...PRESETS[+go.dataset.presetGo].lab });
+    document.querySelector('.lab-out').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    return;
+  }
   const pre = e.target.closest('[data-preset]');
   if (pre) {
     labUpdate({ ...LAB0, ...PRESETS[+pre.dataset.preset].lab });
@@ -456,6 +470,9 @@ window.addEventListener('popstate', () => render());
     state.baseline = computeAll(state.base);
     state.lab = { ...LAB0 };
     $('#asof').textContent = fmtDate(state.base.config.asOf);
+    const b = state.base;
+    const ev = [[b.models.length, 'TV models'], [b.chipsets.length, 'chipsets'], [b.tickets.length, 'software tickets'], [b.deliveries.length, 'supplier deliveries'], [32, 'automated tests on the engine']];
+    $('#evidence').innerHTML = ev.map(([v, l]) => `<li><b>${v}</b><span>${l}</span></li>`).join('') + '<li class="ev-note">All fictional. The recovery workflow is simulated: scripted steps, calculated results.</li>';
     initAgent({
       get: () => ({ base: state.base, baseline: state.baseline, disrupted: state.disrupted, data: state.data, result: state.result, demo: state.demo, active: state.active, lab: state.lab }),
       approve: (opt, summarize) => { state.demo = decide(state.demo, opt, true); computeState(); state.demo.log.at(-1).result = summarize(state.result); renderScenarioBar(); },

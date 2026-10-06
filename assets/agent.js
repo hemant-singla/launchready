@@ -4,7 +4,7 @@
 // by the tested code in src/ (recovery.js -> engine.js). Approving an option
 // changes the demo data; rejecting only records the decision.
 import { recoveryOptions } from '../src/recovery.js';
-import { mainReason } from '../src/lab.js';
+import { explain } from '../src/lab.js';
 import { fmtDate, daysBetween, addDays } from '../src/dates.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -57,9 +57,15 @@ function stepCard(i, title, narration, body) {
 
 function optionRow(o, rec) {
   const sel = ui.selected === o.key;
+  const restored = o.models.filter((m) => m.restored).map((m) => m.name);
+  const notRestored = o.models.filter((m) => !m.restored).map((m) => `${m.name} (${LABEL[m.after]})`);
+  const result = `${restored.length ? `Restores ${restored.join(', ')}.` : 'Improves the situation but restores no launch.'}${notRestored.length ? ` Still unresolved: ${notRestored.join(', ')}.` : ''}${o.remaining.length ? ` ${o.remaining.length} build${o.remaining.length > 1 ? 's' : ''} still short or late.` : ''}`;
   return `<label class="opt ${sel ? 'on' : ''}"><input type="radio" name="agent-opt" value="${esc(o.key)}" ${sel ? 'checked' : ''}>
-    <span class="opt-main"><strong>${esc(o.title)}</strong>${o.key === rec?.key ? ' <em class="tag rec-tag">Recommended</em>' : ''}<small>${esc(o.detail)}</small>
-    <span class="opt-res">${o.models.map((m) => `${esc(m.name)}: ${pill(m.after)}`).join(' ')}${o.remaining.length ? ` · <span class="bad">${o.remaining.length} build${o.remaining.length > 1 ? 's' : ''} still short or late</span>` : ''}</span></span></label>`;
+    <span class="opt-main"><strong>${esc(o.title)}</strong>${o.key === rec?.key ? ' <em class="tag rec-tag">Recommended</em>' : ''}
+      <dl class="opt-dl"><div><dt>Action</dt><dd>${esc(o.detail)}</dd></div>
+      <div><dt>Expected result</dt><dd>${esc(result)} <span class="opt-res">${o.models.map((m) => `${pill(m.after)}`).join(' ')}</span></dd></div>
+      <div><dt>Trade-off</dt><dd>${esc(o.tradeoffs.join('; '))}</dd></div>
+      <div><dt>Approval needed</dt><dd>${esc(o.approval)}</dd></div></dl></span></label>`;
 }
 
 export function renderAgent(root) {
@@ -110,7 +116,7 @@ export function renderAgent(root) {
 
   cards.push(stepCard(2, 'Calculate affected launches', 'It recalculates every launch and keeps the ones that got worse than the original plan.',
     `<div class="calc">${CALC}<div class="table-scroll"><table class="data-table small"><thead><tr><th>Launch</th><th>Date</th><th>Original</th><th>Now</th><th>Why</th></tr></thead><tbody>
-      ${affModels.map((m) => `<tr><th scope="row"><a href="#launch" data-open="${m.id}">${esc(m.name)}</a></th><td>${fmtDate(m.launchDate, true)}</td><td>${pill(origOf(m.id).status)}</td><td>${pill(m.status)}</td><td>${pretty(mainReason(m, now) || 'software date later than planned, still inside the buffer')}</td></tr>`).join('')}
+      ${affModels.map((m) => `<tr><th scope="row"><a href="#launch" data-open="${m.id}">${esc(m.name)}</a></th><td>${fmtDate(m.launchDate, true)}</td><td>${pill(origOf(m.id).status)}</td><td>${pill(m.status)}</td><td>${esc(m.status === 'ready' ? `Software now expected ${range(m.eta.early, m.eta.late)}, later than planned but still inside the buffer.` : explain(m, now, d))}</td></tr>`).join('')}
       </tbody></table></div></div>`));
 
   const considered = a.considered.length ? `<details class="considered"><summary>Considered but not offered (${a.considered.length})</summary><ul>${a.considered.map((o) => `<li><strong>${esc(o.title)}</strong>: ${esc(o.why)}</li>`).join('')}</ul></details>` : '';
@@ -132,7 +138,7 @@ export function renderAgent(root) {
       ${rec.testStarts.map((t) => `<li>${t.id} testing starts ${t.after ? fmtDate(t.after, true) : 'unknown'} (planned ${fmtDate(t.planned, true)})</li>`).join('')}
       <li>${rec.remaining.length ? `${rec.remaining.length} build(s) still short or late: ${rec.remaining.map((x) => pretty(x.reason)).join('; ')}` : 'No affected build is left short or late'}</li>
       <li>No other launch gets worse (checked across all 16)</li></ul></div>
-      <div><h5>Trade-offs</h5><ul>${rec.tradeoffs.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div></div></div>` : ''));
+      <div><h5>Trade-offs</h5><ul>${rec.tradeoffs.map((t) => `<li>${esc(t)}</li>`).join('')}</ul><h5>Approval needed</h5><p>${esc(rec.approval)}</p></div></div></div>` : ''));
 
   cards.push(stepCard(5, 'Your decision', 'The agent never acts on its own. Approving applies the action to the demo data and recalculates every view; rejecting changes nothing.',
     `${rec ? `<div class="decide"><button type="button" class="button accent" data-agent-approve>Approve: ${esc(rec.title)}</button><button type="button" class="button-link" data-agent-reject>Reject</button></div>` : ''}

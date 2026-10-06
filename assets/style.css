@@ -434,3 +434,56 @@ body[data-view="agent"] .scenario-buttons,body[data-view="agent"] .scenario-labe
 .tl-launch-g:hover .tl-grab,.tl-launch-g.dragging .tl-grab{fill:rgba(200,100,63,.16)}
 .tl-launch.ready{fill:var(--ready)}.tl-launch.at-risk{fill:var(--risk)}.tl-launch.blocked{fill:var(--blocked)}
 .tl-launch-g.dragging .tl-launch{transform-box:fill-box;transform-origin:center;transform:scale(1.25)}
+
+/* ---------- plain-language layer: story, questions, decisions ---------- */
+.lab-hero h1{max-width:16ch}
+.story{padding-top:72px}
+.story-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.story-step{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--ready);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px}
+.story-step.at-risk{border-top-color:var(--risk)}.story-step.blocked{border-top-color:var(--blocked)}
+.story-step p{font-size:14.5px;color:var(--ink-2);line-height:1.55}
+.story-status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;color:var(--ink)!important}
+.story-note{font-size:13px!important;color:var(--muted)!important;border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+mark{background:var(--risk-bg);color:var(--risk-ink);padding:0 3px;border-radius:3px;font-weight:600}
+.story-actions{margin-top:20px}
+.qa+.qa{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.qa h4{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--ink)}
+.ts h5{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ts.hit h5{color:var(--ink)}
+.attn{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.attn li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;font-size:14px;line-height:1.5;color:var(--ink)}
+.qa.next{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.qa.next p{font-size:13px}
+.opt-dl{margin:6px 0 0;display:grid;gap:6px}
+.opt-dl div{display:grid;grid-template-columns:130px 1fr;gap:10px}
+.opt-dl dt{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.opt-dl dd{margin:0;font-size:13.5px;color:var(--ink-2)}
+.opt-dl .opt-res{display:inline-flex;margin-left:4px}
+@media (max-width:860px){.story-steps{grid-template-columns:1fr}}
+@media (max-width:640px){.opt-dl div{grid-template-columns:1fr;gap:2px}.attn li{grid-template-columns:1fr}}
+
+/* ---------- page structure: intro -> example -> workspace -> background ---------- */
+.intro-hero{padding-top:88px;padding-bottom:80px}
+.intro-hero .hero-copy{max-width:820px}
+.intro-hero h1{font-size:68px;max-width:15ch}
+.intro-hero .lede{font-size:19px}
+.workspace{margin-inline:calc(50% - 50vw);padding:72px calc(50vw - 50%);background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;margin-top:80px}
+.workspace .section-head h2{color:#fff}.workspace .section-head p{color:#c9d3e2}.workspace .kicker{color:#f0a988}
+.workspace .section-head{margin-bottom:28px}
+.story .section-head h2,.about .section-head h2,.workspace .section-head h2{font-size:40px;line-height:1.1;max-width:24ch}
+.terms{margin-top:24px;border-top:1px solid rgba(255,255,255,.18);padding-top:16px;color:#c9d3e2}
+.terms summary{cursor:pointer;font-weight:600;color:#fff;font-size:14px}
+.terms dl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 28px;margin:16px 0 0}
+.terms dt{font-weight:700;color:#fff;font-size:13.5px}.terms dd{margin:4px 0 0;font-size:13.5px;line-height:1.55}
+.evidence{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-wrap:wrap;gap:12px 36px;align-items:baseline}
+.evidence li{display:flex;align-items:baseline;gap:8px}
+.evidence b{font-family:var(--serif,Georgia,serif);font-size:32px;color:var(--ink);font-variant-numeric:tabular-nums}
+.evidence span{font-size:13px;color:var(--muted)}
+.evidence .ev-note{flex-basis:100%;font-size:13px;color:var(--muted)}
+/* quieter boxes, aligned numbers */
+.card,.story-step,.rec-option,.lab-controls fieldset{border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+.story-step{box-shadow:none}
+td,.lab-counts,.story-status,.opt-dl dd,.wall,.attn{font-variant-numeric:tabular-nums}
+@media (max-width:1020px){.intro-hero h1{font-size:52px}.terms dl{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.intro-hero h1{font-size:40px}.story .section-head h2,.about .section-head h2,.workspace .section-head h2{font-size:30px}.terms dl{grid-template-columns:1fr}.workspace{margin-top:56px;padding-block:52px}}
+.lab-out,#workspace{scroll-margin-top:170px}

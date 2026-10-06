@@ -77,3 +77,42 @@ function modelText(m, b) {
   const moved = b.launchDate !== m.launchDate ? ` · launch ${fmtDate(m.launchDate, true)} (was ${fmtDate(b.launchDate, true)})` : '';
   return `${m.name}: ${b.status === m.status ? LABEL[m.status] : `${LABEL[b.status]} → ${LABEL[m.status]}`}${moved}`;
 }
+
+/**
+ * One plain-language sentence a non-specialist can read: what is at risk and
+ * why, built from the calculated result (no numbers are typed in).
+ */
+export function explain(m, result, data) {
+  if (m.status === 'ready') return `${m.name} is on track for ${fmtDate(m.launchDate, true)}.`;
+  const lead = m.status === 'blocked' ? `${m.name} will miss its ${fmtDate(m.launchDate, true)} launch unless something changes:` : `${m.name} may miss its ${fmtDate(m.launchDate, true)} launch:`;
+  const partName = (id) => data.parts.find((p) => p.id === id)?.name ?? id;
+  const n = (x) => x.toLocaleString('en-US');
+  const cutoff = addDays(m.launchDate, -data.config.bufferDays);
+  const mine = result.lines.filter((l) => l.model === m.id || (l.kind === 'test-boards' && l.chipset === m.chipset));
+  const tb = mine.find((l) => l.kind === 'test-boards' && (l.lateQty || l.shortfall));
+  const swFirst = RANK[m.software.status] >= RANK[m.supply.status];
+  if (swFirst) {
+    const e = m.eta;
+    if (tb && e.known && e.slipDays > 0) {
+      return `${lead} ${n(tb.lateQty || tb.shortfall)} of its ${n(tb.qty)} test boards depend on a delayed ${partName(tb.part)} delivery, so testing starts ${e.slipDays} days late and the software is expected ${fmtDate(e.early, true)}–${fmtDate(e.late, true)}, after the ${fmtDate(cutoff, true)} cutoff.`;
+    }
+    if (!e.known) return `${lead} its software date can't be calculated yet (${e.notes.join('; ')}).`;
+    const pretty = (t) => t.replace(/\d{4}-\d{2}-\d{2}/g, (d) => fmtDate(d, true));
+    const late = e.late > cutoff ? ` The software is expected ${fmtDate(e.early, true)}–${fmtDate(e.late, true)}, after the ${fmtDate(cutoff, true)} cutoff.` : '';
+    const code = m.software.reasons.find((r) => /code/i.test(r));
+    if (code) return `${lead} ${pretty(code)}.${late}`;
+    const crit = m.software.reasons.find((r) => /critical/i.test(r));
+    if (crit) return `${lead} ${pretty(crit).replace(/^(\d+) open critical ticket/, '$1 open critical bug')} must be fixed before launch.${late}`;
+    return `${lead}${late || ` ${pretty(m.software.reasons[0] ?? '')}.`}`;
+  }
+  const order = { blocked: 2, 'at-risk': 1, ready: 0 };
+  const l = [...mine].sort((a, b) => order[b.status] - order[a.status])[0];
+  const what = l.kind === 'test-boards' ? 'its test boards' : 'its first production run';
+  const pn = partName(l.part);
+  if (l.shortfall && l.undatedQty) return `${lead} ${n(l.shortfall)} ${pn} parts for ${what} depend on a delivery that has no confirmed date.`;
+  if (l.shortfall) return `${lead} ${n(l.shortfall)} of ${n(l.qty)} ${pn} parts for ${what} are not covered by stock or any dated delivery.`;
+  if (l.lateQty) return `${lead} ${n(l.lateQty)} of ${n(l.qty)} ${pn} parts for ${what} arrive ${l.lateDays} days after they're needed${l.undatedQty ? ', unless a delivery with no confirmed date turns up in time' : ''}.`;
+  if (l.tight) return `${lead} the ${pn} delivery for ${what} lands with less than ${data.config.tightDeliveryDays} days to spare.`;
+  const r = (m.supply.reasons[0] ?? '').replace(/\d{4}-\d{2}-\d{2}/g, (d) => fmtDate(d, true));
+  return `${lead} ${r.charAt(0).toLowerCase()}${r.slice(1)}.`;
+}

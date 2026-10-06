@@ -15,6 +15,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 | Finish | ✅ 2026-10-06: links, mobile, tests checked; deliverables listed below |
+| Clarity pass | ✅ 2026-10-06 (Hemant: "go with the plan", from a ChatGPT review): new headline, start page = intro → worked example → try-it workspace → assumptions; plain-language `explain()` per affected launch; three questions in the lab panel; options as action / result / trade-off / approval; terms explained on demand; evidence row. Open: ChatGPT's "calculation mismatch" (details asked from Hemant, not yet received) |
 
 ## Decisions (facts)
 - Tech: plain HTML/CSS/JS, no build step, served by GitHub Pages. Core logic lives in shared JS modules used by both the app and the Node tests (`node --test`). Data is JSON.
@@ -72,5 +73,5 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 4. Do NOT change any existing portfolio wording; only the LaunchReady entry and page are ours.
 
 ## Credits used
-- **Estimate (not measured):** about $38–42 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15). Remaining budget is small; trim polish before adding features.
+- **Estimate (not measured):** about $44–48 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15, clarity pass ~$5–6). Close to the $50 cap: only fixes from here.
 - **Facts:** no API calls spent on agent runs yet.
