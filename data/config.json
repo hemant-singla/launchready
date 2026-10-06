@@ -33,5 +33,7 @@
       1,
       3
     ]
-  }
+  },
+  "transferDays": 2,
+  "maxLaunchMoveDays": 42
 }

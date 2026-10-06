@@ -20,6 +20,7 @@ export function computeAll(data, { useSubstituteFor = [] } = {}) {
     const tb = lines.filter((l) => l.kind === 'test-boards' && l.chipset === c.id);
     const useSub = useSubstituteFor.includes(c.id);
     let testStartDelay = [0, 0];
+    let extraTestDays = [0, 0];
     let boardsReadyDate;
     if (!c.testStartedOn) {
       const dates = [];
@@ -29,12 +30,14 @@ export function computeAll(data, { useSubstituteFor = [] } = {}) {
           dates.push(l.needDate); // substitute stock is on hand by the need date
           // The driver change must land before testing on substitute boards.
           testStartDelay = [Math.max(testStartDelay[0], l.substitute.driverChangeDays[0]), Math.max(testStartDelay[1], l.substitute.driverChangeDays[1])];
+          // ...and the new driver needs its own validation inside the test cycle.
+          extraTestDays = [Math.max(extraTestDays[0], l.substitute.validationDays[0]), Math.max(extraTestDays[1], l.substitute.validationDays[1])];
         } else if (l.shortfall > 0) covered = false;
         else dates.push(l.readyDate);
       }
       boardsReadyDate = covered ? latest(c.plannedTestStart, ...dates) : null;
     }
-    chipsets[c.id] = { ...c, boardsReadyDate, usingSubstitute: useSub && testStartDelay[1] > 0, eta: softwareEta(data, c.id, { boardsReadyDate, testStartDelay }) };
+    chipsets[c.id] = { ...c, boardsReadyDate, usingSubstitute: useSub && testStartDelay[1] > 0, eta: softwareEta(data, c.id, { boardsReadyDate, testStartDelay, extraTestDays }) };
   }
 
   const models = data.models.map((m) => {

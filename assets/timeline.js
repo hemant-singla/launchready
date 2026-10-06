@@ -42,7 +42,7 @@ export function renderTimeline(root, result, data, baseline, opts = {}) {
       ? `<rect class="tl-bar ${m.status}" x="${clampX(m.eta.early)}" y="${cy - 6}" width="${Math.max(4, clampX(m.eta.late) - clampX(m.eta.early))}" height="12" rx="4"/>`
       : `<text class="tl-unknown" x="${x0 + 4}" y="${cy + 4}">software date unknown</text>`;
     const lx = x(m.launchDate);
-    return `<g class="tl-row ${moved ? 'moved' : ''}" data-tip="${esc(tip)}" tabindex="0" role="listitem" aria-label="${esc(tip.replace(/\|/g, '. '))}">
+    return `<g class="tl-row ${moved ? 'moved' : ''}" data-tip="${esc(tip)}" tabindex="0" role="listitem" aria-label="${esc(tip.replace(/\|/g, '. '))}. Enter opens details; left and right arrows move the launch date.">
       <rect class="tl-hit" x="0" y="${y}" width="${W}" height="${rowH}"/>
       <text class="tl-label" x="${labelW}" y="${cy + 4}" text-anchor="end">${esc(m.name)}</text>
       ${bar}
@@ -79,6 +79,9 @@ export function renderTimeline(root, result, data, baseline, opts = {}) {
     placeTip(r, box);
   };
   root.querySelectorAll('.tl-row').forEach((g) => {
+    const id = g.querySelector('.tl-launch-g').dataset.model;
+    g.addEventListener('click', (e) => { if (!e.target.closest('.tl-launch-g')) opts.select?.(id); });
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); opts.select?.(id); } });
     g.addEventListener('mousemove', (e) => show(g, e));
     g.addEventListener('focus', () => show(g));
     g.addEventListener('mouseleave', () => { if (!drag) tipEl.hidden = true; });

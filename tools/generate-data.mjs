@@ -17,6 +17,8 @@ out.config = {
   productionSlackDays: 7,     // production parts up to this late = at risk; later = blocked
   tightDeliveryDays: 3,       // a delivery landing closer than this to the need date = at risk
   boardBringUpDays: 3,        // days from code complete to boards on the test bench
+  transferDays: 2,            // re-pegging a purchase order to another program: cross-dock to the plant
+  maxLaunchMoveDays: 42,      // the furthest a recovery plan may move a launch
   testWindowDays: { new: 28, reused: 14 },
   stabilisationDays: { new: [3, 10], reused: [1, 4] },
   fixDays: { critical: [3, 14], major: [2, 7], minor: [1, 3] },
@@ -213,7 +215,7 @@ out.deliveries = DL.map(([id, part, supplier, qty, originalEta, eta, status, for
   ({ id, part, supplier, qty, originalEta, eta, status, forChipset, note }));
 
 out.substitutes = [
-  { part: 'UC-300', substitute: 'UC-310', approvedFor: ['Volga-X', 'Rhine-L'], driverTeam: 'USB', driverChangeDays: [1, 14],
+  { part: 'UC-300', substitute: 'UC-310', approvedFor: ['Volga-X', 'Rhine-L'], driverTeam: 'USB', driverChangeDays: [1, 14], validationDays: [2, 4],
     note: 'Pin-compatible, different firmware interface; USB team must port the driver' },
 ];
 

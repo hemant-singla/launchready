@@ -37,6 +37,16 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - Agent tab now says plainly that no run has been recorded yet, instead of an empty line.
 - README screenshots refreshed (docs/img/home.png added). The portfolio PR preview image still shows the old design.
 
+## Workflow upgrade (2026-10-06, Hemant's detailed brief: scenario → impact → recovery → approval)
+- **What-if lab** on the start page: any shipment ±(−14…+60) days via slider or validated date input, reject, remove date, or move a launch; tiles, counts and the parts → testing → software → launch chain update live. Launch diamonds draggable on the timeline (← / → by keyboard).
+- **Recovery logic** (`src/recovery.js`): eligible actions only (re-peg a same-part PO from another program with a 2-day transfer; approved substitute with driver change 1–14 d + validation 2–4 d; later launch up to 42 d). Each is tested with the engine; options that don't help or hurt another launch are listed as "considered but not offered". Escalation note when nothing fully resolves it.
+- **Recovery tab** = "Simulated agent workflow" (scripted steps; numbers calculated now). Approve applies the action to the demo data; reject only logs. Activity log; Reset clears everything.
+- **Affected first** on Launch / Software / Supply with Affected only / Show all; why-it-matters lines; evidence links from a launch to its chipset and parts (filters carry over).
+- **60-second tour** (skippable, non-modal) and an **About this prototype** section (users, decision, assumptions, built vs proposed, why fictional).
+- Data/config: `transferDays: 2`, `maxLaunchMoveDays: 42`, substitute `validationDays: [2, 4]` (also in tools/generate-data.mjs).
+- Tests: 32 pass (new: tests/lab.test.mjs, tests/recovery.test.mjs). Checked in Chromium at 1280 px and 390 px, keyboard path through approve, the tour, and date validation; no console errors; no horizontal page scroll.
+- Decision: no agent runs recorded (no key), so the app shows a clearly labelled simulation. `agent/run.mjs` stays as the proposed real-agent path.
+
 ## Blockers
 - Agent runs need ANTHROPIC_API_KEY (environment variable in the project's cloud environment; only new sessions see it).
 
@@ -46,5 +56,5 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 3. Brief is ~3,450 words (about 7 pages vs the 4–5 asked); trim if Hemant wants.
 
 ## Credits used
-- **Estimate (not measured):** about $23 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5). Projected total: $30–40 of the $50 budget.
+- **Estimate (not measured):** about $38–42 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15). Remaining budget is small; trim polish before adding features.
 - **Facts:** no API calls spent on agent runs yet.

@@ -41,8 +41,10 @@ export function teamBacklog(data, chipset, extraWork = []) {
  * @param extraWork extra fix work, e.g. [{ team: 'Audio', days: [2, 5] }]
  * @param testStartDelay [lo, hi] days testing waits on top of that, e.g. a
  *        driver change for a substitute part must land before testing.
+ * @param extraTestDays [lo, hi] extra validation inside the test cycle, e.g.
+ *        re-testing the new driver on substitute boards.
  */
-export function softwareEta(data, chipsetId, { boardsReadyDate = undefined, extraWork = [], testStartDelay = [0, 0] } = {}) {
+export function softwareEta(data, chipsetId, { boardsReadyDate = undefined, extraWork = [], testStartDelay = [0, 0], extraTestDays = [0, 0] } = {}) {
   const cfg = data.config;
   const c = data.chipsets.find((x) => x.id === chipsetId);
   const subs = data.submissions.filter((s) => s.chipset === chipsetId);
@@ -77,10 +79,10 @@ export function softwareEta(data, chipsetId, { boardsReadyDate = undefined, extr
 
   return {
     chipset: chipsetId, known: true, notes, pending, codeComplete,
-    testStart: startLo, testStartLatest: startHi, testEnd: addDays(startHi, window),
+    testStart: startLo, testStartLatest: startHi, testEnd: addDays(startHi, window + extraTestDays[1]),
     slipDays: daysBetween(startLo, c.plannedTestStart),
-    early: latest(addDays(startLo, window + tailLo), addDays(fixLo, worstLo)),
-    late: latest(addDays(startHi, window + tailHi), addDays(fixHi, worstHi)),
+    early: latest(addDays(startLo, window + extraTestDays[0] + tailLo), addDays(fixLo, worstLo)),
+    late: latest(addDays(startHi, window + extraTestDays[1] + tailHi), addDays(fixHi, worstHi)),
     backlog,
   };
 }

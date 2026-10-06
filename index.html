@@ -19,7 +19,7 @@
         <a href="#launch" data-view="launch">Launch</a>
         <a href="#software" data-view="software">Software</a>
         <a href="#supply" data-view="supply">Supply</a>
-        <a href="#agent" data-view="agent">Agent</a>
+        <a href="#agent" data-view="agent">Recovery</a>
       </nav>
     </div>
   </header>
@@ -40,6 +40,7 @@
           <div class="eyebrow">Launch go/no-go · portfolio product</div>
           <h1>Will every TV launch on time?</h1>
           <p class="lede">Break something and watch it ripple. Delay a supplier shipment, reject a delivery or move a launch date: LaunchReady recalculates <strong>software readiness</strong> and <strong>supply</strong> for all 16 models, right here in your browser.</p>
+          <div class="actions"><button type="button" class="button accent" data-tour-start>Take the 60-second tour</button><span class="hero-or">or try it yourself below</span></div>
         </div>
         <div class="lab" id="lab">
           <form class="lab-controls" id="lab-controls" onsubmit="return false" aria-label="What-if controls">
@@ -52,16 +53,16 @@
                 <label><input type="radio" name="lab-mode" value="reject"><span>Rejected</span></label>
                 <label><input type="radio" name="lab-mode" value="nodate"><span>Date lost</span></label>
               </div>
-              <label class="slider"><span>Arrives <output id="lab-delay-out">on time</output></span><input type="range" id="lab-delay" min="-14" max="60" step="1" value="0"></label>
+              <label class="slider"><span>Arrives <output id="lab-delay-out">on time</output></span><input type="range" id="lab-delay" min="-14" max="60" step="1" value="0" aria-describedby="lab-date-hint"></label>
+              <label class="date-in"><span>or pick the new date</span><input type="date" id="lab-date" aria-describedby="lab-date-hint"></label>
+              <p class="lab-hint" id="lab-date-hint" aria-live="polite"></p>
             </fieldset>
             <fieldset><legend><b>2</b> A launch date</legend>
               <select id="lab-model" aria-label="Model"></select>
               <label class="slider"><span>Launch <output id="lab-shift-out">as planned</output></span><input type="range" id="lab-shift" min="-28" max="42" step="1" value="0"></label>
             </fieldset>
-            <fieldset><legend><b>3</b> A fix</legend>
-              <label class="toggle"><input type="checkbox" id="lab-sub"><span class="switch" aria-hidden="true"></span><span id="lab-sub-text">Use an approved substitute part</span></label>
-            </fieldset>
-            <button type="button" class="lab-reset" id="lab-reset">Undo all changes</button>
+            <a class="button accent lab-cta" id="lab-cta" href="#agent" hidden>Find a recovery →</a>
+            <button type="button" class="lab-reset" id="lab-reset">Undo my changes</button>
           </form>
           <div class="lab-out" aria-live="polite">
             <div class="lab-head"><span class="live-dot" aria-hidden="true"></span><span id="lab-label">Today, nothing changed</span><span class="lab-asof" id="lab-asof"></span></div>
@@ -79,21 +80,23 @@
         <ol class="chain" id="chain"></ol>
       </section>
 
-      <section class="features">
-        <a class="feature" href="#launch"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="16" r="3"/></svg></span><h3>Launch view</h3><p>A timeline of every model: software-ready range against launch date, and Ready / At risk / Blocked with the reasons.</p><span class="f-link">Open →</span></a>
-        <a class="feature" href="#software"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span><h3>Software teams</h3><p>Code submissions against the deadline, new vs reused code, open tickets by severity and age, and fix backlog per team.</p><span class="f-link">Open →</span></a>
-        <a class="feature" href="#supply"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><h3>Supply</h3><p>Stock by warehouse, supplier deliveries and delays, rejected shipments, substitutes, and who gets each part.</p><span class="f-link">Open →</span></a>
-        <a class="feature" href="#agent"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 15h6"/></svg></span><h3>AI agent</h3><p>Investigates a change with tested tools, weighs options, drafts messages to owners, and waits for your approval.</p><span class="f-link">Open →</span></a>
-      </section>
-
-      <details class="rules">
-        <summary><span class="kicker">Under the hood</span> How the verdict is calculated</summary>
-        <div class="rule-grid">
-          <div><h3>Software, per chipset</h3><p>Testing starts when all code is in <em>and</em> test boards exist. The ready date is a range: the test window (14 days, or 28 for a new chipset) plus a stabilisation tail, or the time to clear open tickets (critical 3–14 days, major 2–7, minor 1–3, shared across each team's engineers), whichever is later. <strong>Ready</strong> means the latest date is at least 7 days before launch, with no late code and no open critical tickets. <strong>Blocked</strong> means even the earliest date is after launch.</p></div>
-          <div><h3>Supply, per model</h3><p>Parts are handed out in need-date order: test boards before testing starts, production parts 21 days before launch. Each unit goes to only one build. Rejected deliveries and deliveries with no date are never counted. <strong>At risk</strong> means a late or tight delivery, an approved substitute, or a delivery with no date. <strong>Blocked</strong> means parts are missing, or production parts are more than 7 days late.</p></div>
-          <div><h3>Launch</h3><p>Each model takes the worse of its two verdicts, with the reasons from both sides. Data as of <strong id="asof"></strong>.</p></div>
+      <section class="about" id="about" aria-labelledby="about-h">
+        <div class="section-head"><span class="kicker">About this prototype</span><h2 id="about-h">What LaunchReady is, and isn't</h2></div>
+        <div class="about-grid">
+          <div><h3>Who it's for</h3><p>Launch managers, supply planners and software leads at a TV maker who meet weekly to decide whether each model can launch on its date.</p></div>
+          <div><h3>The decision it supports</h3><p>Go / no-go per model, and when a supplier slips: which launches are hit, what can recover them, and what needs escalating.</p></div>
+          <div><h3>Why the data is fictional</h3><p>Real launch, supplier and ticket data is confidential. "Northwind Vision", its models, chipsets and suppliers are invented so the logic can be shown in full. This is a portfolio prototype: not deployed, no users, no claimed savings.</p></div>
+          <div><h3>Built vs proposed</h3><p><strong>Built and tested:</strong> the readiness engine, supply allocation, scenarios, the what-if lab, recovery options, and the simulated agent workflow. <strong>Proposed, not built:</strong> live connectors to an issue tracker and ERP, and recorded AI-agent runs (the tool-calling code is in <code>agent/</code> but no runs are recorded).</p></div>
         </div>
-      </details>
+        <details class="rules">
+          <summary><span class="kicker">Assumptions</span> How the verdict is calculated</summary>
+          <div class="rule-grid">
+            <div><h3>Software, per chipset</h3><p>Testing starts when all code is in <em>and</em> test boards exist. The ready date is a <strong>range</strong> (earliest–latest): the test window (14 days, or 28 for a new chipset) plus a stabilisation tail, or the time to clear open tickets (critical 3–14 days, major 2–7, minor 1–3, shared across each team's engineers), whichever is later. <strong>Ready</strong> means even the latest date is at least <strong>7 days before launch</strong> (the buffer), with no late code and no open critical tickets. <strong>Blocked</strong> means even the earliest date is after launch.</p></div>
+            <div><h3>Supply, per model</h3><p>Parts are handed out in need-date order: test boards before testing starts, production parts 21 days before launch. Each unit goes to only one build. Rejected deliveries and deliveries with no date are never counted. <strong>At risk</strong> means a late or tight delivery, a substitute, or a delivery with no date. <strong>Blocked</strong> means parts are missing, or production parts are more than 7 days late.</p></div>
+            <div><h3>Recovery</h3><p>Options are only offered when the data allows them: re-pegging an order bought for another program (same part, +2 days transfer), an approved substitute (driver change 1–14 days before testing, then 2–4 days of validation), or a later launch (up to 42 days). Each is tested with the engine; any option that makes another launch worse is dropped. Data as of <strong id="asof"></strong>.</p></div>
+          </div>
+        </details>
+      </section>
     </section>
 
     <section id="view-launch" class="view" hidden>
@@ -117,10 +120,12 @@
       <div id="supply-list"></div>
     </section>
     <section id="view-agent" class="view" hidden>
-      <div class="view-head"><span class="kicker">AI agent</span><h1>From a change to an approved plan</h1><p>When something changes, the agent looks into both sides using tools (lookups and calculations in code), weighs options, proposes a plan with trade-offs, drafts messages to owners, and waits for your approval. Each run shown here is a real agent run, recorded during the build and replayed; nothing is generated live.</p></div>
+      <div class="view-head"><span class="kicker">Recovery agent</span><h1>From a supplier delay to an approved plan</h1><p>Six steps: detect the change, pull the records, find the affected launches, compare what could recover them, recommend one, and wait for your decision.</p></div>
       <div id="agent-panel"></div>
     </section>
   </main>
+
+  <aside class="tour" id="tour" hidden aria-live="polite" aria-label="Guided tour"></aside>
 
   <footer class="wrap footer">
     <span>LaunchReady · a portfolio project by <a href="https://hemant-singla.github.io" target="_blank" rel="noopener">Hemant Singla</a>. Fictional company and data.</span>

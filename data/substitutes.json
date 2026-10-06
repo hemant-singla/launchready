@@ -11,6 +11,10 @@
       1,
       14
     ],
-    "note": "Pin-compatible, different firmware interface; USB team must port the driver"
+    "note": "Pin-compatible, different firmware interface; USB team must port the driver",
+    "validationDays": [
+      2,
+      4
+    ]
   }
 ]

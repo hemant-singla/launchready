@@ -105,7 +105,7 @@ export function allocate(data) {
     if (total < gap) continue; // a partial substitute does not save the build
     let need = gap;
     for (const s of avail) { const t = Math.min(need, s.remaining); s.remaining -= t; need -= t; }
-    line.substitute = { part: sub.substitute, qty: gap, driverTeam: sub.driverTeam, driverChangeDays: sub.driverChangeDays };
+    line.substitute = { part: sub.substitute, qty: gap, driverTeam: sub.driverTeam, driverChangeDays: sub.driverChangeDays, validationDays: sub.validationDays ?? [0, 0] };
   }
 
   // Undated deliveries that could cover a shortfall (flagged, never counted).
@@ -124,7 +124,7 @@ export function lineStatus(line, cfg) {
   const what = line.kind === 'test-boards' ? `${line.part} for ${line.chipset} test boards` : `${line.part} for the ${line.model} build`;
   if (line.shortfall > 0) {
     if (line.substitute) {
-      return { status: 'at-risk', reasons: [`${what}: ${line.shortfall} short; approved substitute ${line.substitute.part} can cover it but needs a ${line.substitute.driverTeam} driver change (${line.substitute.driverChangeDays[0]}–${line.substitute.driverChangeDays[1]} days)`] };
+      return { status: 'at-risk', reasons: [`${what}: ${line.shortfall} short; approved substitute ${line.substitute.part} can cover it but needs a ${line.substitute.driverTeam} driver change (${line.substitute.driverChangeDays[0]}–${line.substitute.driverChangeDays[1]} days) and extra validation (${line.substitute.validationDays[0]}–${line.substitute.validationDays[1]} days)`] };
     }
     if (line.undatedQty > 0) {
       return { status: 'at-risk', reasons: [`${what}: ${line.shortfall} short unless delivery ${line.undatedIds.join(', ')} arrives; it has no confirmed date, so it is not counted`] };
