@@ -12,8 +12,8 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
 | 5 — AI agent | 🟡 Code done: agent/tools.js, agent/run.mjs, Agent panel (assets/agent.js), brief §5, 20 tests. **Runs NOT recorded yet**: Hemant chose Sonnet 5.5 (quoted ~$1–3, estimate), needs ANTHROPIC_API_KEY in the cloud environment |
 | 6 — Website | Not started (checkpoint: live link) |
-| 7 — Supply-chain role | Not started |
-| 8 — Gaps | Not started |
+| 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
+| 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 
 ## Decisions (facts)
 - Tech: plain HTML/CSS/JS, no build step, served by GitHub Pages. Core logic lives in shared JS modules used by both the app and the Node tests (`node --test`). Data is JSON.

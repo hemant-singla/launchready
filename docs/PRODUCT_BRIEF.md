@@ -171,3 +171,37 @@ The system prompt says every date, quantity and status must come from a tool res
 - **The wording is the model's.** Numbers come from tools, but the summary and messages are written by the model. They're checked by a person before approval, not by code. A run can also miss an option, which is why a human approves.
 - **One event at a time.** Each run handles one scenario; it doesn't keep memory across runs.
 - **Fictional data.** It has never seen a real supplier, ticket or launch.
+
+---
+
+## 7. How the supply chain role relates to the problem
+
+LaunchReady is a supply chain tool that happens to include software. Here's how each part maps to everyday supply chain work:
+
+| Supply chain area | Where it shows up in LaunchReady |
+|---|---|
+| **Inventory management** | Stock by warehouse, with on-hand, already allocated and free shown separately. Only free stock can be promised, and each unit only once. |
+| **Procurement** | Purchase orders (deliveries) with planned vs current dates, the supplier, and which program the PO was placed for. Rejected shipments drop out of supply. An approved second-source part (UC-310) is the classic dual-sourcing lever. |
+| **Production planning** | Each model's first production build needs its parts 21 days before launch. Test boards are a small "pilot build" that comes first and gates everything after it. |
+| **S&OP** | The launch view is a mini S&OP table: demand (launch plans and build quantities) against supply (stock and POs), with engineering readiness as a third constraint that most S&OP processes leave out. The scenarios are the "what if" part of an S&OP meeting. |
+| **Exception management** | The tool shows only the exceptions that change a verdict, with the reason and the numbers. The agent turns an exception into options, owners and draft messages. That's the control-tower workflow: detect, diagnose, decide, act. |
+| **Cost / service trade-offs** | Every option trades something off. Moving stock protects one launch and uses another program's safety margin. A substitute costs engineering time (1–14 days) and adds risk. Moving the date protects quality but costs revenue and the marketing plan. The tool makes the service side of each trade-off explicit. The cost side (expedite fees, substitute price, lost sales) is on the backlog. |
+
+**Allocation policy.** Supply is handed out by need date, and a PO placed for a program is used for that program first. That's a deliberate policy choice (first-need-first-served with pegging). Real companies often allocate by margin or strategic priority instead. LaunchReady makes the policy visible and testable, so it can be argued about.
+
+**My path.** At Samsung R&D I owned USB software readiness for 10+ TV launches across 10+ board variants. I saw how often "software isn't ready" really meant "we didn't have boards to test on". The M.S. in Supply Chain Analytics gave me the other half: inventory, procurement and S&OP. LaunchReady is what joining those two views looks like.
+
+---
+
+## 8. Gaps and open questions
+
+Being honest about what this is and isn't:
+
+- **Fictional data.** The company, models, chipsets, suppliers, tickets and quantities are made up. The patterns come from real experience, but no number here has been checked against a real launch. The baseline was deliberately set up so the three scenarios show clear effects.
+- **No real integrations.** Nothing connects to Jira, an ERP or a supplier portal. In real life, getting clean, timely data out of those systems would be most of the work.
+- **Data quality.** The tool trusts its inputs. Real delivery dates are often optimistic, tickets are mis-routed or duplicated, and "submitted" code isn't always complete. A real version would need data-freshness checks and a way to flag stale inputs.
+- **Simplified model.** Key parts only, not a full BOM. Stock in any warehouse is assumed to be usable anywhere, with no transfer time. Team capacity is per chipset rather than shared across chipsets. Test labs have no capacity limit. Fix times are fixed ranges, not learned from history. Costs aren't modelled.
+- **The rules are a choice.** The 7-day buffer, the fix-time ranges and the allocation order are reasonable defaults, not validated ones. Different teams would set them differently, and some verdicts would change.
+- **Adoption.** A verdict only helps if people trust it and update their data. Teams that own Jira or the ERP may see this as another dashboard. Open question: who owns LaunchReady (launch management, supply chain or engineering)?
+- **Agent reliability.** The agent's numbers come from tools, but its wording, choice of options and messages don't. A run can miss an option or frame a trade-off poorly. That's why every plan needs human approval, and why the site shows recorded runs rather than claiming live reliability.
+- **To validate with real users:** how often supply problems actually delay testing; how long it takes today from "supplier slipped" to "owner assigned"; whether launch managers would act on a computed verdict; which approval flow is acceptable for moving stock or dates; and whether the join between the two sides is really where the delay comes from.
