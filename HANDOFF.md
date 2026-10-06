@@ -42,7 +42,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 
 ## Next
 1. When the key is available: `npm install && node agent/run.mjs` (all three scenarios, Sonnet 5.5). Check each runs/*.json plan against the tool outputs, commit, and note the real token usage here.
-2. Step 6: push both repos, enable Pages on launchready (main, root), check the live link on desktop + mobile, add an Agent-panel screenshot to the README. Do NOT change any existing portfolio wording (Hemant objected); only add the LaunchReady entry and page. Checkpoint: send the live link and wait for feedback.
+2. Step 6 checkpoint: Hemant reviews the live, redesigned site and sends one round of feedback; apply small changes. Do NOT change any existing portfolio wording (Hemant objected); only add the LaunchReady entry and page.
 3. Brief is ~3,450 words (about 7 pages vs the 4–5 asked); trim if Hemant wants.
 
 ## Credits used
