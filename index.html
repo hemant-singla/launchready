@@ -35,15 +35,42 @@
 
   <main id="main" class="wrap">
     <section id="view-intro" class="view" hidden>
-      <div class="hero">
+      <div class="hero lab-hero">
         <div class="hero-copy">
           <div class="eyebrow">Launch go/no-go · portfolio product</div>
           <h1>Will every TV launch on time?</h1>
-          <p class="lede">LaunchReady joins the two halves of a launch that usually live in different tools: <strong>software readiness</strong> (code, tickets, testing) and <strong>supply</strong> (parts, stock, supplier deliveries). Each model gets one verdict, with the reasons from both sides.</p>
-          <div class="actions"><button type="button" class="button accent" data-play="usbDelay">▶ Play the USB delay</button><a class="button ghost" href="#launch">Open the launch view</a></div>
-          <p class="hero-note">Fictional company and data. This is a demo, not a deployed tool. Every date and number is calculated by tested code.</p>
+          <p class="lede">Break something and watch it ripple. Delay a supplier shipment, reject a delivery or move a launch date: LaunchReady recalculates <strong>software readiness</strong> and <strong>supply</strong> for all 16 models, right here in your browser.</p>
         </div>
-        <div class="board" id="hero-board" aria-live="polite"></div>
+        <div class="lab" id="lab">
+          <form class="lab-controls" id="lab-controls" onsubmit="return false" aria-label="What-if controls">
+            <div class="lab-presets"><span>Try one</span><div id="lab-presets"></div></div>
+            <fieldset><legend><b>1</b> A supplier shipment</legend>
+              <select id="lab-delivery" aria-label="Supplier shipment"></select>
+              <p class="lab-info" id="lab-delivery-info"></p>
+              <div class="seg" role="radiogroup" aria-label="What happens to it">
+                <label><input type="radio" name="lab-mode" value="delay" checked><span>Shift date</span></label>
+                <label><input type="radio" name="lab-mode" value="reject"><span>Rejected</span></label>
+                <label><input type="radio" name="lab-mode" value="nodate"><span>Date lost</span></label>
+              </div>
+              <label class="slider"><span>Arrives <output id="lab-delay-out">on time</output></span><input type="range" id="lab-delay" min="-14" max="60" step="1" value="0"></label>
+            </fieldset>
+            <fieldset><legend><b>2</b> A launch date</legend>
+              <select id="lab-model" aria-label="Model"></select>
+              <label class="slider"><span>Launch <output id="lab-shift-out">as planned</output></span><input type="range" id="lab-shift" min="-28" max="42" step="1" value="0"></label>
+            </fieldset>
+            <fieldset><legend><b>3</b> A fix</legend>
+              <label class="toggle"><input type="checkbox" id="lab-sub"><span class="switch" aria-hidden="true"></span><span id="lab-sub-text">Use an approved substitute part</span></label>
+            </fieldset>
+            <button type="button" class="lab-reset" id="lab-reset">Undo all changes</button>
+          </form>
+          <div class="lab-out" aria-live="polite">
+            <div class="lab-head"><span class="live-dot" aria-hidden="true"></span><span id="lab-label">Today, nothing changed</span><span class="lab-asof" id="lab-asof"></span></div>
+            <div class="lab-counts" id="lab-counts"></div>
+            <div class="wall" id="lab-wall" role="list" aria-label="All 16 models, by launch date"></div>
+            <div class="trail" id="lab-trail"></div>
+          </div>
+        </div>
+        <p class="hero-note">Fictional company and data. A demo, not a deployed tool. Every date and number is calculated by tested code; nothing is typed in or guessed.</p>
       </div>
 
       <section class="chain-section">
@@ -72,7 +99,7 @@
     <section id="view-launch" class="view" hidden>
       <div class="view-head"><span class="kicker">Launch view</span><h1>Go / no-go for 16 models</h1><p>Each bar is when the software will be ready. The diamond is the launch. The bar has to finish before the hatched 7-day buffer starts.</p></div>
       <div class="counts" id="launch-counts"></div>
-      <figure class="card chart-card"><figcaption class="chart-title">Launch timeline <span>Hover or tap a row for details</span></figcaption><div id="launch-timeline"></div></figure>
+      <figure class="card chart-card"><figcaption class="chart-title">Launch timeline <span>Drag a launch ◆ to try another date · hover for details</span></figcaption><div id="launch-timeline"></div></figure>
       <h2 class="list-title">Every model, with reasons</h2>
       <div class="filters" id="launch-filters"></div>
       <div id="launch-list" class="launch-list"></div>

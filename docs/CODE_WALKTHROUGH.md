@@ -16,13 +16,18 @@ Generated once by `tools/generate-data.mjs` from hand-written tables (tickets co
 3. **`engine.js` → `computeAll()`**: joins the two. The test-board dates from supply feed into the software ETA, which is how a parts delay becomes a software delay. Each model's verdict is the worse of software and supply.
 4. **`substitute.js`**: "if we use the approved substitute, does the driver change still fit?" It reruns `computeAll` with and without the substitute and compares.
 5. **`scenarios.js`**: the three demo scenarios, plus `reassignDelivery` and `moveLaunch` edits. Each returns a new copy of the data, so Reset just goes back to the original.
+6. **`lab.js`**: powers the what-if lab on the start page. `applyLab()` applies the user's edits (shift, reject or un-date one shipment; move one launch). `knockOn()` compares the result with today's and lists what changed in order: parts → testing → software → launch. `mainReason()` picks the one reason that decides a model's verdict.
+
+## The page (`index.html`, `assets/`)
+- **`app.js`**: one function per view turns the computed result into HTML. The lab's controls are built once; moving a slider only recomputes and updates the outputs, so it stays smooth. Lab edits flow into every view, so the Launch, Software and Supply tabs show the same what-if.
+- **`timeline.js`**: the launch chart as SVG. Dragging a launch diamond (or pressing ← / → on a row) previews the verdict for the new date using the engine, then applies it as the lab's "move a launch" edit on release.
 
 ## How to explain it in an interview
 "Software readiness and supply are usually planned in separate tools. I modelled the link between them: test boards need parts, so a parts delay pushes testing, which pushes the software date. The verdicts are rule-based and fully explainable. Every status comes with the reason and the numbers behind it, and every rule has a test, including the three scenarios."
 
 ## Run it
 ```
-npm test                    # 14 tests, Node 20+ (no installs)
+npm test                    # 25 tests, Node 20+ (no installs)
 python3 -m http.server      # then open http://localhost:8000
 node tools/generate-data.mjs && node tools/data-overview.mjs   # rebuild data + docs/DATA.md
 ```

@@ -3,12 +3,15 @@
 //   hatched = the 7-day buffer before launch the software must clear
 //   diamond = launch date
 // All positions come from the computed result; nothing is typed in.
-import { toDay, fmtDate, addDays } from '../src/dates.js';
+// Interactive: drag a launch diamond (or focus a row and press ← / →) to try a
+// new launch date. `opts.preview(id, date)` returns the status that date would
+// give (calculated by the engine), `opts.commit(id, date)` applies it.
+import { toDay, fromDay, fmtDate, addDays } from '../src/dates.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const LABEL = { ready: 'Ready', 'at-risk': 'At risk', blocked: 'Blocked' };
 
-export function renderTimeline(root, result, data, baseline) {
+export function renderTimeline(root, result, data, baseline, opts = {}) {
   const models = [...result.models].sort((a, b) => a.launchDate.localeCompare(b.launchDate) || a.id.localeCompare(b.id));
   const start = '2026-10-01';
   const end = '2027-02-01';
@@ -42,9 +45,11 @@ export function renderTimeline(root, result, data, baseline) {
     return `<g class="tl-row ${moved ? 'moved' : ''}" data-tip="${esc(tip)}" tabindex="0" role="listitem" aria-label="${esc(tip.replace(/\|/g, '. '))}">
       <rect class="tl-hit" x="0" y="${y}" width="${W}" height="${rowH}"/>
       <text class="tl-label" x="${labelW}" y="${cy + 4}" text-anchor="end">${esc(m.name)}</text>
-      <rect class="tl-buffer" x="${x(cutoff)}" y="${cy - 9}" width="${lx - x(cutoff)}" height="18"/>
       ${bar}
-      <path class="tl-launch" d="M${lx} ${cy - 7} L${lx + 7} ${cy} L${lx} ${cy + 7} L${lx - 7} ${cy} Z"/>
+      <g class="tl-launch-g" data-model="${m.id}" data-launch="${m.launchDate}" data-cy="${cy}" transform="translate(${lx} 0)">
+        <rect class="tl-buffer tl-buffer-drag" x="${x(cutoff) - lx}" y="${cy - 9}" width="${lx - x(cutoff)}" height="18"/>
+        <circle class="tl-grab" cx="0" cy="${cy}" r="13"/>
+        <path class="tl-launch" d="M0 ${cy - 7} L7 ${cy} L0 ${cy + 7} L-7 ${cy} Z"/></g>
     </g>`;
   }).join('');
 
@@ -56,20 +61,72 @@ export function renderTimeline(root, result, data, baseline) {
       ${grid}${todayLine}${rows}</svg><div class="tl-tip" hidden></div></div>`;
 
   const tipEl = root.querySelector('.tl-tip');
+  let drag = null;
+  // below the row, or above it when there's no room left inside the chart
+  const placeTip = (r, box) => {
+    const below = r.bottom - box.top + 4;
+    tipEl.style.top = `${below + tipEl.offsetHeight > box.height ? r.top - box.top - tipEl.offsetHeight - 4 : below}px`;
+  };
   const show = (g, evt) => {
+    if (drag) return;
     const [head, ...lines] = g.dataset.tip.split('|');
     tipEl.innerHTML = `<strong>${esc(head)}</strong>${lines.map((l) => `<span>${esc(l)}</span>`).join('')}`;
     tipEl.hidden = false;
     const box = root.querySelector('.tl-scroll').getBoundingClientRect();
     const r = g.querySelector('.tl-hit').getBoundingClientRect();
     const px = evt && evt.clientX ? evt.clientX - box.left : r.left - box.left + 160;
-    tipEl.style.left = `${Math.min(px + 12, box.width - 240)}px`;
-    tipEl.style.top = `${r.bottom - box.top + 4}px`;
+    tipEl.style.left = `${Math.min(px + 12, box.width - 270)}px`;
+    placeTip(r, box);
   };
   root.querySelectorAll('.tl-row').forEach((g) => {
     g.addEventListener('mousemove', (e) => show(g, e));
     g.addEventListener('focus', () => show(g));
-    g.addEventListener('mouseleave', () => { tipEl.hidden = true; });
+    g.addEventListener('mouseleave', () => { if (!drag) tipEl.hidden = true; });
     g.addEventListener('blur', () => { tipEl.hidden = true; });
   });
+
+  if (!opts.commit) return;
+  const dateAt = (px) => fromDay(Math.round(toDay(start) + ((px - x0) / (x1 - x0)) * (toDay(end) - toDay(start))));
+  const svg = root.querySelector('svg');
+  const toSvgX = (clientX) => { const b = svg.getBoundingClientRect(); return ((clientX - b.left) / b.width) * W; };
+  const place = (lg, date) => {
+    lg.setAttribute('transform', `translate(${x(date)} 0)`);
+    const { status, why } = opts.preview(lg.dataset.model, date);
+    lg.querySelector('.tl-launch').setAttribute('class', `tl-launch ${status}`);
+    const name = models.find((m) => m.id === lg.dataset.model).name;
+    tipEl.innerHTML = `<strong>${esc(name)} · launch ${fmtDate(date)}</strong><span>Would be: <b>${LABEL[status]}</b></span>${why ? `<span>${why}</span>` : ''}<span>Planned ${fmtDate(lg.dataset.launch)} · release to apply</span>`;
+    tipEl.hidden = false;
+    const box = root.querySelector('.tl-scroll').getBoundingClientRect();
+    const r = lg.getBoundingClientRect();
+    tipEl.style.left = `${Math.max(0, Math.min(r.left - box.left + 16, box.width - 270))}px`;
+    placeTip(r, box);
+  };
+  root.querySelectorAll('.tl-launch-g').forEach((lg) => {
+    lg.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      lg.setPointerCapture(e.pointerId);
+      drag = { lg, date: lg.dataset.launch };
+      lg.classList.add('dragging');
+    });
+    lg.addEventListener('pointermove', (e) => {
+      if (!drag || drag.lg !== lg) return;
+      const date = dateAt(Math.min(x1, Math.max(x0, toSvgX(e.clientX))));
+      if (date !== drag.date) { drag.date = date; place(lg, date); }
+    });
+    const finish = () => {
+      if (!drag || drag.lg !== lg) return;
+      const { date } = drag; drag = null;
+      lg.classList.remove('dragging');
+      if (date !== lg.dataset.launch) opts.commit(lg.dataset.model, date);
+    };
+    lg.addEventListener('pointerup', finish);
+    lg.addEventListener('pointercancel', finish);
+  });
+  // keyboard: ← / → move the focused row's launch by a day (Shift: a week)
+  root.querySelectorAll('.tl-row').forEach((g) => g.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const lg = g.querySelector('.tl-launch-g');
+    opts.commit(lg.dataset.model, addDays(lg.dataset.launch, (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 7 : 1)), true);
+  }));
 }
