@@ -10,7 +10,7 @@ const AS_OF = '2026-10-05';
 const out = {};
 
 out.config = {
-  company: 'Northwind Vision (fictional)',
+  company: 'Northwind Vision',
   asOf: AS_OF,
   bufferDays: 7,              // software must be ready this many days before launch
   productionLeadDays: 21,     // first production build needs parts this long before launch

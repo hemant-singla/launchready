@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LaunchReady · launch go/no-go demo</title>
+  <meta name="description" content="LaunchReady: a launch go/no-go tool for a fictional TV maker that joins software readiness and supply in one view. Portfolio project by Hemant Singla; fictional data.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script type="module" src="assets/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header">
+    <div class="wrap nav">
+      <a class="brand" href="#intro"><span>LaunchReady<small>Launch go/no-go · fictional demo</small></span></a>
+      <nav class="tabs" aria-label="Views">
+        <a href="#intro" data-view="intro">Start</a>
+        <a href="#launch" data-view="launch">Launch</a>
+        <a href="#software" data-view="software">Software</a>
+        <a href="#supply" data-view="supply">Supply</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="scenario-bar" aria-label="Demo scenarios">
+    <div class="wrap scenario-inner">
+      <span class="scenario-label">Try a scenario</span>
+      <div class="scenario-buttons" id="scenario-buttons"></div>
+      <button class="reset" id="reset" type="button">Reset demo</button>
+    </div>
+    <div class="wrap scenario-active" id="scenario-active" aria-live="polite"></div>
+  </section>
+
+  <main id="main" class="wrap">
+    <section id="view-intro" class="view" hidden>
+      <div class="intro">
+        <div>
+          <div class="eyebrow">Portfolio product · Hemant Singla</div>
+          <h1>Will each TV launch on time? One view for <span>software</span> and <span>supply</span>.</h1>
+          <p class="lede">LaunchReady joins the two sides of a TV launch. It shows each component team's code and open tickets, plus parts, stock and supplier deliveries. Every model gets a Ready, At risk or Blocked verdict, with the reasons from both sides.</p>
+          <div class="note"><strong>Fictional data.</strong> Northwind Vision, its 16 TVs, 8 chipsets, suppliers and tickets are all made up. This is a demo, not a deployed tool, with no real users or savings. Every date and quantity on screen is calculated by the code in this repo, not typed in by hand or guessed by AI.</div>
+          <div class="actions"><a class="button" href="#launch">Open the launch view</a><a class="text-link" href="https://github.com/hemant-singla/launchready" target="_blank" rel="noopener">Code on GitHub ↗</a></div>
+        </div>
+        <ol class="howto">
+          <li><strong>See today's picture.</strong> Open <em>Launch</em>: 12 models are Ready and 4 are At risk. Tap a model to see why.</li>
+          <li><strong>Break something.</strong> Click <em>USB controller delay</em>. Halo 77" turns At risk: fewer test boards means testing starts late, so its software date slides.</li>
+          <li><strong>Follow the chain.</strong> In <em>Software</em>, Volga-X's test start moves from 12 Nov to 8 Dec. In <em>Supply</em>, the UC-300 delivery shows the 34-day slip.</li>
+          <li><strong>Try the others.</strong> <em>Two launches, one part</em> shows how a scarce part is shared out, never counted twice. <em>Missing delivery date</em> shows uncertainty flagged rather than assumed away.</li>
+          <li><strong>Reset demo</strong> brings everything back.</li>
+        </ol>
+      </div>
+      <div class="rules">
+        <h2>How the verdict is calculated</h2>
+        <div class="rule-grid">
+          <div><h3>Software, per chipset</h3><p>Testing starts when all code is in <em>and</em> test boards exist. The ready date is a range: test window (14 days, or 28 for a new chipset) plus a stabilisation tail, or the time to clear open tickets (critical 3–14 days, major 2–7, minor 1–3, shared across each team's engineers), whichever is later. <strong>Ready</strong> means the latest date is at least 7 days before launch, with no late code and no open critical tickets. <strong>Blocked</strong> means even the earliest date is after launch.</p></div>
+          <div><h3>Supply, per model</h3><p>Parts are handed out in need-date order (test boards before testing starts, production parts 21 days before launch). Each unit goes to only one build. Deliveries that were rejected or have no date are never counted. <strong>At risk</strong> means a late or tight delivery, an approved substitute, or a delivery with no date. <strong>Blocked</strong> means parts are missing or more than 7 days late for production.</p></div>
+          <div><h3>Launch</h3><p>Each model takes the worse of its two verdicts, with reasons from both sides. As of <strong id="asof"></strong>.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-launch" class="view" hidden>
+      <div class="view-head"><h1>Launch view</h1><p>Ready, At risk or Blocked for each model, with the reasons from both sides.</p></div>
+      <div class="counts" id="launch-counts"></div>
+      <div class="filters" id="launch-filters"></div>
+      <div id="launch-list" class="launch-list"></div>
+    </section>
+
+    <section id="view-software" class="view" hidden>
+      <div class="view-head"><h1>Software team view</h1><p>Code submissions against the deadline, open tickets, new vs reused code, and an estimated ready date for each chipset.</p></div>
+      <div class="filters" id="software-filters"></div>
+      <div id="software-list"></div>
+    </section>
+
+    <section id="view-supply" class="view" hidden>
+      <div class="view-head"><h1>Supply view</h1><p>Parts per chipset, stock by warehouse (with what's already allocated), supplier deliveries, rejected shipments and approved substitutes.</p></div>
+      <div class="filters" id="supply-filters"></div>
+      <div id="supply-list"></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <span>LaunchReady · a portfolio project by <a href="https://hemant-singla.github.io" target="_blank" rel="noopener">Hemant Singla</a>. Fictional company and data.</span>
+    <a href="https://github.com/hemant-singla/launchready" target="_blank" rel="noopener">Source ↗</a>
+  </footer>
+</body>
+</html>
