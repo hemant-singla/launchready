@@ -10,14 +10,15 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 2 — Product + code | ✅ Done: data/, src/, tests/ (14 passing), index.html + assets/, docs/DATA.md, docs/CODE_WALKTHROUGH.md |
 | 3 — How it helps | ✅ Done: PRODUCT_BRIEF §3 (plus §2 product summary) |
 | 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
-| 5 — AI agent | 🟡 Code done: agent/tools.js, agent/run.mjs, Agent panel (assets/agent.js), brief §5, 20 tests. **Runs NOT recorded yet**: Hemant chose Sonnet 5.5 (quoted ~$1–3, estimate), needs ANTHROPIC_API_KEY in the cloud environment |
-| 6 — Website | 🟡 Live at https://hemant-singla.github.io/launchready/ and redesigned (see below). Case study + homepage entry in portfolio PR #1 (Hemant merges). Checkpoint: Hemant's one round of feedback |
+| 5 — AI agent | ✅ In the app: Recovery tab, a labelled **simulated agent workflow** (scripted steps, calculated results, approve/reject). Real agent code in agent/ (tools tested). **No real runs recorded** (needs ANTHROPIC_API_KEY; optional) |
+| 6 — Website | ✅ Live at https://hemant-singla.github.io/launchready/ (redesign + workflow upgrade). Case study + homepage entry in portfolio PR #1, **waiting for Hemant to merge**. Hemant said "move to next step" (2026-10-06) |
 | 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
+| Finish | ✅ 2026-10-06: links, mobile, tests checked; deliverables listed below |
 
 ## Decisions (facts)
 - Tech: plain HTML/CSS/JS, no build step, served by GitHub Pages. Core logic lives in shared JS modules used by both the app and the Node tests (`node --test`). Data is JSON.
-- Agent: Sonnet via the Anthropic API with tool calls into the same JS logic. Runs are recorded to JSON and replayed in the app.
+- Agent: the app shows a simulated workflow over `src/recovery.js`. The real agent (Sonnet via the Anthropic API, tool calls into the same JS logic) can record runs to `runs/` if a key is added later.
 - Readiness rules (thresholds are defaults and can change):
   - Software ETA range = test start + test window (longer for new chipsets) + backlog fix time (critical 3–14 d, major 2–7, minor 1–3), divided by team capacity. Ready = all submitted, no open criticals, late ETA ≤ launch − 7 d. At risk = range straddles that buffer. Blocked = early ETA after launch.
   - Supply: allocate in need-date order, with no double allocation. Two need dates: test boards, then production. Undated deliveries count as zero and are flagged. Ready = free stock + confirmed deliveries before need. At risk = needs a substitute, a tight delivery, or an undated one. Blocked = a shortfall remains.
@@ -50,10 +51,25 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 ## Blockers
 - Agent runs need ANTHROPIC_API_KEY (environment variable in the project's cloud environment; only new sessions see it).
 
-## Next
-1. When the key is available: `npm install && node agent/run.mjs` (all three scenarios, Sonnet 5.5). Check each runs/*.json plan against the tool outputs, commit, and note the real token usage here.
-2. Step 6 checkpoint: Hemant reviews the live, redesigned site and sends one round of feedback; apply small changes. Do NOT change any existing portfolio wording (Hemant objected); only add the LaunchReady entry and page.
+## Finish checks (2026-10-06, facts)
+- `npm test`: 32 pass, 0 fail.
+- Relative links in README.md and docs/*.md, and every local file referenced by index.html: all exist. Unused docs/img/supply-uc300.png removed.
+- App in Chromium at 1280 px and 390 px: no console errors, no horizontal page scroll; tour, keyboard path to Approve, date validation and Reset all work.
+- Portfolio case study (PR branch) at 1280 px and 390 px: no errors, no 404s, no horizontal scroll; homepage links to it. Case study text updated to say the agent is a simulated workflow (it previously said "recorded runs", which was no longer true).
+- Pages build for commit f0b6e9c: success. The live URL can't be fetched from the build environment (proxy), so it was checked locally.
+
+## Deliverables
+- Live demo: https://hemant-singla.github.io/launchready/
+- Code: https://github.com/hemant-singla/launchready (data/, src/, tests/, assets/, agent/, tools/)
+- Product brief: docs/PRODUCT_BRIEF.md (§1–5, 7, 8); data overview: docs/DATA.md; interview walkthrough: docs/CODE_WALKTHROUGH.md
+- README with screenshots (docs/img/)
+- Portfolio case study + homepage entry: PR https://github.com/hemant-singla/hemant-singla.github.io/pull/1 (merge to publish)
+
+## Next (optional)
+1. Hemant: merge portfolio PR #1 to publish the case study.
+2. If wanted: add ANTHROPIC_API_KEY, then `npm install && node agent/run.mjs` (Sonnet 5.5, est. $1–3) to record real runs; they must keep the "Real agent run, recorded during the build and replayed" label.
 3. Brief is ~3,450 words (about 7 pages vs the 4–5 asked); trim if Hemant wants.
+4. Do NOT change any existing portfolio wording; only the LaunchReady entry and page are ours.
 
 ## Credits used
 - **Estimate (not measured):** about $38–42 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15). Remaining budget is small; trim polish before adding features.
