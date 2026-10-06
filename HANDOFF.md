@@ -15,6 +15,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 | Finish | ✅ 2026-10-06: links, mobile, tests checked; deliverables listed below |
+| Motion pass | ✅ 2026-10-06 (Hemant raised the budget to ~$62; skipped the demo video): animated TV scene in the hero with Play/Pause (assets/scene.js), signal-line background, workspace change messages + counting numbers + clickable cards, animated recovery preview in the Recovery tab |
 | Clarity pass | ✅ 2026-10-06 (Hemant: "go with the plan", from a ChatGPT review): new headline, start page = intro → worked example → try-it workspace → assumptions; plain-language `explain()` per affected launch; three questions in the lab panel; options as action / result / trade-off / approval; terms explained on demand; evidence row. Open: ChatGPT's "calculation mismatch" (details asked from Hemant, not yet received) |
 
 ## Decisions (facts)
@@ -73,5 +74,5 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 4. Do NOT change any existing portfolio wording; only the LaunchReady entry and page are ours.
 
 ## Credits used
-- **Estimate (not measured):** about $46–50 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15, clarity pass ~$5–6, TV hero ~$2). At the $50 cap: only fixes from here.
+- **Estimate (not measured):** about $55–58 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15, clarity pass ~$5–6, TV hero ~$2, motion pass ~$8). Budget raised to ~$62 by Hemant on 2026-10-06; about $4–7 left.
 - **Facts:** no API calls spent on agent runs yet.

@@ -42,18 +42,15 @@
           <p class="lede">LaunchReady connects component deliveries, testing and software progress, so your team can see which launches are at risk, why, and compare ways to recover.</p>
           <div class="actions"><button type="button" class="button accent" data-preset-go="0">Try a supplier delay</button><button type="button" class="button ghost" data-tour-start>See how it works</button></div>
         </div>
-        <figure class="tv" aria-label="A TV showing the launch status of all 16 fictional models">
+        <figure class="tv" aria-label="Animated example on a TV">
           <div class="tv-body">
-            <div class="tv-screen">
-              <div class="tv-bar"><span class="live-dot" aria-hidden="true"></span><span id="tv-label">Northwind Vision · 16 launches</span></div>
-              <div class="tv-wall" id="tv-wall"></div>
-              <div class="tv-counts" id="tv-counts"></div>
-              <span class="tv-scan" aria-hidden="true"></span>
-            </div>
+            <div class="tv-screen" id="scene"></div>
           </div>
           <div class="tv-stand" aria-hidden="true"></div>
+          <figcaption class="sc-controls" id="scene-controls"></figcaption>
         </figure>
-        <div class="hero-bg" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="hero-bg" aria-hidden="true"><span></span><span></span>
+          <svg class="signals" viewBox="0 0 1200 600" preserveAspectRatio="none"><path d="M0 420 C 300 380, 520 470, 760 330 S 1100 260, 1200 300"/><path d="M0 200 C 260 260, 480 140, 720 220 S 1040 360, 1200 240"/><path d="M0 520 C 340 500, 600 560, 880 470 S 1120 430, 1200 460"/></svg></div>
         <p class="hero-note">Fictional company and data. A demo, not a deployed tool. Every date and number is calculated by tested code; nothing is typed in or guessed.</p>
       </div>
 
@@ -91,6 +88,7 @@
           <div class="lab-out" aria-live="polite">
             <div class="lab-head"><span class="live-dot" aria-hidden="true"></span><span id="lab-label">Today, nothing changed</span><span class="lab-asof" id="lab-asof"></span></div>
             <div class="lab-counts" id="lab-counts"></div>
+            <p class="lab-delta" id="lab-delta" role="status" hidden></p>
             <div class="wall" id="lab-wall" role="list" aria-label="All 16 models, by launch date"></div>
             <div class="trail" id="lab-trail"></div>
           </div>

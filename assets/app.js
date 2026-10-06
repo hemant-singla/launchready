@@ -12,6 +12,7 @@ import { computeWith, affectedBy, recoveryOptions } from '../src/recovery.js';
 import { initialDemo, decide } from '../src/demo.js';
 import { startTour, tourClick, endTour, initTour } from './tour.js';
 import { renderTimeline } from './timeline.js';
+import { initScene, sceneClick } from './scene.js';
 import { applyLab, knockOn, mainReason, explain } from '../src/lab.js';
 
 const state = { base: null, data: null, active: [], result: null, baseline: null, filters: { line: '', chipset: '', status: '', part: '' }, open: new Set(), lab: null, demo: initialDemo(), affectedOnly: true };
@@ -309,16 +310,17 @@ function syncLabControls() {
 }
 
 let lastStatus = {};
+/** Count a number from one value to another (skipped under reduced motion). */
+function tickCount(el, from, to) {
+  if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const t0 = performance.now(), dur = 500;
+  const step = (t) => { const k = Math.min(1, (t - t0) / dur); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(step); };
+  el.classList.add('ticking'); requestAnimationFrame(step); setTimeout(() => el.classList.remove('ticking'), dur + 50);
+}
 function renderIntro() {
   if (!$('#lab').dataset.built) buildLab();
   syncLabControls();
   const r = state.result;
-  // The TV in the hero shows the same calculated statuses as the lab.
-  $('#tv-wall').innerHTML = [...r.models].sort((a, b) => a.launchDate.localeCompare(b.launchDate))
-    .map((m) => `<span class="tv-tile ${m.status}"><b>${esc(m.name)}</b><i>${ICON[m.status]} ${LABEL[m.status]}</i></span>`).join('');
-  const tc = { ready: 0, 'at-risk': 0, blocked: 0 }; r.models.forEach((m) => tc[m.status]++);
-  $('#tv-counts').innerHTML = Object.entries(tc).map(([k, v]) => `<span class="${k}">${ICON[k]} ${v} ${LABEL[k]}</span>`).join('');
-  $('#tv-label').textContent = labChanged() || state.active.length || state.demo.actions.length ? 'Your what-if · 16 launches' : 'Northwind Vision · 16 launches';
   const base = state.baseline;
   // counts with change against today
   const counts = { ready: 0, 'at-risk': 0, blocked: 0 }; const was = { ready: 0, 'at-risk': 0, blocked: 0 };
@@ -329,6 +331,23 @@ function renderIntro() {
   }).join('');
   $('#lab-label').textContent = state.active.length || labChanged()
     ? [...state.active.map((k) => SCENARIOS[k].title), labChanged() ? labSummary() : ''].filter(Boolean).join(' + ') : 'Today, nothing changed';
+  // What changed since the last edit (not since the original plan), so each
+  // change gets its own message, and the counts tick to their new values.
+  const prev = Object.keys(lastStatus).length ? lastStatus : null;
+  if (prev) {
+    const RANKS = { ready: 0, 'at-risk': 1, blocked: 2 };
+    const worse = r.models.filter((m) => prev[m.id] && RANKS[m.status] > RANKS[prev[m.id]]);
+    const better = r.models.filter((m) => prev[m.id] && RANKS[m.status] < RANKS[prev[m.id]]);
+    const names = (xs) => xs.map((m) => m.name).join(', ');
+    const msg = [worse.length ? `${worse.length} more launch${worse.length > 1 ? 'es' : ''} now need${worse.length > 1 ? '' : 's'} attention: ${names(worse)}` : '',
+      better.length ? `${better.length} launch${better.length > 1 ? 'es' : ''} back on track: ${names(better)}` : ''].filter(Boolean).join(' · ');
+    const el = $('#lab-delta');
+    if (msg) { el.textContent = msg; el.className = `lab-delta ${worse.length ? 'worse' : 'better'}`; el.hidden = false; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+    for (const s of Object.keys(counts)) {
+      const from = Object.values(prev).filter((x) => x === s).length;
+      if (from !== counts[s]) tickCount($(`.lc.${s} strong`), from, counts[s]);
+    }
+  }
   // tiles: update in place and flash the ones whose status just changed
   for (const m of r.models) {
     const t = $(`[data-tile="${m.id}"]`);
@@ -379,6 +398,22 @@ function renderIntro() {
     card('2 · After the delay', usb, usbData, `<p class="story-note">USB controller delivery moved ${fmtDate(dl.originalEta, true)} → <mark>${fmtDate(dl.eta, true)}</mark></p>`) +
     (rec ? card('3 · After recovery', fixed, usbData, `<p class="story-note"><b>Action:</b> ${esc(rec.title)}<br><b>Trade-off:</b> ${esc(rec.tradeoffs[0])}<br><b>Approval:</b> ${esc(rec.approval)}</p>`) : '');
   $('#story').dataset.built = '1';
+  // Facts for the animated TV scene in the hero, from the same calculation.
+  if (rec) {
+    const hal = (res) => res.models.find((x) => x.id === 'HAL-77');
+    const [m0, m1, m2] = [hal(state.baseline), hal(usb), hal(fixed)];
+    const tb = usb.lines.find((l) => l.kind === 'test-boards' && l.chipset === m1.chipset && (l.lateQty || l.shortfall));
+    const orig = state.base.deliveries.find((x) => x.id === dl.id);
+    const sw = (m) => `${fmtDate(m.eta.early, true)}–${fmtDate(m.eta.late, true)}`;
+    initScene($('#scene'), $('#scene-controls'), {
+      part: state.base.parts.find((p) => p.id === dl.part).name, chip: m1.chipset, model: m1.name, launch: fmtDate(m1.launchDate, true),
+      dueFrom: fmtDate(orig.eta, true), dueTo: fmtDate(dl.eta, true), slip: daysBetween(dl.eta, orig.eta),
+      lateQty: n(tb.lateQty || tb.shortfall), qty: n(tb.qty), testFrom: fmtDate(state.baseline.chipsets[m0.chipset].eta.testStart, true),
+      testTo: fmtDate(usb.chipsets[m1.chipset].eta.testStart, true), swFrom: sw(m0), swTo: sw(m1), swFixed: sw(m2),
+      cutoff: fmtDate(addDays(m1.launchDate, -cfg.bufferDays), true), fixTitle: rec.title.replace(/^Move/, 'move'),
+      fixArrive: rec.arrive ? fmtDate(rec.arrive, true) : '', fixTest: fmtDate(fixed.chipsets[m2.chipset].eta.testStart, true),
+    });
+  }
 }
 
 // Lab inputs: recompute and refresh only the start page (no full re-render).
@@ -416,6 +451,7 @@ document.addEventListener('click', (e) => {
   if (gc) { state.filters.chipset = gc.dataset.gotoChipset; state.filters.part = ''; state.filters.line = ''; return; }
   const gp = e.target.closest('[data-goto-part]');
   if (gp) { state.filters.part = gp.dataset.gotoPart; state.filters.chipset = ''; return; }
+  if (sceneClick(e)) return;
   const ts = e.target.closest('[data-tour-start]');
   if (ts) return startTour();
   if (tourClick(e)) return;
@@ -435,7 +471,12 @@ document.addEventListener('click', (e) => {
   }
   if (e.target.id === 'lab-reset') return labUpdate({ ...LAB0 });
   const opener = e.target.closest('[data-open]');
-  if (opener) state.open.add(opener.dataset.open);
+  if (opener) {
+    // Go straight to that launch's details, even if it isn't affected.
+    e.preventDefault();
+    if (currentView() !== 'launch') history.pushState(null, '', '#launch');
+    return selectModel(opener.dataset.open);
+  }
   if (sc) {
     const k = sc.dataset.scenario;
     state.active = state.active.includes(k) ? state.active.filter((x) => x !== k) : [...state.active, k];
@@ -445,7 +486,7 @@ document.addEventListener('click', (e) => {
   if (row) { const id = row.dataset.model; state.open.has(id) ? state.open.delete(id) : state.open.add(id); return render(); }
   const cnt = e.target.closest('[data-status]');
   if (cnt) { state.filters.status = state.filters.status === cnt.dataset.status ? '' : cnt.dataset.status; return render(); }
-  if (e.target.id === 'reset') { state.lab = { ...LAB0 }; state.demo = initialDemo(); state.affectedOnly = true; resetAgent(); endTour(); lastStatus = {}; state.active = []; state.open.clear(); state.filters = { line: '', chipset: '', status: '', part: '' }; recompute(); }
+  if (e.target.id === 'reset') { state.lab = { ...LAB0 }; state.demo = initialDemo(); state.affectedOnly = true; resetAgent(); endTour(); lastStatus = {}; $('#lab-delta').hidden = true; state.active = []; state.open.clear(); state.filters = { line: '', chipset: '', status: '', part: '' }; recompute(); }
 });
 document.addEventListener('change', (e) => {
   if (agentChange(e, render)) return;

@@ -22,7 +22,7 @@ const ui = { step: 0, selected: null, outcome: null, cacheKey: '', cache: null }
 let api; // set by initAgent: { get(), approve(opt), reject(opt), startDefault() }
 
 export function initAgent(a) { api = a; }
-export function resetAgent() { Object.assign(ui, { step: 0, selected: null, outcome: null, cacheKey: '', cache: null }); }
+export function resetAgent() { lastPreview = ''; Object.assign(ui, { step: 0, selected: null, outcome: null, cacheKey: '', cache: null }); }
 
 function analysis(s) {
   const key = JSON.stringify([s.active, s.lab, s.demo.actions]);
@@ -119,6 +119,7 @@ export function renderAgent(root) {
       ${affModels.map((m) => `<tr><th scope="row"><a href="#launch" data-open="${m.id}">${esc(m.name)}</a></th><td>${fmtDate(m.launchDate, true)}</td><td>${pill(origOf(m.id).status)}</td><td>${pill(m.status)}</td><td>${esc(m.status === 'ready' ? `Software now expected ${range(m.eta.early, m.eta.late)}, later than planned but still inside the buffer.` : explain(m, now, d))}</td></tr>`).join('')}
       </tbody></table></div></div>`));
 
+  const preview = sel ? previewHtml(sel, now, affLines, d) : '';
   const considered = a.considered.length ? `<details class="considered"><summary>Considered but not offered (${a.considered.length})</summary><ul>${a.considered.map((o) => `<li><strong>${esc(o.title)}</strong>: ${esc(o.why)}</li>`).join('')}</ul></details>` : '';
   const compare = sel ? `<div class="table-scroll"><table class="data-table compare"><caption>Original plan vs current disruption vs this option</caption>
     <thead><tr><th scope="col">Launch</th><th scope="col">Original plan</th><th scope="col">Current disruption</th><th scope="col">With: ${esc(sel.title)}</th></tr></thead><tbody>
@@ -128,7 +129,7 @@ export function renderAgent(root) {
     <tr><th scope="row">Units short or late</th><td>0</td><td>${n(affLines.reduce((x, l) => x + l.shortfall + l.lateQty, 0))}</td><td>${n(sel.remaining.reduce((x, l) => x + l.shortfall + l.lateQty, 0))}</td></tr>
     </tbody></table></div>` : '';
   cards.push(stepCard(3, 'Compare recovery options', 'It generates every action the data allows (re-pegging a purchase order, an approved substitute, a later launch date), tests each one, and drops any that do not help or that hurt another launch.',
-    `<div class="calc">${CALC}${a.options.length ? `<fieldset class="opts"><legend class="sr">Recovery options</legend>${a.options.map((o) => optionRow(o, a.recommended)).join('')}</fieldset>${compare}` : '<p class="bad">No eligible action improves the affected launches.</p>'}${considered}
+    `<div class="calc">${CALC}${a.options.length ? `<fieldset class="opts"><legend class="sr">Recovery options</legend>${a.options.map((o) => optionRow(o, a.recommended)).join('')}</fieldset>${preview}${compare}` : '<p class="bad">No eligible action improves the affected launches.</p>'}${considered}
       ${a.escalation ? `<p class="escalate"><strong>Needs escalation.</strong> ${esc(a.escalation)}</p>` : ''}</div>`));
 
   const rec = sel;
@@ -150,6 +151,52 @@ export function renderAgent(root) {
     <ol class="asteps">${shown}</ol>
     ${more ? `<div class="replay-controls"><button type="button" class="button" data-agent-next>Next: ${STEPS[ui.step + 1]}</button><button type="button" class="button-link" data-agent-all>Show all steps</button></div>` : ''}
     ${logHtml}`;
+  const pv = root.querySelector('[data-preview]');
+  const pk = sel ? ui.cacheKey + sel.key : '';
+  if (pv && pk !== lastPreview) { lastPreview = pk; playPreview(); } else pv?.classList.add('to');
+}
+let lastPreview = '';
+
+/**
+ * Visual preview of one option: where the part arrival, the start of testing,
+ * the software range and the launch sit now (the disruption), and where the
+ * option moves them. Rendered at the "now" positions, then animated to the
+ * option's positions (instant under reduced motion). All dates are calculated.
+ */
+function previewHtml(sel, now, affLines, d) {
+  const m = sel.models[0];
+  const b = now.models.find((x) => x.id === m.id);
+  const t = sel.testStarts.find((x) => x.id === b.chipset) ?? sel.testStarts[0];
+  const line = affLines.find((l) => l.kind === 'test-boards' && l.chipset === b.chipset) ?? affLines[0];
+  const cutoffBefore = addDays(b.launchDate, -d.config.bufferDays);
+  const cutoffAfter = addDays(m.launch, -d.config.bufferDays);
+  const partsAfter = sel.type === 'transfer' ? sel.arrive : sel.type === 'substitute' ? d.config.asOf : line?.readyDate;
+  const rows = [];
+  if (line && (line.readyDate || partsAfter)) rows.push({ label: `${line.part} for ${line.chipset} test boards`, kind: 'dot', from: line.readyDate ?? partsAfter, to: partsAfter ?? line.readyDate, ok: sel.type !== 'moveLaunch' && !sel.remaining.some((x) => x.id === line.id), note: sel.type === 'substitute' ? `substitute ${sel.sub.part} in stock` : sel.type === 'transfer' ? `re-pegged units arrive ${fmtDate(sel.arrive, true)}` : 'unchanged' });
+  if (t?.before && t?.after) rows.push({ label: `${t.id} testing starts`, kind: 'dot', from: t.before, to: t.after, plan: t.planned, ok: t.after <= t.planned, note: `${fmtDate(t.after, true)} (planned ${fmtDate(t.planned, true)})` });
+  if (b.eta.known && m.eta[0]) rows.push({ label: `Software ready (range)`, kind: 'bar', from: [b.eta.early, b.eta.late], to: [m.eta[0], m.eta[1]], cut: [cutoffBefore, cutoffAfter], ok: m.eta[1] <= cutoffAfter, note: `${range(m.eta[0], m.eta[1])} vs cutoff ${fmtDate(cutoffAfter, true)}` });
+  rows.push({ label: `${m.name} launch`, kind: 'launch', from: b.launchDate, to: m.launch, sFrom: b.status, sTo: m.after, note: `${fmtDate(m.launch, true)} · ${LABEL[m.after]}` });
+  const all = rows.flatMap((r) => [r.from, r.to, r.plan, r.cut]).flat().filter(Boolean).sort();
+  const lo = addDays(all[0], -4), span = Math.max(1, daysBetween(addDays(all.at(-1), 4), lo));
+  const x = (dt) => ((daysBetween(dt, lo) / span) * 100).toFixed(2);
+  const row = (r) => {
+    let mark;
+    if (r.kind === 'bar') mark = `<span class="pv-cut" style="--a:${x(r.cut[0])}%;--b:${x(r.cut[1])}%" title="Cutoff"></span><span class="pv-bar pv-ghost" style="left:${x(r.from[0])}%;width:${x(r.from[1]) - x(r.from[0])}%"></span><span class="pv-bar" data-ok="${r.ok ? 1 : 0}" style="--a:${x(r.from[0])}%;--b:${x(r.to[0])}%;--wa:${x(r.from[1]) - x(r.from[0])}%;--wb:${x(r.to[1]) - x(r.to[0])}%"></span>`;
+    else if (r.kind === 'launch') mark = `<span class="pv-launch pv-ghost" data-from="${r.sFrom}" style="left:${x(r.from)}%"></span><span class="pv-launch" data-from="${r.sFrom}" data-to="${r.sTo}" style="--a:${x(r.from)}%;--b:${x(r.to)}%"></span>`;
+    else mark = `${r.plan ? `<span class="pv-plan" style="left:${x(r.plan)}%" title="Planned"></span>` : ''}<span class="pv-dot pv-ghost" style="left:${x(r.from)}%"></span><span class="pv-dot" data-ok="${r.ok ? 1 : 0}" style="--a:${x(r.from)}%;--b:${x(r.to)}%"></span>`;
+    return `<div class="pv-row"><span class="pv-label">${esc(r.label)}</span><div class="pv-track">${mark}</div><span class="pv-note">${esc(r.note)}</span></div>`;
+  };
+  return `<figure class="preview" data-preview><figcaption><strong>Preview:</strong> what this option moves, from the current disruption to the result <button type="button" class="button-link" data-preview-replay>Replay</button></figcaption>
+    ${rows.map(row).join('')}<p class="pv-legend"><span class="pv-k ghost"></span>current disruption <span class="pv-k cut"></span>software cutoff (launch − ${d.config.bufferDays} days) <span class="pv-k plan"></span>planned</p></figure>`;
+}
+
+/** Animate the preview from "now" to the option (call after rendering). */
+export function playPreview() {
+  const f = document.querySelector('[data-preview]');
+  if (!f) return;
+  f.classList.remove('to');
+  void f.offsetWidth;
+  requestAnimationFrame(() => requestAnimationFrame(() => f.classList.add('to')));
 }
 
 function approve(sel) {
@@ -178,6 +225,7 @@ export function agentClick(e, rerender) {
   const t = e.target;
   const s = api.get();
   const a = ui.cache;
+  if (t.closest('[data-preview-replay]')) { playPreview(); return true; }
   if (t.closest('[data-agent-start]')) { ui.step = 0; api.startDefault(); return true; }
   if (t.closest('[data-agent-next]')) { ui.step = Math.min(STEPS.length - 1, ui.step + 1); rerender(); focusStep(); return true; }
   if (t.closest('[data-agent-all]')) { ui.step = STEPS.length - 1; rerender(); focusStep(); return true; }
