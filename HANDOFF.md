@@ -8,8 +8,8 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | Plan + readiness rules | ✅ Approved by Hemant (2026-10-06) |
 | 1 — The problem | ✅ Done; Hemant said "continue" (2026-10-06) |
 | 2 — Product + code | ✅ Done: data/, src/, tests/ (14 passing), index.html + assets/, docs/DATA.md, docs/CODE_WALKTHROUGH.md |
-| 3 — How it helps | Not started |
-| 4 — PM specs | Not started |
+| 3 — How it helps | ✅ Done: PRODUCT_BRIEF §3 (plus §2 product summary) |
+| 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
 | 5 — AI agent | Not started (ask Hemant before any API spend, with a cost quote) |
 | 6 — Website | Not started (checkpoint: live link) |
 | 7 — Supply-chain role | Not started |
@@ -34,8 +34,8 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - GitHub push refused (403): the Claude GitHub App is not installed on hemant-singla/launchready. Commits are local and mirrored to /mnt/project-files/launchready.
 
 ## Next
-Step 3 (how it helps), Step 4 (PM specs), then Step 5 (agent: ask before API spend).
+Step 5 (agent). Waiting for Hemant's OK on API spend (quoted in thread) and for an Anthropic API key; build tools/loop/replay panel meanwhile.
 
 ## Credits used
-- **Estimate (not measured):** about $8 so far (planning, Step 1, Step 2 code + app). Projected total: $30–40 of the $50 budget.
+- **Estimate (not measured):** about $10 so far (planning, Steps 1–4). Projected total: $30–40 of the $50 budget.
 - **Facts:** no API calls spent on agent runs yet.

@@ -57,3 +57,90 @@ The options all exist: borrow stock from a later launch, use an approved substit
 - How long it takes today from "supplier slipped" to "impact known and owner assigned". This is the key metric.
 - Whether launch managers would trust a computed readiness status over their own judgement.
 - Who should approve a cross-team plan (moving stock, a substitute, a date change).
+
+---
+
+## 2. The product (built)
+
+LaunchReady is a static web app ([code walkthrough](CODE_WALKTHROUGH.md), [data overview](DATA.md)) with three views:
+- **Launch:** Ready / At risk / Blocked for all 16 models, with the reasons from both sides. You can filter by line, chipset and status.
+- **Software team:** per chipset, each team's code submission against the deadline, new vs reused code, open tickets by severity and age, and the software-ready date as a range.
+- **Supply:** per part, stock by warehouse (including what's already allocated), deliveries (planned vs current date, delays, rejections), approved substitutes, and which build gets which units.
+
+Three scenario buttons change the data and recalculate everything with the same code the tests run. *Reset demo* brings it back. Baseline: 12 Ready, 4 At risk, 0 Blocked (as of 5 Oct 2026).
+
+---
+
+## 3. How it helps
+
+### What changes for each person
+| Person | Today | With LaunchReady |
+|---|---|---|
+| **Software lead** | Learns test boards are late when they don't arrive. Ticket backlog lives in Jira, with no link to launch dates. | Sees that a parts delay moves *their* test start, and by how much, the day the supplier slips. Their backlog is shown as days of work against each launch. |
+| **Planner / procurement** | Sees a late PO, but not which launch it threatens or whether it gates testing. Expedites by gut feel. | Each delivery is tied to the builds it covers, in need-date order. They can see which delay actually moves a launch, and which stock could be moved without hurting another build. |
+| **Launch manager** | Rebuilds go/no-go by chasing both sides; reasons arrive in different meetings. | One verdict per model, with reasons and numbers from both sides. Options (move stock, substitute, move date) are checked against the same rules before anyone commits. |
+
+### Compared with tools that already exist
+- **Supply control towers (e.g., Kinaxis, o9).** These are strong at supply/demand matching, allocation and what-if planning across the network. They see a launch as a demand date. They don't see that a new chipset needs four weeks of testing, or that a part shortage delays *software*.
+- **Release and issue hubs (e.g., Jira and release dashboards).** These are strong at tickets, owners and code status. They don't know about stock, deliveries or substitutes, so they can't explain why testing started late or what a supplier slip will do.
+- **Spreadsheets in between.** This is what fills the gap today: copied numbers, manual joins, and a status that's stale by the next meeting.
+
+### Why joining both sides matters
+The costly problems sit **between** the two systems. A parts delay → fewer test boards → late testing → tickets found later → a late software date is one chain, but it crosses two tools and three owners. A substitute part saves the supply side but adds driver work to the software side. Moving stock fixes one launch and can break another. LaunchReady doesn't replace either system. It's the thin layer that joins them, so each trade-off is visible on both sides before someone commits to it. *(Assumption to validate: that the join, not the data in either system, is where most of the delay comes from.)*
+
+---
+
+## 4. Product manager specs
+
+### MVP scope
+**In:** one fictional TV maker; 16 models, 8 chipsets, 5 component teams, key parts per chipset; Launch, Software and Supply views with filters; a readiness verdict with reasons; three scenarios; an AI agent that investigates and proposes a plan, replayed from recorded runs; human approval before anything is "done".
+
+**Out of scope (for now):** live connections to Jira, ERP or supplier portals; login and roles; editing data in the app; full bills of materials (only key parts are modelled); cost and margin; multi-site production planning; transfer lead times between warehouses; capacity of test labs; the agent taking any action by itself.
+
+### User stories and acceptance criteria
+1. **As a launch manager, I want one verdict per model with reasons, so I can run go/no-go without chasing two teams.**
+   - Every model shows Ready, At risk or Blocked, and every non-Ready verdict lists at least one reason with the numbers behind it.
+   - The verdict is the worse of the software and supply verdicts.
+2. **As a software lead, I want to see when my testing will really start, so I can warn early or ask for boards.**
+   - Test start = latest of planned start, code complete + 3 days, and test boards available.
+   - If boards are short, the view shows by how many days the start moved and why.
+3. **As a planner, I want to know which builds a delivery covers, so I expedite the delay that actually matters.**
+   - Supply is handed out in need-date order; no unit is given to two builds (tested).
+   - Rejected deliveries and deliveries with no date are never counted; undated ones are flagged as "might help".
+4. **As a launch manager, I want options checked before I commit, so a fix for one launch doesn't break another.**
+   - Moving stock, using an approved substitute, or moving a date is recalculated with the same rules, and the effect on every model is shown.
+   - The substitute option includes the driver-change time (1–14 days) and its owner team.
+5. **As any user, I want the AI to do the legwork but not decide for me.**
+   - The agent only uses the provided tools (no numbers from its own guesses), shows each step, and drafts messages; nothing is marked done until a person approves.
+
+### Readiness rules (as built; thresholds in `data/config.json`)
+| Side | Ready | At risk | Blocked |
+|---|---|---|---|
+| Software (per chipset, vs each model's launch) | Latest ready date ≥ 7 days before launch, no late code, no open critical tickets | Range crosses the 7-day buffer, or late code, or an open critical | Earliest ready date after launch, or date unknown (code with no date, boards not covered) |
+| Supply (per model, incl. its chipset's test boards) | All parts covered on time by free stock or dated deliveries | Late test boards; production parts up to 7 days late; a delivery < 3 days before need; needs an approved substitute; relies on a delivery with no date | Parts missing, or production parts more than 7 days late |
+
+Software ready range = the later of (test window + stabilisation tail) and (open ticket fix days ÷ team capacity). Fix days: critical 3–14, major 2–7, minor 1–3. Test window: 14 days, or 28 for a new chipset.
+
+### Success measures (how they'd be measured in a real pilot)
+| Measure | Target idea | How to measure |
+|---|---|---|
+| Time from "supplier slipped" to "impact known and owner assigned" | Days → same day | Timestamp of the delivery change vs the first approved plan in the activity log |
+| Launch slips that were flagged At risk at least 3 weeks before | Most slips flagged early | Compare verdict history with actual launch dates |
+| Hours per week rebuilding go/no-go status | Cut in half | Short survey of launch managers before and after |
+| Verdicts users disagreed with | Low, and falling | "Disagree" button on a verdict, reviewed weekly |
+| Double-allocated stock found at build time | Zero | Count of build-time shortages where stock was already promised elsewhere |
+
+### Prioritised backlog
+1. **Must:** live AI agent behind an approval step (Step 5 builds a recorded version); activity log export.
+2. **Must:** Jira import of tickets and owners (read-only).
+3. **Must:** ERP / supplier-portal import of stock, POs and delivery dates (read-only).
+4. **Should:** a "what changed since yesterday" digest per owner.
+5. **Should:** warehouse transfer lead times and test-lab capacity in the calculations.
+6. **Should:** editable thresholds per product line.
+7. **Could:** full BOM; cost of each option (expedite fees, substitute price).
+8. **Could:** history of verdicts to measure early-warning accuracy.
+
+### Roadmap
+- **Now (this demo):** rules engine, three views, scenarios, recorded agent runs.
+- **Next:** live agent (Claude with the same tools) plus read-only imports from Jira and an ERP sandbox; a pilot with one product line.
+- **Later:** two-way integrations (create Jira tickets, propose PO changes for approval), notifications to owners, verdict history and accuracy tracking, multi-site planning.
