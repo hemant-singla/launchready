@@ -144,3 +144,30 @@ Software ready range = the later of (test window + stabilisation tail) and (open
 - **Now (this demo):** rules engine, three views, scenarios, recorded agent runs.
 - **Next:** live agent (Claude with the same tools) plus read-only imports from Jira and an ERP sandbox; a pilot with one product line.
 - **Later:** two-way integrations (create Jira tickets, propose PO changes for approval), notifications to owners, verdict history and accuracy tracking, multi-site planning.
+
+---
+
+## 5. The AI agent
+
+### What it does
+When something changes (a supplier slips, a shipment is rejected, a date disappears), the agent:
+1. **Investigates both sides** with tools: the launch overview, a chipset's software status (submissions, tickets, test start), and a part's supply (stock, deliveries, who gets what).
+2. **Weighs options** by simulating them: move stock from another program, use the approved substitute (with its driver-change time), or move the launch date. Each simulation reruns the full readiness logic, so it can see if a fix for one launch breaks another.
+3. **Proposes a plan** with the impact chain, the options and their trade-offs, any remaining gap, the uncertainties, and draft messages to the owners.
+4. **Waits for a human.** In the app, you approve the plan, assign owners and mark items done; every action goes in an activity log. Nothing is sent anywhere.
+
+### How it's built
+- `agent/tools.js`: 7 tools. Six are lookups and simulations that call the same `src/` logic as the app (tested in `tests/agent-tools.test.mjs`); the seventh, `propose_plan`, records the final plan in a fixed structure.
+- `agent/run.mjs`: a plain agent loop. It sends the event and tools to Claude, runs each tool call in code, returns the result, and repeats until `propose_plan`. Each step is saved to `runs/<scenario>.json`.
+- **Model:** Claude Sonnet 5.5 (Hemant's choice, for budget), with adaptive thinking (reasoning summaries are recorded) and medium effort.
+- **The Agent panel** replays those recordings step by step. They are labelled **"Real agent run, recorded during the build and replayed"**, with the model, date and number of API requests.
+
+### Why the agent can't make up numbers
+The system prompt says every date, quantity and status must come from a tool result, and the tools do all the calculation. The agent's job is to decide *what to look at* and *how to explain the trade-offs*, not to do the maths. The plan schema asks for a remaining gap and uncertainties on every option, so they can't be left out.
+
+### Limits
+- **Replayed, not live.** The site has no server and no API key, so visitors see recorded runs, not new ones.
+- **Only as good as its tools.** It can only consider options the tools can simulate (move stock, substitute, move date). It knows nothing about expediting cost, overtime or supplier negotiations.
+- **The wording is the model's.** Numbers come from tools, but the summary and messages are written by the model. They're checked by a person before approval, not by code. A run can also miss an option, which is why a human approves.
+- **One event at a time.** Each run handles one scenario; it doesn't keep memory across runs.
+- **Fictional data.** It has never seen a real supplier, ticket or launch.

@@ -10,7 +10,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 2 — Product + code | ✅ Done: data/, src/, tests/ (14 passing), index.html + assets/, docs/DATA.md, docs/CODE_WALKTHROUGH.md |
 | 3 — How it helps | ✅ Done: PRODUCT_BRIEF §3 (plus §2 product summary) |
 | 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
-| 5 — AI agent | Not started (ask Hemant before any API spend, with a cost quote) |
+| 5 — AI agent | 🟡 Code done: agent/tools.js, agent/run.mjs, Agent panel (assets/agent.js), brief §5, 20 tests. **Runs NOT recorded yet**: Hemant chose Sonnet 5.5 (quoted ~$1–3, estimate), needs ANTHROPIC_API_KEY in the cloud environment |
 | 6 — Website | Not started (checkpoint: live link) |
 | 7 — Supply-chain role | Not started |
 | 8 — Gaps | Not started |
@@ -30,12 +30,14 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - Decision: demand lines are served in need-date order; supply pegged to a chipset (a PO placed for it) is used first. A substitute is shown as an option and only applied when chosen. Its driver change delays the test start by 1–14 days.
 - Decision: a late test start is shown as context; the verdict comes from the ETA range itself.
 
-## Blocker
-- GitHub push refused (403): the Claude GitHub App is not installed on hemant-singla/launchready. Commits are local and mirrored to /mnt/project-files/launchready.
+## Blockers
+- GitHub push refused (403): the Claude GitHub App is not installed on hemant-singla/launchready. **Latest code is the git bundle at /mnt/project-files/launchready/launchready.bundle** (`git clone /mnt/project-files/launchready/launchready.bundle launchready`), also mirrored as plain files in that folder. Push from there once access works.
+- Agent runs need ANTHROPIC_API_KEY (environment variable in the project's cloud environment; only new sessions see it).
 
 ## Next
-Step 5 (agent). Waiting for Hemant's OK on API spend (quoted in thread) and for an Anthropic API key; build tools/loop/replay panel meanwhile.
+1. When the key is available: `npm install && node agent/run.mjs` (all three scenarios, Sonnet 5.5). Check each runs/*.json plan against the tool outputs, commit, and note the real token usage here.
+2. Step 6: GitHub Pages, README with screenshots, case study page + homepage entry in hemant-singla.github.io (needs the Claude app on that repo too). Checkpoint: live link.
 
 ## Credits used
-- **Estimate (not measured):** about $10 so far (planning, Steps 1–4). Projected total: $30–40 of the $50 budget.
+- **Estimate (not measured):** about $14 so far (planning, Steps 1–5 code). Projected total: $30–40 of the $50 budget.
 - **Facts:** no API calls spent on agent runs yet.

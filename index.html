@@ -19,6 +19,7 @@
         <a href="#launch" data-view="launch">Launch</a>
         <a href="#software" data-view="software">Software</a>
         <a href="#supply" data-view="supply">Supply</a>
+        <a href="#agent" data-view="agent">Agent</a>
       </nav>
     </div>
   </header>
@@ -47,6 +48,7 @@
           <li><strong>Break something.</strong> Click <em>USB controller delay</em>. Halo 77" turns At risk: fewer test boards means testing starts late, so its software date slides.</li>
           <li><strong>Follow the chain.</strong> In <em>Software</em>, Volga-X's test start moves from 12 Nov to 8 Dec. In <em>Supply</em>, the UC-300 delivery shows the 34-day slip.</li>
           <li><strong>Try the others.</strong> <em>Two launches, one part</em> shows how a scarce part is shared out, never counted twice. <em>Missing delivery date</em> shows uncertainty flagged rather than assumed away.</li>
+          <li><strong>Watch the agent.</strong> <em>Agent</em> replays real recorded runs: each tool call, what it found, and the plan it proposed for you to approve.</li>
           <li><strong>Reset demo</strong> brings everything back.</li>
         </ol>
       </div>
@@ -77,6 +79,10 @@
       <div class="view-head"><h1>Supply view</h1><p>Parts per chipset, stock by warehouse (with what's already allocated), supplier deliveries, rejected shipments and approved substitutes.</p></div>
       <div class="filters" id="supply-filters"></div>
       <div id="supply-list"></div>
+    </section>
+    <section id="view-agent" class="view" hidden>
+      <div class="view-head"><h1>AI agent</h1><p>When something changes, the agent looks into both sides using tools (lookups and calculations in code), weighs options, proposes a plan with trade-offs, drafts messages to owners, and waits for your approval. These are real agent runs, recorded during the build and replayed here.</p></div>
+      <div id="agent-panel"></div>
     </section>
   </main>
 

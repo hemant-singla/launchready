@@ -7,6 +7,7 @@ import { SCENARIOS } from '../src/scenarios.js';
 import { openTickets } from '../src/software.js';
 import { stockSummary } from '../src/supply.js';
 import { fmtDate, daysBetween, addDays } from '../src/dates.js';
+import { renderAgent, agentClick, agentChange } from './agent.js';
 
 const state = { base: null, data: null, active: [], result: null, baseline: null, filters: { line: '', chipset: '', status: '', part: '' }, open: new Set() };
 const $ = (sel) => document.querySelector(sel);
@@ -182,7 +183,7 @@ function renderSupply() {
 }
 
 // ---------- routing & events ----------
-const VIEWS = { intro: () => {}, launch: renderLaunch, software: renderSoftware, supply: renderSupply };
+const VIEWS = { intro: () => {}, launch: renderLaunch, software: renderSoftware, supply: renderSupply, agent: () => renderAgent($('#agent-panel')) };
 const currentView = () => (location.hash.slice(1) in VIEWS ? location.hash.slice(1) : 'intro');
 
 function render() {
@@ -194,6 +195,7 @@ function render() {
 }
 
 document.addEventListener('click', (e) => {
+  if (agentClick(e, render)) return;
   const sc = e.target.closest('[data-scenario]');
   if (sc) {
     const k = sc.dataset.scenario;
@@ -208,6 +210,7 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'reset') { state.active = []; state.open.clear(); state.filters = { line: '', chipset: '', status: '', part: '' }; recompute(); }
 });
 document.addEventListener('change', (e) => {
+  if (agentChange(e, render)) return;
   const f = e.target.dataset.filter;
   if (f) { state.filters[f] = e.target.value; render(); }
 });
