@@ -11,7 +11,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 3 — How it helps | ✅ Done: PRODUCT_BRIEF §3 (plus §2 product summary) |
 | 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
 | 5 — AI agent | 🟡 Code done: agent/tools.js, agent/run.mjs, Agent panel (assets/agent.js), brief §5, 20 tests. **Runs NOT recorded yet**: Hemant chose Sonnet 5.5 (quoted ~$1–3, estimate), needs ANTHROPIC_API_KEY in the cloud environment |
-| 6 — Website | 🟡 README drafted; case study page + homepage entry drafted on branch `launchready` of the portfolio repo (bundle: /mnt/project-files/launchready/portfolio-draft/portfolio.bundle, apply with `git fetch <bundle> launchready` on a clone of hemant-singla.github.io). Pages not enabled yet: needs GitHub access. Checkpoint: live link |
+| 6 — Website | 🟡 Live at https://hemant-singla.github.io/launchready/ and redesigned (see below). Case study + homepage entry in portfolio PR #1 (Hemant merges). Checkpoint: Hemant's one round of feedback |
 | 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 
@@ -30,8 +30,14 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - Decision: demand lines are served in need-date order; supply pegged to a chipset (a PO placed for it) is used first. A substitute is shown as an option and only applied when chosen. Its driver change delays the test start by 1–14 days.
 - Decision: a late test start is shown as context; the verdict comes from the ETA range itself.
 
+## Site redesign (2026-10-06, after Hemant said the site looked weak; Kinaxis given as a general example only, nothing copied)
+- New start page: dark hero with the question, a live status board computed in the browser, a "Play the USB delay" button, a 5-step chain card row computed from the USB scenario, feature cards, and the rules folded into a collapsible section.
+- Launch view: new SVG timeline (assets/timeline.js) with each model's software-ready range vs the 7-day buffer and launch date, hover/tap tooltips, models that changed status highlighted. KPI count cards with icons.
+- Restyled everything (assets/style.css): navy header with pill tabs, sticky scenario bar (swipeable row on phones), card layouts. Same portfolio colours and fonts. Checked at 1280 px and 390 px; no JS errors (the only 404 is runs/*.json, which don't exist yet).
+- Agent tab now says plainly that no run has been recorded yet, instead of an empty line.
+- README screenshots refreshed (docs/img/home.png added). The portfolio PR preview image still shows the old design.
+
 ## Blockers
-- GitHub push refused (403): the Claude GitHub App is not installed on hemant-singla/launchready. **Latest code is the git bundle at /mnt/project-files/launchready/launchready.bundle** (`git clone /mnt/project-files/launchready/launchready.bundle launchready`), also mirrored as plain files in that folder. Push from there once access works.
 - Agent runs need ANTHROPIC_API_KEY (environment variable in the project's cloud environment; only new sessions see it).
 
 ## Next
@@ -40,5 +46,5 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 3. Brief is ~3,450 words (about 7 pages vs the 4–5 asked); trim if Hemant wants.
 
 ## Credits used
-- **Estimate (not measured):** about $18 so far (planning, Steps 1–5 code, 7–8 text, Step 6 drafts). Projected total: $30–40 of the $50 budget.
+- **Estimate (not measured):** about $23 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5). Projected total: $30–40 of the $50 budget.
 - **Facts:** no API calls spent on agent runs yet.

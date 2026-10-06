@@ -13,7 +13,7 @@
   <a class="skip" href="#main">Skip to content</a>
   <header class="header">
     <div class="wrap nav">
-      <a class="brand" href="#intro"><span>LaunchReady<small>Launch go/no-go · fictional demo</small></span></a>
+      <a class="brand" href="#intro"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 17l5 5 11-12"/></svg></span><span>LaunchReady<small>Fictional demo</small></span></a>
       <nav class="tabs" aria-label="Views">
         <a href="#intro" data-view="intro">Start</a>
         <a href="#launch" data-view="launch">Launch</a>
@@ -35,53 +35,62 @@
 
   <main id="main" class="wrap">
     <section id="view-intro" class="view" hidden>
-      <div class="intro">
-        <div>
-          <div class="eyebrow">Portfolio product · Hemant Singla</div>
-          <h1>Will each TV launch on time? One view for <span>software</span> and <span>supply</span>.</h1>
-          <p class="lede">LaunchReady joins the two sides of a TV launch. It shows each component team's code and open tickets, plus parts, stock and supplier deliveries. Every model gets a Ready, At risk or Blocked verdict, with the reasons from both sides.</p>
-          <div class="note"><strong>Fictional data.</strong> Northwind Vision, its 16 TVs, 8 chipsets, suppliers and tickets are all made up. This is a demo, not a deployed tool, with no real users or savings. Every date and quantity on screen is calculated by the code in this repo, not typed in by hand or guessed by AI.</div>
-          <div class="actions"><a class="button" href="#launch">Open the launch view</a><a class="text-link" href="https://github.com/hemant-singla/launchready" target="_blank" rel="noopener">Code on GitHub ↗</a></div>
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Launch go/no-go · portfolio product</div>
+          <h1>Will every TV launch on time?</h1>
+          <p class="lede">LaunchReady joins the two halves of a launch that usually live in different tools: <strong>software readiness</strong> (code, tickets, testing) and <strong>supply</strong> (parts, stock, supplier deliveries). Each model gets one verdict, with the reasons from both sides.</p>
+          <div class="actions"><button type="button" class="button accent" data-play="usbDelay">▶ Play the USB delay</button><a class="button ghost" href="#launch">Open the launch view</a></div>
+          <p class="hero-note">Fictional company and data. This is a demo, not a deployed tool. Every date and number is calculated by tested code.</p>
         </div>
-        <ol class="howto">
-          <li><strong>See today's picture.</strong> Open <em>Launch</em>: 12 models are Ready and 4 are At risk. Tap a model to see why.</li>
-          <li><strong>Break something.</strong> Click <em>USB controller delay</em>. Halo 77" turns At risk: fewer test boards means testing starts late, so its software date slides.</li>
-          <li><strong>Follow the chain.</strong> In <em>Software</em>, Volga-X's test start moves from 12 Nov to 8 Dec. In <em>Supply</em>, the UC-300 delivery shows the 34-day slip.</li>
-          <li><strong>Try the others.</strong> <em>Two launches, one part</em> shows how a scarce part is shared out, never counted twice. <em>Missing delivery date</em> shows uncertainty flagged rather than assumed away.</li>
-          <li><strong>Watch the agent.</strong> <em>Agent</em> replays real recorded runs: each tool call, what it found, and the plan it proposed for you to approve.</li>
-          <li><strong>Reset demo</strong> brings everything back.</li>
-        </ol>
+        <div class="board" id="hero-board" aria-live="polite"></div>
       </div>
-      <div class="rules">
-        <h2>How the verdict is calculated</h2>
+
+      <section class="chain-section">
+        <div class="section-head"><span class="kicker">The problem</span><h2>One supplier slip, five teams, no shared view</h2>
+          <p>Each step below is visible to someone, but nobody sees the whole chain. LaunchReady calculates every link.</p></div>
+        <ol class="chain" id="chain"></ol>
+      </section>
+
+      <section class="features">
+        <a class="feature" href="#launch"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="16" r="3"/></svg></span><h3>Launch view</h3><p>A timeline of every model: software-ready range against launch date, and Ready / At risk / Blocked with the reasons.</p><span class="f-link">Open →</span></a>
+        <a class="feature" href="#software"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span><h3>Software teams</h3><p>Code submissions against the deadline, new vs reused code, open tickets by severity and age, and fix backlog per team.</p><span class="f-link">Open →</span></a>
+        <a class="feature" href="#supply"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><h3>Supply</h3><p>Stock by warehouse, supplier deliveries and delays, rejected shipments, substitutes, and who gets each part.</p><span class="f-link">Open →</span></a>
+        <a class="feature" href="#agent"><span class="f-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 15h6"/></svg></span><h3>AI agent</h3><p>Investigates a change with tested tools, weighs options, drafts messages to owners, and waits for your approval.</p><span class="f-link">Open →</span></a>
+      </section>
+
+      <details class="rules">
+        <summary><span class="kicker">Under the hood</span> How the verdict is calculated</summary>
         <div class="rule-grid">
-          <div><h3>Software, per chipset</h3><p>Testing starts when all code is in <em>and</em> test boards exist. The ready date is a range: test window (14 days, or 28 for a new chipset) plus a stabilisation tail, or the time to clear open tickets (critical 3–14 days, major 2–7, minor 1–3, shared across each team's engineers), whichever is later. <strong>Ready</strong> means the latest date is at least 7 days before launch, with no late code and no open critical tickets. <strong>Blocked</strong> means even the earliest date is after launch.</p></div>
-          <div><h3>Supply, per model</h3><p>Parts are handed out in need-date order (test boards before testing starts, production parts 21 days before launch). Each unit goes to only one build. Deliveries that were rejected or have no date are never counted. <strong>At risk</strong> means a late or tight delivery, an approved substitute, or a delivery with no date. <strong>Blocked</strong> means parts are missing or more than 7 days late for production.</p></div>
-          <div><h3>Launch</h3><p>Each model takes the worse of its two verdicts, with reasons from both sides. As of <strong id="asof"></strong>.</p></div>
+          <div><h3>Software, per chipset</h3><p>Testing starts when all code is in <em>and</em> test boards exist. The ready date is a range: the test window (14 days, or 28 for a new chipset) plus a stabilisation tail, or the time to clear open tickets (critical 3–14 days, major 2–7, minor 1–3, shared across each team's engineers), whichever is later. <strong>Ready</strong> means the latest date is at least 7 days before launch, with no late code and no open critical tickets. <strong>Blocked</strong> means even the earliest date is after launch.</p></div>
+          <div><h3>Supply, per model</h3><p>Parts are handed out in need-date order: test boards before testing starts, production parts 21 days before launch. Each unit goes to only one build. Rejected deliveries and deliveries with no date are never counted. <strong>At risk</strong> means a late or tight delivery, an approved substitute, or a delivery with no date. <strong>Blocked</strong> means parts are missing, or production parts are more than 7 days late.</p></div>
+          <div><h3>Launch</h3><p>Each model takes the worse of its two verdicts, with the reasons from both sides. Data as of <strong id="asof"></strong>.</p></div>
         </div>
-      </div>
+      </details>
     </section>
 
     <section id="view-launch" class="view" hidden>
-      <div class="view-head"><h1>Launch view</h1><p>Ready, At risk or Blocked for each model, with the reasons from both sides.</p></div>
+      <div class="view-head"><span class="kicker">Launch view</span><h1>Go / no-go for 16 models</h1><p>Each bar is when the software will be ready. The diamond is the launch. The bar has to finish before the hatched 7-day buffer starts.</p></div>
       <div class="counts" id="launch-counts"></div>
+      <figure class="card chart-card"><figcaption class="chart-title">Launch timeline <span>Hover or tap a row for details</span></figcaption><div id="launch-timeline"></div></figure>
+      <h2 class="list-title">Every model, with reasons</h2>
       <div class="filters" id="launch-filters"></div>
       <div id="launch-list" class="launch-list"></div>
     </section>
 
     <section id="view-software" class="view" hidden>
-      <div class="view-head"><h1>Software team view</h1><p>Code submissions against the deadline, open tickets, new vs reused code, and an estimated ready date for each chipset.</p></div>
+      <div class="view-head"><span class="kicker">Software teams</span><h1>Is the code ready, and when?</h1><p>Code submissions against the deadline, open tickets, new vs reused code, and an estimated ready date for each chipset.</p></div>
       <div class="filters" id="software-filters"></div>
       <div id="software-list"></div>
     </section>
 
     <section id="view-supply" class="view" hidden>
-      <div class="view-head"><h1>Supply view</h1><p>Parts per chipset, stock by warehouse (with what's already allocated), supplier deliveries, rejected shipments and approved substitutes.</p></div>
+      <div class="view-head"><span class="kicker">Supply</span><h1>Are the parts there in time?</h1><p>Parts per chipset, stock by warehouse (with what's already allocated), supplier deliveries, rejected shipments and approved substitutes.</p></div>
       <div class="filters" id="supply-filters"></div>
       <div id="supply-list"></div>
     </section>
     <section id="view-agent" class="view" hidden>
-      <div class="view-head"><h1>AI agent</h1><p>When something changes, the agent looks into both sides using tools (lookups and calculations in code), weighs options, proposes a plan with trade-offs, drafts messages to owners, and waits for your approval. These are real agent runs, recorded during the build and replayed here.</p></div>
+      <div class="view-head"><span class="kicker">AI agent</span><h1>From a change to an approved plan</h1><p>When something changes, the agent looks into both sides using tools (lookups and calculations in code), weighs options, proposes a plan with trade-offs, drafts messages to owners, and waits for your approval. Each run shown here is a real agent run, recorded during the build and replayed; nothing is generated live.</p></div>
       <div id="agent-panel"></div>
     </section>
   </main>

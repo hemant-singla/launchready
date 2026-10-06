@@ -72,7 +72,7 @@ export async function renderAgent(root) {
   const tabs = Object.entries(SCENARIOS).map(([k, s]) => `<button type="button" class="scenario ${k === ui.key ? 'on' : ''}" data-agent-scenario="${k}">${esc(s.title)}</button>`).join('');
   let body;
   if (!run) {
-    body = `<p class="empty">No recorded run for this scenario yet. Runs are recorded with <code>node agent/run.mjs</code>; see the README.</p>`;
+    body = `<div class="card empty-card"><strong>No run recorded for this scenario yet.</strong><p>The agent code and its tools are built and tested, but the runs have not been recorded yet, so there is nothing to replay. They are recorded with <code>node agent/run.mjs</code> (see the README). Meanwhile, the Launch, Software and Supply views show the same calculations the agent uses.</p></div>`;
   } else {
     const shown = Math.min(ui.shown, run.steps.length);
     const done = shown >= run.steps.length;

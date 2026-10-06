@@ -6,7 +6,9 @@
 
 **Live demo:** https://hemant-singla.github.io/launchready/ · **Product brief:** [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md)
 
-![Launch view with the USB controller delay scenario](docs/img/launch-usb-delay.png)
+![LaunchReady start page: the question, a live status board and one-click scenario](docs/img/home.png)
+
+![Launch view with the USB controller delay scenario: timeline of software-ready ranges against launch dates](docs/img/launch-usb-delay.png)
 
 ## What it is
 A TV launch needs two things at once: software that's ready, and parts to build both the test boards and the TVs. They're usually tracked in different tools (issue trackers on one side, ERP and spreadsheets on the other). LaunchReady joins them:

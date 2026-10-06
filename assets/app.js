@@ -8,13 +8,15 @@ import { openTickets } from '../src/software.js';
 import { stockSummary } from '../src/supply.js';
 import { fmtDate, daysBetween, addDays } from '../src/dates.js';
 import { renderAgent, agentClick, agentChange } from './agent.js';
+import { renderTimeline } from './timeline.js';
 
 const state = { base: null, data: null, active: [], result: null, baseline: null, filters: { line: '', chipset: '', status: '', part: '' }, open: new Set() };
 const $ = (sel) => document.querySelector(sel);
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const n = (x) => Number(x).toLocaleString('en-US');
 const LABEL = { ready: 'Ready', 'at-risk': 'At risk', blocked: 'Blocked' };
-const pill = (s) => `<span class="pill ${s}">${LABEL[s]}</span>`;
+const ICON = { ready: '✓', 'at-risk': '!', blocked: '✕' };
+const pill = (s) => `<span class="pill ${s}"><b aria-hidden="true">${ICON[s]}</b>${LABEL[s]}</span>`;
 // Turn ISO dates inside reason text into "12 Nov 2026".
 const prettyDates = (t) => esc(t).replace(/\d{4}-\d{2}-\d{2}/g, (d) => fmtDate(d));
 const range = (a, b) => (a ? `${fmtDate(a, true)} – ${fmtDate(b)}` : 'unknown');
@@ -53,7 +55,8 @@ function renderLaunch() {
   const counts = { ready: 0, 'at-risk': 0, blocked: 0 };
   r.models.forEach((m) => counts[m.status]++);
   $('#launch-counts').innerHTML = Object.entries(counts).map(([s, c]) =>
-    `<button type="button" class="count ${s} ${f.status === s ? 'on' : ''}" data-status="${s}"><strong>${c}</strong><span>${LABEL[s]}</span></button>`).join('');
+    `<button type="button" class="count ${s} ${f.status === s ? 'on' : ''}" data-status="${s}" aria-pressed="${f.status === s}"><span class="count-icon" aria-hidden="true">${ICON[s]}</span><strong>${c}</strong><span>${LABEL[s]}</span></button>`).join('');
+  renderTimeline($('#launch-timeline'), r, state.data, state.baseline);
   $('#launch-filters').innerHTML = select('line', 'Line', lines(), f.line) + select('chipset', 'Chipset', chipsetIds(), f.chipset) +
     select('status', 'Status', Object.keys(LABEL).map((s) => ({ value: s, label: LABEL[s] })), f.status);
 
@@ -183,7 +186,35 @@ function renderSupply() {
 }
 
 // ---------- routing & events ----------
-const VIEWS = { intro: () => {}, launch: renderLaunch, software: renderSoftware, supply: renderSupply, agent: () => renderAgent($('#agent-panel')) };
+// ---------- start page ----------
+function renderIntro() {
+  const r = state.result;
+  const counts = { ready: 0, 'at-risk': 0, blocked: 0 };
+  r.models.forEach((m) => counts[m.status]++);
+  const flagged = r.models.filter((m) => m.status !== 'ready').sort((a, b) => (a.status === 'blocked' ? -1 : 1) - (b.status === 'blocked' ? -1 : 1) || a.launchDate.localeCompare(b.launchDate));
+  const label = state.active.length ? state.active.map((k) => SCENARIOS[k].title).join(' + ') : 'Today, no scenario';
+  $('#hero-board').innerHTML = `<div class="board-head"><span>Live status board</span><em>${esc(label)}</em></div>
+    <div class="board-counts">${Object.entries(counts).map(([s, c]) => `<div class="bc ${s}"><strong>${c}</strong><span>${ICON[s]} ${LABEL[s]}</span></div>`).join('')}</div>
+    <ul class="board-list">${flagged.slice(0, 5).map((m) => `<li><a href="#launch" data-open="${m.id}">${pill(m.status)}<span class="bl-name">${esc(m.name)}</span><span class="bl-why">${prettyDates((m.software.status !== 'ready' ? m.software.reasons[0] : m.supply.reasons[0]) ?? '').replace(/;.*$/, '')}</span></a></li>`).join('')}</ul>
+    <p class="board-foot">As of ${fmtDate(state.data.config.asOf)} · calculated live in your browser</p>`;
+
+  // The chain: the USB delay scenario's numbers, computed (not typed).
+  const usb = computeAll(SCENARIOS.usbDelay.apply(state.base));
+  const tb = usb.lines.find((l) => l.id === 'TB:Volga-X:UC-300');
+  const vx = usb.chipsets['Volga-X'];
+  const halo = usb.models.find((m) => m.id === 'HAL-77');
+  const dl = SCENARIOS.usbDelay.apply(state.base).deliveries.find((d) => d.id === 'DL-UC3-01');
+  const steps = [
+    ['Supplier slips', `USB controller shipment moves from ${fmtDate(dl.originalEta, true)} to ${fmtDate(dl.eta, true)}`, 'Procurement'],
+    ['Fewer test boards', `${tb.lateQty} of ${tb.qty} Volga-X test boards can't be built on time`, 'Supply planner'],
+    ['Testing starts late', `Volga-X testing moves from ${fmtDate(vx.plannedTestStart, true)} to ${fmtDate(vx.eta.testStart, true)} (+${vx.eta.slipDays} days)`, 'Test team'],
+    ['Software date slips', `Ready ${fmtDate(halo.eta.early, true)} – ${fmtDate(halo.eta.late, true)}, against a ${fmtDate(addDays(halo.launchDate, -state.data.config.bufferDays), true)} cutoff`, 'USB software lead'],
+    ['Launch at risk', `${halo.name} goes from Ready to ${LABEL[halo.status]}. Options: move stock, use a substitute, or move the date`, 'Launch manager'],
+  ];
+  $('#chain').innerHTML = steps.map(([t, d, who], i) => `<li class="chain-step"><span class="cs-n">${i + 1}</span><h3>${esc(t)}</h3><p>${esc(d)}</p><span class="cs-who">Seen by: ${esc(who)}</span></li>`).join('');
+}
+
+const VIEWS = { intro: renderIntro, launch: renderLaunch, software: renderSoftware, supply: renderSupply, agent: () => renderAgent($('#agent-panel')) };
 const currentView = () => (location.hash.slice(1) in VIEWS ? location.hash.slice(1) : 'intro');
 
 function render() {
@@ -197,10 +228,13 @@ function render() {
 document.addEventListener('click', (e) => {
   if (agentClick(e, render)) return;
   const sc = e.target.closest('[data-scenario]');
+  const play = e.target.closest('[data-play]');
+  if (play) { if (!state.active.includes(play.dataset.play)) state.active = [...state.active, play.dataset.play]; state.open.add('HAL-77'); location.hash = 'launch'; return recompute(); }
+  const opener = e.target.closest('[data-open]');
+  if (opener) state.open.add(opener.dataset.open);
   if (sc) {
     const k = sc.dataset.scenario;
     state.active = state.active.includes(k) ? state.active.filter((x) => x !== k) : [...state.active, k];
-    if (currentView() === 'intro') location.hash = 'launch';
     return recompute();
   }
   const row = e.target.closest('[data-model]');
@@ -226,3 +260,4 @@ window.addEventListener('hashchange', () => { render(); window.scrollTo(0, 0); }
     $('#main').innerHTML = `<p class="empty">Could not load the demo data (${esc(err.message)}). If you opened the file directly, serve the folder instead: <code>python3 -m http.server</code>.</p>`;
   }
 })();
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (currentView() === 'launch') render(); }, 150); });
