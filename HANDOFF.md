@@ -73,5 +73,5 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 4. Do NOT change any existing portfolio wording; only the LaunchReady entry and page are ours.
 
 ## Credits used
-- **Estimate (not measured):** about $44–48 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15, clarity pass ~$5–6). Close to the $50 cap: only fixes from here.
+- **Estimate (not measured):** about $46–50 so far (planning, Steps 1–5 code, 7–8 text, Step 6, redesign ~$5, what-if lab + recovery workflow ~$12–15, clarity pass ~$5–6, TV hero ~$2). At the $50 cap: only fixes from here.
 - **Facts:** no API calls spent on agent runs yet.

@@ -313,6 +313,12 @@ function renderIntro() {
   if (!$('#lab').dataset.built) buildLab();
   syncLabControls();
   const r = state.result;
+  // The TV in the hero shows the same calculated statuses as the lab.
+  $('#tv-wall').innerHTML = [...r.models].sort((a, b) => a.launchDate.localeCompare(b.launchDate))
+    .map((m) => `<span class="tv-tile ${m.status}"><b>${esc(m.name)}</b><i>${ICON[m.status]} ${LABEL[m.status]}</i></span>`).join('');
+  const tc = { ready: 0, 'at-risk': 0, blocked: 0 }; r.models.forEach((m) => tc[m.status]++);
+  $('#tv-counts').innerHTML = Object.entries(tc).map(([k, v]) => `<span class="${k}">${ICON[k]} ${v} ${LABEL[k]}</span>`).join('');
+  $('#tv-label').textContent = labChanged() || state.active.length || state.demo.actions.length ? 'Your what-if · 16 launches' : 'Northwind Vision · 16 launches';
   const base = state.baseline;
   // counts with change against today
   const counts = { ready: 0, 'at-risk': 0, blocked: 0 }; const was = { ready: 0, 'at-risk': 0, blocked: 0 };
