@@ -20,7 +20,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - Agent: Sonnet via the Anthropic API with tool calls into the same JS logic. Runs are recorded to JSON and replayed in the app.
 - Readiness rules (thresholds are defaults and can change):
   - Software ETA range = test start + test window (longer for new chipsets) + backlog fix time (critical 3–14 d, major 2–7, minor 1–3), divided by team capacity. Ready = all submitted, no open criticals, late ETA ≤ launch − 7 d. At risk = range straddles that buffer. Blocked = early ETA after launch.
-  - Supply: allocate in launch-date order, with no double allocation. Two need dates: test boards, then production. Undated deliveries count as zero and are flagged. Ready = free stock + confirmed deliveries before need. At risk = needs a substitute, a tight delivery, or an undated one. Blocked = a shortfall remains.
+  - Supply: allocate in need-date order, with no double allocation. Two need dates: test boards, then production. Undated deliveries count as zero and are flagged. Ready = free stock + confirmed deliveries before need. At risk = needs a substitute, a tight delivery, or an undated one. Blocked = a shortfall remains.
   - Launch status = the worse of the two sides, with reasons from both.
 
 ## Step 2 facts
