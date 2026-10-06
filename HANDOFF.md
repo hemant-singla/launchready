@@ -11,7 +11,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 3 — How it helps | ✅ Done: PRODUCT_BRIEF §3 (plus §2 product summary) |
 | 4 — PM specs | ✅ Done: PRODUCT_BRIEF §4 |
 | 5 — AI agent | 🟡 Code done: agent/tools.js, agent/run.mjs, Agent panel (assets/agent.js), brief §5, 20 tests. **Runs NOT recorded yet**: Hemant chose Sonnet 5.5 (quoted ~$1–3, estimate), needs ANTHROPIC_API_KEY in the cloud environment |
-| 6 — Website | Not started (checkpoint: live link) |
+| 6 — Website | 🟡 README drafted; case study page + homepage entry drafted on branch `launchready` of the portfolio repo (bundle: /mnt/project-files/launchready/portfolio-draft/portfolio.bundle, apply with `git fetch <bundle> launchready` on a clone of hemant-singla.github.io). Pages not enabled yet: needs GitHub access. Checkpoint: live link |
 | 7 — Supply-chain role | ✅ Brief §7 done (the case study copy is part of Step 6) |
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 
@@ -36,8 +36,9 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 
 ## Next
 1. When the key is available: `npm install && node agent/run.mjs` (all three scenarios, Sonnet 5.5). Check each runs/*.json plan against the tool outputs, commit, and note the real token usage here.
-2. Step 6: GitHub Pages, README with screenshots, case study page + homepage entry in hemant-singla.github.io (needs the Claude app on that repo too). Checkpoint: live link.
+2. Step 6: push both repos, enable Pages on launchready (main, root), check the live link on desktop + mobile, add an Agent-panel screenshot to the README. Homepage subtitle was changed from "Independent studies on public data" to "Independent projects" because LaunchReady uses fictional data; tell Hemant. Checkpoint: send the live link and wait for feedback.
+3. Brief is ~3,450 words (about 7 pages vs the 4–5 asked); trim if Hemant wants.
 
 ## Credits used
-- **Estimate (not measured):** about $14 so far (planning, Steps 1–5 code). Projected total: $30–40 of the $50 budget.
+- **Estimate (not measured):** about $18 so far (planning, Steps 1–5 code, 7–8 text, Step 6 drafts). Projected total: $30–40 of the $50 budget.
 - **Facts:** no API calls spent on agent runs yet.
