@@ -1,0 +1,202 @@
+[
+  {
+    "chipset": "Indus-S",
+    "part": "SOC-IndusS",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-S",
+    "part": "UC-200",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-S",
+    "part": "WM-5",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-S",
+    "part": "TCON-4K",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-S",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-M",
+    "part": "SOC-IndusM",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-M",
+    "part": "UC-200",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-M",
+    "part": "WM-5",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-M",
+    "part": "TCON-4K",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-M",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-L",
+    "part": "SOC-IndusL",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-L",
+    "part": "UC-300",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-L",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-L",
+    "part": "TCON-4K",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Indus-L",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-M",
+    "part": "SOC-RhineM",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-M",
+    "part": "UC-200",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-M",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-M",
+    "part": "MLD-2",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-M",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-L",
+    "part": "SOC-RhineL",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-L",
+    "part": "UC-300",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-L",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-L",
+    "part": "MLD-2",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Rhine-L",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-M",
+    "part": "SOC-VolgaM",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-M",
+    "part": "UC-200",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-M",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-M",
+    "part": "TCON-OLED",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-M",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-L",
+    "part": "SOC-VolgaL",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-L",
+    "part": "UC-200",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-L",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-L",
+    "part": "TCON-OLED",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-L",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-X",
+    "part": "SOC-VolgaX",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-X",
+    "part": "UC-300",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-X",
+    "part": "WM-6",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-X",
+    "part": "TCON-OLED",
+    "qtyPerUnit": 1
+  },
+  {
+    "chipset": "Volga-X",
+    "part": "AMP-20",
+    "qtyPerUnit": 1
+  }
+]

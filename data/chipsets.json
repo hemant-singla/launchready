@@ -1,0 +1,66 @@
+[
+  {
+    "id": "Indus-S",
+    "isNew": false,
+    "testBoards": 30,
+    "codeDeadline": "2026-09-14",
+    "plannedTestStart": "2026-09-17",
+    "testStartedOn": "2026-09-17"
+  },
+  {
+    "id": "Indus-M",
+    "isNew": false,
+    "testBoards": 30,
+    "codeDeadline": "2026-09-21",
+    "plannedTestStart": "2026-09-24",
+    "testStartedOn": "2026-09-24"
+  },
+  {
+    "id": "Indus-L",
+    "isNew": true,
+    "testBoards": 60,
+    "codeDeadline": "2026-10-12",
+    "plannedTestStart": "2026-10-15",
+    "testStartedOn": null
+  },
+  {
+    "id": "Rhine-M",
+    "isNew": false,
+    "testBoards": 30,
+    "codeDeadline": "2026-09-28",
+    "plannedTestStart": "2026-10-01",
+    "testStartedOn": "2026-10-01"
+  },
+  {
+    "id": "Rhine-L",
+    "isNew": true,
+    "testBoards": 60,
+    "codeDeadline": "2026-11-02",
+    "plannedTestStart": "2026-11-05",
+    "testStartedOn": null
+  },
+  {
+    "id": "Volga-M",
+    "isNew": false,
+    "testBoards": 30,
+    "codeDeadline": "2026-10-05",
+    "plannedTestStart": "2026-10-08",
+    "testStartedOn": null
+  },
+  {
+    "id": "Volga-L",
+    "isNew": false,
+    "testBoards": 30,
+    "codeDeadline": "2026-10-05",
+    "plannedTestStart": "2026-10-08",
+    "testStartedOn": null
+  },
+  {
+    "id": "Volga-X",
+    "isNew": true,
+    "testBoards": 60,
+    "codeDeadline": "2026-11-09",
+    "plannedTestStart": "2026-11-12",
+    "testStartedOn": null
+  }
+]

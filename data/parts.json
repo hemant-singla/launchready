@@ -1,0 +1,87 @@
+[
+  {
+    "id": "SOC-IndusS",
+    "name": "Indus-S SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-IndusM",
+    "name": "Indus-M SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-IndusL",
+    "name": "Indus-L SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-RhineM",
+    "name": "Rhine-M SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-RhineL",
+    "name": "Rhine-L SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-VolgaM",
+    "name": "Volga-M SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-VolgaL",
+    "name": "Volga-L SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "SOC-VolgaX",
+    "name": "Volga-X SoC",
+    "category": "SoC"
+  },
+  {
+    "id": "UC-200",
+    "name": "USB 3.0 controller",
+    "category": "USB"
+  },
+  {
+    "id": "UC-300",
+    "name": "USB 3.2 controller",
+    "category": "USB"
+  },
+  {
+    "id": "UC-310",
+    "name": "USB 3.2 controller (alt. supplier)",
+    "category": "USB"
+  },
+  {
+    "id": "WM-5",
+    "name": "Wi-Fi 5 module",
+    "category": "Connectivity"
+  },
+  {
+    "id": "WM-6",
+    "name": "Wi-Fi 6 module",
+    "category": "Connectivity"
+  },
+  {
+    "id": "TCON-4K",
+    "name": "4K timing controller",
+    "category": "Display"
+  },
+  {
+    "id": "MLD-2",
+    "name": "Mini-LED driver",
+    "category": "Display"
+  },
+  {
+    "id": "TCON-OLED",
+    "name": "OLED timing controller",
+    "category": "Display"
+  },
+  {
+    "id": "AMP-20",
+    "name": "Audio amplifier",
+    "category": "Audio"
+  }
+]

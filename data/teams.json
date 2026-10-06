@@ -1,0 +1,27 @@
+[
+  {
+    "id": "USB",
+    "name": "USB",
+    "fixCapacity": 2
+  },
+  {
+    "id": "Display",
+    "name": "Display",
+    "fixCapacity": 3
+  },
+  {
+    "id": "Audio",
+    "name": "Audio",
+    "fixCapacity": 2
+  },
+  {
+    "id": "Connectivity",
+    "name": "Connectivity (Wi-Fi/BT)",
+    "fixCapacity": 2
+  },
+  {
+    "id": "Platform",
+    "name": "Platform (boot, power)",
+    "fixCapacity": 3
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "WH-HB",
+    "name": "Harbor DC"
+  },
+  {
+    "id": "WH-CT",
+    "name": "Central DC"
+  },
+  {
+    "id": "WH-PL",
+    "name": "Plant store"
+  }
+]

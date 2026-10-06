@@ -1,0 +1,162 @@
+[
+  {
+    "id": "AUR-43",
+    "name": "Aurora 43\"",
+    "line": "Aurora",
+    "segment": "Entry 4K",
+    "size": 43,
+    "chipset": "Indus-S",
+    "launchDate": "2026-11-09",
+    "firstBuildUnits": 6000
+  },
+  {
+    "id": "AUR-50",
+    "name": "Aurora 50\"",
+    "line": "Aurora",
+    "segment": "Entry 4K",
+    "size": 50,
+    "chipset": "Indus-S",
+    "launchDate": "2026-11-09",
+    "firstBuildUnits": 6000
+  },
+  {
+    "id": "AUR-55",
+    "name": "Aurora 55\"",
+    "line": "Aurora",
+    "segment": "Entry 4K",
+    "size": 55,
+    "chipset": "Indus-M",
+    "launchDate": "2026-11-16",
+    "firstBuildUnits": 5000
+  },
+  {
+    "id": "AUR-65",
+    "name": "Aurora 65\"",
+    "line": "Aurora",
+    "segment": "Entry 4K",
+    "size": 65,
+    "chipset": "Indus-M",
+    "launchDate": "2026-11-16",
+    "firstBuildUnits": 4000
+  },
+  {
+    "id": "AUR-75",
+    "name": "Aurora 75\"",
+    "line": "Aurora",
+    "segment": "Entry 4K",
+    "size": 75,
+    "chipset": "Indus-M",
+    "launchDate": "2026-11-16",
+    "firstBuildUnits": 2000
+  },
+  {
+    "id": "LUM-50",
+    "name": "Lumen 50\"",
+    "line": "Lumen",
+    "segment": "Mid-range",
+    "size": 50,
+    "chipset": "Indus-M",
+    "launchDate": "2026-11-30",
+    "firstBuildUnits": 4000
+  },
+  {
+    "id": "LUM-55",
+    "name": "Lumen 55\"",
+    "line": "Lumen",
+    "segment": "Mid-range",
+    "size": 55,
+    "chipset": "Indus-M",
+    "launchDate": "2026-11-30",
+    "firstBuildUnits": 4000
+  },
+  {
+    "id": "LUM-65",
+    "name": "Lumen 65\"",
+    "line": "Lumen",
+    "segment": "Mid-range",
+    "size": 65,
+    "chipset": "Indus-L",
+    "launchDate": "2026-12-14",
+    "firstBuildUnits": 3000
+  },
+  {
+    "id": "LUM-75",
+    "name": "Lumen 75\"",
+    "line": "Lumen",
+    "segment": "Mid-range",
+    "size": 75,
+    "chipset": "Indus-L",
+    "launchDate": "2026-12-14",
+    "firstBuildUnits": 2000
+  },
+  {
+    "id": "ZEN-55",
+    "name": "Zenith 55\"",
+    "line": "Zenith",
+    "segment": "Premium mini-LED",
+    "size": 55,
+    "chipset": "Rhine-M",
+    "launchDate": "2026-11-23",
+    "firstBuildUnits": 2500
+  },
+  {
+    "id": "ZEN-65",
+    "name": "Zenith 65\"",
+    "line": "Zenith",
+    "segment": "Premium mini-LED",
+    "size": 65,
+    "chipset": "Rhine-M",
+    "launchDate": "2026-11-23",
+    "firstBuildUnits": 2500
+  },
+  {
+    "id": "ZEN-75",
+    "name": "Zenith 75\"",
+    "line": "Zenith",
+    "segment": "Premium mini-LED",
+    "size": 75,
+    "chipset": "Rhine-L",
+    "launchDate": "2027-01-11",
+    "firstBuildUnits": 1500
+  },
+  {
+    "id": "ZEN-85",
+    "name": "Zenith 85\"",
+    "line": "Zenith",
+    "segment": "Premium mini-LED",
+    "size": 85,
+    "chipset": "Rhine-L",
+    "launchDate": "2027-01-11",
+    "firstBuildUnits": 800
+  },
+  {
+    "id": "HAL-55",
+    "name": "Halo 55\"",
+    "line": "Halo",
+    "segment": "Flagship OLED",
+    "size": 55,
+    "chipset": "Volga-M",
+    "launchDate": "2026-12-07",
+    "firstBuildUnits": 1200
+  },
+  {
+    "id": "HAL-65",
+    "name": "Halo 65\"",
+    "line": "Halo",
+    "segment": "Flagship OLED",
+    "size": 65,
+    "chipset": "Volga-L",
+    "launchDate": "2026-12-07",
+    "firstBuildUnits": 1200
+  },
+  {
+    "id": "HAL-77",
+    "name": "Halo 77\"",
+    "line": "Halo",
+    "segment": "Flagship OLED",
+    "size": 77,
+    "chipset": "Volga-X",
+    "launchDate": "2027-01-18",
+    "firstBuildUnits": 600
+  }
+]

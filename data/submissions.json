@@ -1,0 +1,322 @@
+[
+  {
+    "chipset": "Indus-S",
+    "team": "USB",
+    "dueDate": "2026-09-14",
+    "submittedOn": "2026-09-12",
+    "expectedOn": null,
+    "newCodePct": 8
+  },
+  {
+    "chipset": "Indus-S",
+    "team": "Display",
+    "dueDate": "2026-09-14",
+    "submittedOn": "2026-09-12",
+    "expectedOn": null,
+    "newCodePct": 5
+  },
+  {
+    "chipset": "Indus-S",
+    "team": "Audio",
+    "dueDate": "2026-09-14",
+    "submittedOn": "2026-09-12",
+    "expectedOn": null,
+    "newCodePct": 6
+  },
+  {
+    "chipset": "Indus-S",
+    "team": "Connectivity",
+    "dueDate": "2026-09-14",
+    "submittedOn": "2026-09-12",
+    "expectedOn": null,
+    "newCodePct": 10
+  },
+  {
+    "chipset": "Indus-S",
+    "team": "Platform",
+    "dueDate": "2026-09-14",
+    "submittedOn": "2026-09-12",
+    "expectedOn": null,
+    "newCodePct": 4
+  },
+  {
+    "chipset": "Indus-M",
+    "team": "USB",
+    "dueDate": "2026-09-21",
+    "submittedOn": "2026-09-19",
+    "expectedOn": null,
+    "newCodePct": 12
+  },
+  {
+    "chipset": "Indus-M",
+    "team": "Display",
+    "dueDate": "2026-09-21",
+    "submittedOn": "2026-09-19",
+    "expectedOn": null,
+    "newCodePct": 9
+  },
+  {
+    "chipset": "Indus-M",
+    "team": "Audio",
+    "dueDate": "2026-09-21",
+    "submittedOn": "2026-09-19",
+    "expectedOn": null,
+    "newCodePct": 7
+  },
+  {
+    "chipset": "Indus-M",
+    "team": "Connectivity",
+    "dueDate": "2026-09-21",
+    "submittedOn": "2026-09-19",
+    "expectedOn": null,
+    "newCodePct": 15
+  },
+  {
+    "chipset": "Indus-M",
+    "team": "Platform",
+    "dueDate": "2026-09-21",
+    "submittedOn": "2026-09-19",
+    "expectedOn": null,
+    "newCodePct": 6
+  },
+  {
+    "chipset": "Indus-L",
+    "team": "USB",
+    "dueDate": "2026-10-12",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 70
+  },
+  {
+    "chipset": "Indus-L",
+    "team": "Display",
+    "dueDate": "2026-10-12",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 75
+  },
+  {
+    "chipset": "Indus-L",
+    "team": "Audio",
+    "dueDate": "2026-10-12",
+    "submittedOn": null,
+    "expectedOn": "2026-10-12",
+    "newCodePct": 55
+  },
+  {
+    "chipset": "Indus-L",
+    "team": "Connectivity",
+    "dueDate": "2026-10-12",
+    "submittedOn": null,
+    "expectedOn": "2026-10-12",
+    "newCodePct": 60
+  },
+  {
+    "chipset": "Indus-L",
+    "team": "Platform",
+    "dueDate": "2026-10-12",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 80
+  },
+  {
+    "chipset": "Rhine-M",
+    "team": "USB",
+    "dueDate": "2026-09-28",
+    "submittedOn": "2026-09-26",
+    "expectedOn": null,
+    "newCodePct": 10
+  },
+  {
+    "chipset": "Rhine-M",
+    "team": "Display",
+    "dueDate": "2026-09-28",
+    "submittedOn": "2026-09-26",
+    "expectedOn": null,
+    "newCodePct": 18
+  },
+  {
+    "chipset": "Rhine-M",
+    "team": "Audio",
+    "dueDate": "2026-09-28",
+    "submittedOn": "2026-09-26",
+    "expectedOn": null,
+    "newCodePct": 8
+  },
+  {
+    "chipset": "Rhine-M",
+    "team": "Connectivity",
+    "dueDate": "2026-09-28",
+    "submittedOn": "2026-09-26",
+    "expectedOn": null,
+    "newCodePct": 12
+  },
+  {
+    "chipset": "Rhine-M",
+    "team": "Platform",
+    "dueDate": "2026-09-28",
+    "submittedOn": "2026-09-26",
+    "expectedOn": null,
+    "newCodePct": 7
+  },
+  {
+    "chipset": "Rhine-L",
+    "team": "USB",
+    "dueDate": "2026-11-02",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 65
+  },
+  {
+    "chipset": "Rhine-L",
+    "team": "Display",
+    "dueDate": "2026-11-02",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 85
+  },
+  {
+    "chipset": "Rhine-L",
+    "team": "Audio",
+    "dueDate": "2026-11-02",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 60
+  },
+  {
+    "chipset": "Rhine-L",
+    "team": "Connectivity",
+    "dueDate": "2026-11-02",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 55
+  },
+  {
+    "chipset": "Rhine-L",
+    "team": "Platform",
+    "dueDate": "2026-11-02",
+    "submittedOn": null,
+    "expectedOn": "2026-11-02",
+    "newCodePct": 75
+  },
+  {
+    "chipset": "Volga-M",
+    "team": "USB",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 6
+  },
+  {
+    "chipset": "Volga-M",
+    "team": "Display",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 11
+  },
+  {
+    "chipset": "Volga-M",
+    "team": "Audio",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 9
+  },
+  {
+    "chipset": "Volga-M",
+    "team": "Connectivity",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 8
+  },
+  {
+    "chipset": "Volga-M",
+    "team": "Platform",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-02",
+    "expectedOn": null,
+    "newCodePct": 5
+  },
+  {
+    "chipset": "Volga-L",
+    "team": "USB",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-03",
+    "expectedOn": null,
+    "newCodePct": 7
+  },
+  {
+    "chipset": "Volga-L",
+    "team": "Display",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-03",
+    "expectedOn": null,
+    "newCodePct": 14
+  },
+  {
+    "chipset": "Volga-L",
+    "team": "Audio",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-05",
+    "expectedOn": null,
+    "newCodePct": 10
+  },
+  {
+    "chipset": "Volga-L",
+    "team": "Connectivity",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-03",
+    "expectedOn": null,
+    "newCodePct": 9
+  },
+  {
+    "chipset": "Volga-L",
+    "team": "Platform",
+    "dueDate": "2026-10-05",
+    "submittedOn": "2026-10-03",
+    "expectedOn": null,
+    "newCodePct": 6
+  },
+  {
+    "chipset": "Volga-X",
+    "team": "USB",
+    "dueDate": "2026-11-09",
+    "submittedOn": null,
+    "expectedOn": "2026-11-09",
+    "newCodePct": 80
+  },
+  {
+    "chipset": "Volga-X",
+    "team": "Display",
+    "dueDate": "2026-11-09",
+    "submittedOn": null,
+    "expectedOn": "2026-11-09",
+    "newCodePct": 70
+  },
+  {
+    "chipset": "Volga-X",
+    "team": "Audio",
+    "dueDate": "2026-11-09",
+    "submittedOn": null,
+    "expectedOn": "2026-11-09",
+    "newCodePct": 65
+  },
+  {
+    "chipset": "Volga-X",
+    "team": "Connectivity",
+    "dueDate": "2026-11-09",
+    "submittedOn": null,
+    "expectedOn": "2026-11-09",
+    "newCodePct": 72
+  },
+  {
+    "chipset": "Volga-X",
+    "team": "Platform",
+    "dueDate": "2026-11-09",
+    "submittedOn": null,
+    "expectedOn": "2026-11-09",
+    "newCodePct": 85
+  }
+]

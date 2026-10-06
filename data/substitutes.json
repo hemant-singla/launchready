@@ -1,0 +1,16 @@
+[
+  {
+    "part": "UC-300",
+    "substitute": "UC-310",
+    "approvedFor": [
+      "Volga-X",
+      "Rhine-L"
+    ],
+    "driverTeam": "USB",
+    "driverChangeDays": [
+      1,
+      14
+    ],
+    "note": "Pin-compatible, different firmware interface; USB team must port the driver"
+  }
+]

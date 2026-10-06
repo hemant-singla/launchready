@@ -1,0 +1,308 @@
+[
+  {
+    "part": "SOC-IndusS",
+    "warehouse": "WH-HB",
+    "onHand": 6700,
+    "allocated": 200
+  },
+  {
+    "part": "SOC-IndusS",
+    "warehouse": "WH-CT",
+    "onHand": 4020,
+    "allocated": 120
+  },
+  {
+    "part": "SOC-IndusS",
+    "warehouse": "WH-PL",
+    "onHand": 2680,
+    "allocated": 80
+  },
+  {
+    "part": "SOC-IndusM",
+    "warehouse": "WH-HB",
+    "onHand": 6250,
+    "allocated": 250
+  },
+  {
+    "part": "SOC-IndusM",
+    "warehouse": "WH-CT",
+    "onHand": 3750,
+    "allocated": 150
+  },
+  {
+    "part": "SOC-IndusM",
+    "warehouse": "WH-PL",
+    "onHand": 2500,
+    "allocated": 100
+  },
+  {
+    "part": "SOC-IndusL",
+    "warehouse": "WH-HB",
+    "onHand": 100,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-IndusL",
+    "warehouse": "WH-CT",
+    "onHand": 60,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-IndusL",
+    "warehouse": "WH-PL",
+    "onHand": 40,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-RhineM",
+    "warehouse": "WH-HB",
+    "onHand": 2850,
+    "allocated": 100
+  },
+  {
+    "part": "SOC-RhineM",
+    "warehouse": "WH-CT",
+    "onHand": 1710,
+    "allocated": 60
+  },
+  {
+    "part": "SOC-RhineM",
+    "warehouse": "WH-PL",
+    "onHand": 1140,
+    "allocated": 40
+  },
+  {
+    "part": "SOC-RhineL",
+    "warehouse": "WH-HB",
+    "onHand": 75,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-RhineL",
+    "warehouse": "WH-CT",
+    "onHand": 45,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-RhineL",
+    "warehouse": "WH-PL",
+    "onHand": 30,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-VolgaM",
+    "warehouse": "WH-HB",
+    "onHand": 750,
+    "allocated": 50
+  },
+  {
+    "part": "SOC-VolgaM",
+    "warehouse": "WH-CT",
+    "onHand": 450,
+    "allocated": 30
+  },
+  {
+    "part": "SOC-VolgaM",
+    "warehouse": "WH-PL",
+    "onHand": 300,
+    "allocated": 20
+  },
+  {
+    "part": "SOC-VolgaL",
+    "warehouse": "WH-HB",
+    "onHand": 750,
+    "allocated": 50
+  },
+  {
+    "part": "SOC-VolgaL",
+    "warehouse": "WH-CT",
+    "onHand": 450,
+    "allocated": 30
+  },
+  {
+    "part": "SOC-VolgaL",
+    "warehouse": "WH-PL",
+    "onHand": 300,
+    "allocated": 20
+  },
+  {
+    "part": "SOC-VolgaX",
+    "warehouse": "WH-HB",
+    "onHand": 50,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-VolgaX",
+    "warehouse": "WH-CT",
+    "onHand": 30,
+    "allocated": 0
+  },
+  {
+    "part": "SOC-VolgaX",
+    "warehouse": "WH-PL",
+    "onHand": 20,
+    "allocated": 0
+  },
+  {
+    "part": "UC-200",
+    "warehouse": "WH-HB",
+    "onHand": 13250,
+    "allocated": 750
+  },
+  {
+    "part": "UC-200",
+    "warehouse": "WH-CT",
+    "onHand": 7950,
+    "allocated": 450
+  },
+  {
+    "part": "UC-200",
+    "warehouse": "WH-PL",
+    "onHand": 5300,
+    "allocated": 300
+  },
+  {
+    "part": "UC-300",
+    "warehouse": "WH-HB",
+    "onHand": 200,
+    "allocated": 150
+  },
+  {
+    "part": "UC-300",
+    "warehouse": "WH-CT",
+    "onHand": 120,
+    "allocated": 90
+  },
+  {
+    "part": "UC-300",
+    "warehouse": "WH-PL",
+    "onHand": 80,
+    "allocated": 60
+  },
+  {
+    "part": "UC-310",
+    "warehouse": "WH-HB",
+    "onHand": 250,
+    "allocated": 0
+  },
+  {
+    "part": "UC-310",
+    "warehouse": "WH-CT",
+    "onHand": 150,
+    "allocated": 0
+  },
+  {
+    "part": "UC-310",
+    "warehouse": "WH-PL",
+    "onHand": 100,
+    "allocated": 0
+  },
+  {
+    "part": "WM-5",
+    "warehouse": "WH-HB",
+    "onHand": 12400,
+    "allocated": 400
+  },
+  {
+    "part": "WM-5",
+    "warehouse": "WH-CT",
+    "onHand": 7440,
+    "allocated": 240
+  },
+  {
+    "part": "WM-5",
+    "warehouse": "WH-PL",
+    "onHand": 4960,
+    "allocated": 160
+  },
+  {
+    "part": "WM-6",
+    "warehouse": "WH-HB",
+    "onHand": 4800,
+    "allocated": 300
+  },
+  {
+    "part": "WM-6",
+    "warehouse": "WH-CT",
+    "onHand": 2880,
+    "allocated": 180
+  },
+  {
+    "part": "WM-6",
+    "warehouse": "WH-PL",
+    "onHand": 1920,
+    "allocated": 120
+  },
+  {
+    "part": "TCON-4K",
+    "warehouse": "WH-HB",
+    "onHand": 15500,
+    "allocated": 500
+  },
+  {
+    "part": "TCON-4K",
+    "warehouse": "WH-CT",
+    "onHand": 9300,
+    "allocated": 300
+  },
+  {
+    "part": "TCON-4K",
+    "warehouse": "WH-PL",
+    "onHand": 6200,
+    "allocated": 200
+  },
+  {
+    "part": "MLD-2",
+    "warehouse": "WH-HB",
+    "onHand": 2950,
+    "allocated": 200
+  },
+  {
+    "part": "MLD-2",
+    "warehouse": "WH-CT",
+    "onHand": 1770,
+    "allocated": 120
+  },
+  {
+    "part": "MLD-2",
+    "warehouse": "WH-PL",
+    "onHand": 1180,
+    "allocated": 80
+  },
+  {
+    "part": "TCON-OLED",
+    "warehouse": "WH-HB",
+    "onHand": 575,
+    "allocated": 75
+  },
+  {
+    "part": "TCON-OLED",
+    "warehouse": "WH-CT",
+    "onHand": 345,
+    "allocated": 45
+  },
+  {
+    "part": "TCON-OLED",
+    "warehouse": "WH-PL",
+    "onHand": 230,
+    "allocated": 30
+  },
+  {
+    "part": "AMP-20",
+    "warehouse": "WH-HB",
+    "onHand": 15600,
+    "allocated": 600
+  },
+  {
+    "part": "AMP-20",
+    "warehouse": "WH-CT",
+    "onHand": 9360,
+    "allocated": 360
+  },
+  {
+    "part": "AMP-20",
+    "warehouse": "WH-PL",
+    "onHand": 6240,
+    "allocated": 240
+  }
+]

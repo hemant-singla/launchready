@@ -1,0 +1,222 @@
+[
+  {
+    "id": "DL-SIM-01",
+    "part": "SOC-IndusM",
+    "supplier": "SUP-KS",
+    "qty": 8000,
+    "originalEta": "2026-10-27",
+    "eta": "2026-10-27",
+    "status": "confirmed",
+    "forChipset": "Indus-M",
+    "note": ""
+  },
+  {
+    "id": "DL-SIL-01",
+    "part": "SOC-IndusL",
+    "supplier": "SUP-KS",
+    "qty": 5000,
+    "originalEta": "2026-11-03",
+    "eta": "2026-11-10",
+    "status": "delayed",
+    "forChipset": "Indus-L",
+    "note": "Wafer lot re-test, +7 days"
+  },
+  {
+    "id": "DL-SRL-01",
+    "part": "SOC-RhineL",
+    "supplier": "SUP-KS",
+    "qty": 2400,
+    "originalEta": "2026-12-07",
+    "eta": "2026-12-07",
+    "status": "confirmed",
+    "forChipset": "Rhine-L",
+    "note": ""
+  },
+  {
+    "id": "DL-SVX-01",
+    "part": "SOC-VolgaX",
+    "supplier": "SUP-KS",
+    "qty": 600,
+    "originalEta": "2026-12-10",
+    "eta": "2026-12-10",
+    "status": "confirmed",
+    "forChipset": "Volga-X",
+    "note": ""
+  },
+  {
+    "id": "DL-UC2-01",
+    "part": "UC-200",
+    "supplier": "SUP-NB",
+    "qty": 10000,
+    "originalEta": "2026-10-22",
+    "eta": "2026-10-22",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-UC2-02",
+    "part": "UC-200",
+    "supplier": "SUP-NB",
+    "qty": 6000,
+    "originalEta": "2026-11-02",
+    "eta": "2026-11-02",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-UC3-01",
+    "part": "UC-300",
+    "supplier": "SUP-NB",
+    "qty": 100,
+    "originalEta": "2026-11-06",
+    "eta": "2026-11-06",
+    "status": "confirmed",
+    "forChipset": "Volga-X",
+    "note": "Test boards + pilot"
+  },
+  {
+    "id": "DL-UC3-02",
+    "part": "UC-300",
+    "supplier": "SUP-NB",
+    "qty": 5200,
+    "originalEta": "2026-11-09",
+    "eta": "2026-11-09",
+    "status": "confirmed",
+    "forChipset": "Indus-L",
+    "note": ""
+  },
+  {
+    "id": "DL-UC3-04",
+    "part": "UC-300",
+    "supplier": "SUP-NB",
+    "qty": 2500,
+    "originalEta": "2026-10-29",
+    "eta": "2026-10-29",
+    "status": "confirmed",
+    "forChipset": "Rhine-L",
+    "note": ""
+  },
+  {
+    "id": "DL-UC3-05",
+    "part": "UC-300",
+    "supplier": "SUP-NB",
+    "qty": 600,
+    "originalEta": "2026-12-08",
+    "eta": "2026-12-08",
+    "status": "confirmed",
+    "forChipset": "Volga-X",
+    "note": ""
+  },
+  {
+    "id": "DL-WM5-01",
+    "part": "WM-5",
+    "supplier": "SUP-TW",
+    "qty": 10000,
+    "originalEta": "2026-10-30",
+    "eta": "2026-10-30",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-WM6-00",
+    "part": "WM-6",
+    "supplier": "SUP-TW",
+    "qty": 500,
+    "originalEta": "2026-09-28",
+    "eta": "2026-09-28",
+    "status": "rejected",
+    "forChipset": null,
+    "note": "Failed RF test at incoming inspection"
+  },
+  {
+    "id": "DL-WM6-01",
+    "part": "WM-6",
+    "supplier": "SUP-TW",
+    "qty": 8000,
+    "originalEta": "2026-11-10",
+    "eta": "2026-11-10",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-T4K-01",
+    "part": "TCON-4K",
+    "supplier": "SUP-QL",
+    "qty": 8000,
+    "originalEta": "2026-11-01",
+    "eta": "2026-11-01",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-MLD-03",
+    "part": "MLD-2",
+    "supplier": "SUP-OD",
+    "qty": 3000,
+    "originalEta": "2026-12-01",
+    "eta": "2026-12-01",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-MLD-04",
+    "part": "MLD-2",
+    "supplier": "SUP-OD",
+    "qty": 2000,
+    "originalEta": "2027-01-05",
+    "eta": "2027-01-05",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-TCO-02",
+    "part": "TCON-OLED",
+    "supplier": "SUP-OD",
+    "qty": 2000,
+    "originalEta": "2026-11-06",
+    "eta": "2026-11-06",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-TCO-03",
+    "part": "TCON-OLED",
+    "supplier": "SUP-OD",
+    "qty": 700,
+    "originalEta": "2026-12-14",
+    "eta": "2026-12-14",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-AMP-01",
+    "part": "AMP-20",
+    "supplier": "SUP-PA",
+    "qty": 12000,
+    "originalEta": "2026-10-20",
+    "eta": "2026-10-20",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  },
+  {
+    "id": "DL-AMP-02",
+    "part": "AMP-20",
+    "supplier": "SUP-PA",
+    "qty": 8000,
+    "originalEta": "2026-11-15",
+    "eta": "2026-11-15",
+    "status": "confirmed",
+    "forChipset": null,
+    "note": ""
+  }
+]

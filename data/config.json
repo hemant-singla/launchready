@@ -1,0 +1,37 @@
+{
+  "company": "Northwind Vision (fictional)",
+  "asOf": "2026-10-05",
+  "bufferDays": 7,
+  "productionLeadDays": 21,
+  "productionSlackDays": 7,
+  "tightDeliveryDays": 3,
+  "boardBringUpDays": 3,
+  "testWindowDays": {
+    "new": 28,
+    "reused": 14
+  },
+  "stabilisationDays": {
+    "new": [
+      3,
+      10
+    ],
+    "reused": [
+      1,
+      4
+    ]
+  },
+  "fixDays": {
+    "critical": [
+      3,
+      14
+    ],
+    "major": [
+      2,
+      7
+    ],
+    "minor": [
+      1,
+      3
+    ]
+  }
+}
