@@ -19,7 +19,7 @@ export function Sidebar({ view, open, onNavigate }: { view: View; open: boolean;
     ['Plan', ['launches', 'timeline', 'recovery']],
     ['Software', ['software', 'issues', 'testlab']],
     ['Supply', ['supply']],
-    ['History', ['activity']],
+    ['History', ['activity', 'sources']],
   ];
 
   return (

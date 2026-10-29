@@ -1,0 +1,33 @@
+{
+  "id": "104211",
+  "key": "NWV-4211",
+  "self": "https://issues.northwind.example/rest/api/3/issue/104211",
+  "fields": {
+    "summary": "No sound over eARC with soundbars from two brands",
+    "issuetype": { "name": "Bug" },
+    "priority": { "name": "Highest" },
+    "status": { "name": "In Review", "statusCategory": { "key": "indeterminate" } },
+    "components": [{ "name": "Audio" }],
+    "labels": ["platform:Rhine-M", "source:customer", "area:hdmi-earc"],
+    "created": "2026-09-26T08:14:02.000+0000",
+    "resolutiondate": null,
+    "duedate": "2026-10-09",
+    "customfield_10301": { "value": "Committed" },
+    "customfield_10302": "earc: capability handshake timeout",
+    "comment": {
+      "total": 2,
+      "comments": [
+        {
+          "author": { "displayName": "Audio team" },
+          "created": "2026-09-30T15:40:11.000+0000",
+          "body": { "type": "doc", "version": 1, "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Root cause: CEC retry timing changed in 7.4.2; these soundbars answer after the new 2 s timeout." }] }] }
+        },
+        {
+          "author": { "displayName": "Audio team" },
+          "created": "2026-10-05T09:02:47.000+0000",
+          "body": { "type": "doc", "version": 1, "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Fix up for review (change 51199). Committed: in a release build by " }, { "type": "text", "text": "2026-10-09", "marks": [{ "type": "strong" }] }, { "type": "text", "text": "." }] }] }
+        }
+      ]
+    }
+  }
+}

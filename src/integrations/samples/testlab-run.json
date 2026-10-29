@@ -1,0 +1,18 @@
+{
+  "run": {
+    "id": 88412,
+    "name": "USB media playback soak",
+    "config": "Indus-M",
+    "custom_rig": "Indus-M-R2",
+    "created_on": 1759622400,
+    "custom_duration_h": 24
+  },
+  "tests": [
+    { "id": 1, "title": "Insert a USB drive with the media test set", "status_id": 1 },
+    { "id": 2, "title": "Drive pops up on the home screen within 5 s", "status_id": 1 },
+    { "id": 3, "title": "Open the 4K HDR test video and play it on a loop", "status_id": 1 },
+    { "id": 4, "title": "Every hour: check audio and video (A/V sync, no freezes, no artefacts)", "status_id": 1 },
+    { "id": 5, "title": "Record live TV to a USB hard disk for 4 h", "status_id": 5, "defects": "NWV-4138", "comment": "usb-storage: reset high-speed USB device; recording stopped at 2h04" },
+    { "id": 6, "title": "Eject and reinsert the drive every 2 h", "status_id": 3 }
+  ]
+}

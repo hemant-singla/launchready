@@ -1,0 +1,22 @@
+{
+  "d": {
+    "PurchaseOrder": "4500004416",
+    "PurchaseOrderDate": "2026-09-11",
+    "Supplier": "SUP-NB",
+    "DocumentCurrency": "USD",
+    "IncotermsClassification": "FCA",
+    "to_PurchaseOrderItem": {
+      "results": [
+        {
+          "PurchaseOrderItem": "10",
+          "Material": "UC-300",
+          "OrderQuantity": "100",
+          "NetPriceAmount": "1.67",
+          "NetPriceQuantity": "1",
+          "YY1_ForPlatform_PDI": "Volga-X",
+          "to_ScheduleLine": { "results": [{ "ScheduleLineDeliveryDate": "2026-11-06", "ScheduleLineOrderQuantity": "100" }] }
+        }
+      ]
+    }
+  }
+}

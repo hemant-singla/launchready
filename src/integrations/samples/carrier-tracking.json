@@ -1,0 +1,10 @@
+{
+  "tracking_number": "SKY488724",
+  "carrier": "Skylane Air Cargo",
+  "reference": "4500004416",
+  "estimated_delivery": "2026-12-10",
+  "events": [
+    { "occurred_at": "2026-09-12T03:10:00Z", "status": "info_received", "description": "Shipment booked by shipper" },
+    { "occurred_at": "2026-10-05T11:42:00Z", "status": "exception", "description": "Shipper revised pickup date: capacity constraint at origin" }
+  ]
+}

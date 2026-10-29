@@ -17,6 +17,7 @@ const SoftwarePage = lazy(() => import('./pages/SoftwarePage'));
 const ActivityPage = lazy(() => import('./pages/ActivityPage'));
 const IssuesPage = lazy(() => import('./pages/IssuesPage'));
 const TestLabPage = lazy(() => import('./pages/TestLabPage'));
+const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage'));
 const StoryPage = lazy(() => import('./story/StoryPage'));
 // The assistant (and the Anthropic SDK) load on first open, then stay mounted
 // so the conversation survives closing the panel.
@@ -88,6 +89,7 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
       case 'issues': return <IssuesPage selected={id} query={query} />;
       case 'testlab': return <TestLabPage />;
       case 'activity': return <ActivityPage />;
+      case 'sources': return <DataSourcesPage />;
     }
   })();
 
