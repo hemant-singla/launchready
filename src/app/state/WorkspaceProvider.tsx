@@ -1,6 +1,6 @@
 // Holds the workspace state, mirrors it into the URL, and derives every
 // computed result from it (see workspace.ts for the state and its encoding).
-import { useCallback, useEffect, useMemo, useReducer, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { SCENARIOS, type ScenarioKey } from '../../engine/scenarios';
 import { applyLab, type Lab } from '../../engine/lab';
 import { affectedBy, computeWith, type Action } from '../../engine/recovery';
@@ -10,10 +10,27 @@ import { BASE, BASELINE, decodeWorkspace, describeLab, encodeWorkspace, reducer,
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, () => decodeWorkspace(parseHash(window.location.hash).query.get('w')));
 
+  // Follow the URL when it changes from outside (a link to another workspace,
+  // or Back/Forward). Our own replaceQuery below always matches the state.
+  const encoded = useRef('');
+  useEffect(() => {
+    const onChange = () => {
+      const w = parseHash(window.location.hash).query.get('w') ?? '';
+      if (w !== encoded.current) dispatch({ type: 'hydrate', from: decodeWorkspace(w) });
+    };
+    window.addEventListener('hashchange', onChange);
+    window.addEventListener('popstate', onChange);
+    return () => {
+      window.removeEventListener('hashchange', onChange);
+      window.removeEventListener('popstate', onChange);
+    };
+  }, []);
+
   // Mirror the shareable part of the state into the URL.
   useEffect(() => {
     const query = parseHash(window.location.hash).query;
     const w = encodeWorkspace(state);
+    encoded.current = w;
     if (w) query.set('w', w);
     else query.delete('w');
     replaceQuery(query.toString());

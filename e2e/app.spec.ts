@@ -84,3 +84,14 @@ test('every view renders without errors', async ({ page }) => {
   }
   expect(errors).toEqual([]);
 });
+
+test('story page: the guess reveals Halo 77" and the CTA opens the app with the delay applied', async ({ page }) => {
+  const errors = errorsOf(page);
+  await page.goto('/#/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('A supplier slips by 34 days');
+  await page.getByRole('group', { name: 'Pick a launch' }).getByRole('button', { name: /None of them/ }).click();
+  await expect(page.getByText(/Not quite: it's Halo 77"/)).toBeVisible();
+  await page.getByRole('link', { name: 'See the delay in the app' }).click();
+  await expect(page.getByRole('region', { name: 'Impact of the current disruption' })).toContainText('Halo 77"');
+  expect(errors).toEqual([]);
+});

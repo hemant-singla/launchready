@@ -26,6 +26,7 @@ type Msg =
   | { type: 'setLab'; lab: Lab | null; label: string }
   | { type: 'decide'; option: Action & { title: string }; approved: boolean; result: string }
   | { type: 'undo' }
+  | { type: 'hydrate'; from: WorkspaceState }
   | { type: 'reset' };
 
 const EMPTY: WorkspaceState = { scenarios: [], lab: null, decisions: initialDecisions() };
@@ -53,6 +54,12 @@ function update(state: WorkspaceState, msg: Msg): WorkspaceState {
       return { ...state, lab: msg.lab, decisions: note(state.decisions, msg.label) };
     case 'decide':
       return { ...state, decisions: decide(state.decisions, msg.option, msg.approved, msg.result) };
+    case 'hydrate': {
+      // The URL changed from outside (a link or Back): take its disruption and
+      // actions, keep this session's log.
+      const log = note(state.decisions, 'Loaded the plan from the page link').log;
+      return { ...msg.from, decisions: { actions: msg.from.decisions.actions, log } };
+    }
     case 'undo':
       return { ...state, decisions: undoLast(state.decisions) };
     case 'reset':
