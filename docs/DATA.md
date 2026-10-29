@@ -6,17 +6,17 @@
 
 | Model | Line | Chipset | Launch | First build | Software ready | Software | Supply | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| Aurora 43" | Entry 4K | Indus-S | 2026-11-09 | 6,000 | 2026-10-07 – 2026-10-12 | Ready | Ready | **Ready** |
-| Aurora 50" | Entry 4K | Indus-S | 2026-11-09 | 6,000 | 2026-10-07 – 2026-10-12 | Ready | Ready | **Ready** |
-| Aurora 55" | Entry 4K | Indus-M | 2026-11-16 | 5,000 | 2026-10-11 – 2026-10-24 | Ready | Ready | **Ready** |
-| Aurora 65" | Entry 4K | Indus-M | 2026-11-16 | 4,000 | 2026-10-11 – 2026-10-24 | Ready | Ready | **Ready** |
-| Aurora 75" | Entry 4K | Indus-M | 2026-11-16 | 2,000 | 2026-10-11 – 2026-10-24 | Ready | Ready | **Ready** |
-| Lumen 50" | Mid-range | Indus-M | 2026-11-30 | 4,000 | 2026-10-11 – 2026-10-24 | Ready | Ready | **Ready** |
-| Lumen 55" | Mid-range | Indus-M | 2026-11-30 | 4,000 | 2026-10-11 – 2026-10-24 | Ready | Ready | **Ready** |
+| Aurora 43" | Entry 4K | Indus-S | 2026-11-09 | 6,000 | 2026-10-09 – 2026-10-11 | Ready | Ready | **Ready** |
+| Aurora 50" | Entry 4K | Indus-S | 2026-11-09 | 6,000 | 2026-10-09 – 2026-10-11 | Ready | Ready | **Ready** |
+| Aurora 55" | Entry 4K | Indus-M | 2026-11-16 | 5,000 | 2026-10-10 – 2026-10-15 | Ready | Ready | **Ready** |
+| Aurora 65" | Entry 4K | Indus-M | 2026-11-16 | 4,000 | 2026-10-10 – 2026-10-15 | Ready | Ready | **Ready** |
+| Aurora 75" | Entry 4K | Indus-M | 2026-11-16 | 2,000 | 2026-10-10 – 2026-10-15 | Ready | Ready | **Ready** |
+| Lumen 50" | Mid-range | Indus-M | 2026-11-30 | 4,000 | 2026-10-10 – 2026-10-15 | Ready | Ready | **Ready** |
+| Lumen 55" | Mid-range | Indus-M | 2026-11-30 | 4,000 | 2026-10-10 – 2026-10-15 | Ready | Ready | **Ready** |
 | Lumen 65" | Mid-range | Indus-L | 2026-12-14 | 3,000 | 2026-12-06 – 2026-12-13 | At risk | Ready | **At risk** |
 | Lumen 75" | Mid-range | Indus-L | 2026-12-14 | 2,000 | 2026-12-06 – 2026-12-13 | At risk | Ready | **At risk** |
-| Zenith 55" | Premium mini-LED | Rhine-M | 2026-11-23 | 2,500 | 2026-10-16 – 2026-10-21 | At risk | Ready | **At risk** |
-| Zenith 65" | Premium mini-LED | Rhine-M | 2026-11-23 | 2,500 | 2026-10-16 – 2026-10-21 | At risk | Ready | **At risk** |
+| Zenith 55" | Premium mini-LED | Rhine-M | 2026-11-23 | 2,500 | 2026-10-16 – 2026-10-19 | At risk | Ready | **At risk** |
+| Zenith 65" | Premium mini-LED | Rhine-M | 2026-11-23 | 2,500 | 2026-10-16 – 2026-10-19 | At risk | Ready | **At risk** |
 | Zenith 75" | Premium mini-LED | Rhine-L | 2027-01-11 | 1,500 | 2026-12-06 – 2026-12-13 | Ready | Ready | **Ready** |
 | Zenith 85" | Premium mini-LED | Rhine-L | 2027-01-11 | 800 | 2026-12-06 – 2026-12-13 | Ready | Ready | **Ready** |
 | Halo 55" | Flagship OLED | Volga-M | 2026-12-07 | 1,200 | 2026-10-23 – 2026-10-26 | Ready | Ready | **Ready** |
@@ -38,11 +38,33 @@
 
 Tickets: 127 in total (52 open), raised by testing teams and clients on the three chipsets already in testing.
 
+## Issues: where they come from and when they will be fixed
+
+| Source | Open | Critical | Major | Minor | With committed fix date | TVs reporting |
+|---|---|---|---|---|---|---|
+| Test lab | 45 | 0 | 17 | 28 | 11 | – |
+| Customer reports | 7 | 1 | 4 | 2 | 5 | 2,572 |
+
+Open issues by stage: new 9, triaged 13, in-progress 19, in-review 4, verifying 7.
+
+## Test lab
+
+| Suite | Hours | Runs | Pass rate | Issues found |
+|---|---|---|---|---|
+| USB media playback soak | 24 | 36 | 82% | 6 |
+| Standby and wake cycling | 48 | 36 | 45% | 27 |
+| Streaming endurance | 24 | 36 | 64% | 14 |
+| Audio output matrix | 12 | 72 | 83% | 12 |
+| Picture quality regression | 8 | 108 | 83% | 24 |
+| Wi-Fi and screen mirroring | 12 | 72 | 92% | 4 |
+| Camera and USB peripherals | 6 | 144 | 96% | 4 |
+| Software update and settings | 6 | 144 | 90% | 9 |
+
 ## Late or missing code submissions
 
-| Chipset | Team | Due | Expected |
-|---|---|---|---|
-| Indus-L | Display | 2026-10-12 | 2026-11-02 |
+| Chipset | Team | Due | Expected | Team's note |
+|---|---|---|---|---|
+| Indus-L | Display | 2026-10-12 | 2026-11-02 | New 120 Hz panel: the 4K/120 timing fails our own pre-integration test (frame drops at 4K/120 with VRR). Panel vendor sent a new timing table on 1 Oct; integrating and re-testing. |
 
 ## Parts: free stock and deliveries
 
@@ -89,6 +111,17 @@ Tickets: 127 in total (52 open), raised by testing teams and clients on the thre
 | DL-TCO-03 | TCON-OLED | 700 | 2026-12-14 | 2026-12-14 | confirmed | any |  |
 | DL-AMP-01 | AMP-20 | 12000 | 2026-10-20 | 2026-10-20 | confirmed | any |  |
 | DL-AMP-02 | AMP-20 | 8000 | 2026-11-15 | 2026-11-15 | confirmed | any |  |
+
+## Suppliers
+
+| Supplier | Region | Lead time | On time (12 mo) | Avg delay | Defects (ppm) | Latest note |
+|---|---|---|---|---|---|---|
+| Kestrel Semi (fictional) | Hsinchu, Taiwan | 84 d | 91% | 4.2 d | 120 | Allocation for Q1 confirmed; wafer capacity tight on the new node. |
+| Northbay Components (fictional) | Penang, Malaysia | 56 d | 82% | 6.8 d | 350 | Running a second shift on the UC-300 line until December. |
+| Orinoco Display Tech (fictional) | Gumi, South Korea | 70 d | 88% | 3.1 d | 210 | TCON-OLED rev C qualified; MLD-2 on schedule. |
+| Pallas Audio (fictional) | Hai Phong, Vietnam | 42 d | 95% | 1.2 d | 90 | No open issues. |
+| Tamarind Wireless (fictional) | Shenzhen, China | 49 d | 86% | 5 d | 610 | Corrective action for the RF failure (lot 2609) submitted; replacement lot ships with DL-WM6-01. |
+| Quill Logic (fictional) | Osaka, Japan | 63 d | 97% | 0.8 d | 40 | No open issues. |
 
 ## Approved substitutes
 

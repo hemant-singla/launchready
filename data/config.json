@@ -6,6 +6,8 @@
   "productionSlackDays": 7,
   "tightDeliveryDays": 3,
   "boardBringUpDays": 3,
+  "transferDays": 2,
+  "maxLaunchMoveDays": 42,
   "testWindowDays": {
     "new": 28,
     "reused": 14
@@ -34,6 +36,8 @@
       3
     ]
   },
-  "transferDays": 2,
-  "maxLaunchMoveDays": 42
+  "verifyDays": [
+    1,
+    3
+  ]
 }

@@ -29,11 +29,22 @@ export function useRoute(): Route {
   return parseHash(hash);
 }
 
-const currentQuery = () => parseHash(window.location.hash).query.toString();
+/** The part of the query that follows the user across views: the workspace. */
+const currentQuery = () => {
+  const w = parseHash(window.location.hash).query.get('w');
+  return w ? new URLSearchParams({ w }).toString() : '';
+};
 
-/** Build an href for a path, keeping the current workspace query. */
+/**
+ * Build an href for a path, keeping the current workspace query. The path may
+ * carry its own query (e.g. "/app/supply?chipset=Volga-X"); its keys win.
+ */
 export function href(path: string, query = currentQuery()): string {
-  return `#${path}${query ? `?${query}` : ''}`;
+  const [p, own = ''] = path.split('?');
+  const merged = new URLSearchParams(query);
+  for (const [k, v] of new URLSearchParams(own)) merged.set(k, v);
+  const q = merged.toString();
+  return `#${p}${q ? `?${q}` : ''}`;
 }
 
 /** Go to a path (adds a history entry), keeping the workspace query. */

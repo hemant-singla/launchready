@@ -1,26 +1,68 @@
 [
   {
     "id": "SUP-KS",
-    "name": "Kestrel Semi (fictional)"
+    "name": "Kestrel Semi (fictional)",
+    "region": "Hsinchu, Taiwan",
+    "leadTimeDays": 84,
+    "onTimeRate": 0.91,
+    "avgDelayDays": 4.2,
+    "defectPpm": 120,
+    "contact": "Account manager",
+    "latestNote": "Allocation for Q1 confirmed; wafer capacity tight on the new node."
   },
   {
     "id": "SUP-NB",
-    "name": "Northbay Components (fictional)"
+    "name": "Northbay Components (fictional)",
+    "region": "Penang, Malaysia",
+    "leadTimeDays": 56,
+    "onTimeRate": 0.82,
+    "avgDelayDays": 6.8,
+    "defectPpm": 350,
+    "contact": "Supply planner",
+    "latestNote": "Running a second shift on the UC-300 line until December."
   },
   {
     "id": "SUP-OD",
-    "name": "Orinoco Display Tech (fictional)"
+    "name": "Orinoco Display Tech (fictional)",
+    "region": "Gumi, South Korea",
+    "leadTimeDays": 70,
+    "onTimeRate": 0.88,
+    "avgDelayDays": 3.1,
+    "defectPpm": 210,
+    "contact": "Key account team",
+    "latestNote": "TCON-OLED rev C qualified; MLD-2 on schedule."
   },
   {
     "id": "SUP-PA",
-    "name": "Pallas Audio (fictional)"
+    "name": "Pallas Audio (fictional)",
+    "region": "Hai Phong, Vietnam",
+    "leadTimeDays": 42,
+    "onTimeRate": 0.95,
+    "avgDelayDays": 1.2,
+    "defectPpm": 90,
+    "contact": "Order desk",
+    "latestNote": "No open issues."
   },
   {
     "id": "SUP-TW",
-    "name": "Tamarind Wireless (fictional)"
+    "name": "Tamarind Wireless (fictional)",
+    "region": "Shenzhen, China",
+    "leadTimeDays": 49,
+    "onTimeRate": 0.86,
+    "avgDelayDays": 5,
+    "defectPpm": 610,
+    "contact": "Quality engineer",
+    "latestNote": "Corrective action for the RF failure (lot 2609) submitted; replacement lot ships with DL-WM6-01."
   },
   {
     "id": "SUP-QL",
-    "name": "Quill Logic (fictional)"
+    "name": "Quill Logic (fictional)",
+    "region": "Osaka, Japan",
+    "leadTimeDays": 63,
+    "onTimeRate": 0.97,
+    "avgDelayDays": 0.8,
+    "defectPpm": 40,
+    "contact": "Sales engineer",
+    "latestNote": "No open issues."
   }
 ]

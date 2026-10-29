@@ -2,10 +2,13 @@
 // The engine speaks in ids (UC-300, DL-UC3-01, Volga-X); people should not
 // have to. Every label here is derived from computed results, never typed in.
 import { addDays, daysBetween, fmtDate } from '../../engine/dates';
-import type { Dataset, ModelResult, Result, Status, SupplyLine } from '../../engine/types';
+import type { Dataset, ModelResult, Result, Status, SupplyLine, Workflow } from '../../engine/types';
 import { linesFor } from '../../engine/lab';
 
 export const STATUS_LABEL: Record<Status, string> = { ready: 'Ready', 'at-risk': 'At risk', blocked: 'Blocked' };
+export const WORKFLOW_LABEL: Record<Workflow, string> = {
+  new: 'New', triaged: 'Triaged', 'in-progress': 'In progress', 'in-review': 'Fix in review', verifying: 'Verifying fix', fixed: 'Fixed',
+};
 export const STATUS_RANK: Record<Status, number> = { ready: 0, 'at-risk': 1, blocked: 2 };
 
 export const num = (n: number) => n.toLocaleString('en-US');

@@ -93,7 +93,9 @@
     "dueDate": "2026-10-12",
     "submittedOn": null,
     "expectedOn": "2026-11-02",
-    "newCodePct": 75
+    "newCodePct": 75,
+    "note": "New 120 Hz panel: the 4K/120 timing fails our own pre-integration test (frame drops at 4K/120 with VRR). Panel vendor sent a new timing table on 1 Oct; integrating and re-testing.",
+    "updatedOn": "2026-10-04"
   },
   {
     "chipset": "Indus-L",
@@ -101,7 +103,9 @@
     "dueDate": "2026-10-12",
     "submittedOn": null,
     "expectedOn": "2026-10-12",
-    "newCodePct": 55
+    "newCodePct": 55,
+    "note": "On track for 12 Oct. Remaining: Dolby MS12 v2.6 certification run.",
+    "updatedOn": "2026-10-03"
   },
   {
     "chipset": "Indus-L",
@@ -109,7 +113,9 @@
     "dueDate": "2026-10-12",
     "submittedOn": null,
     "expectedOn": "2026-10-12",
-    "newCodePct": 60
+    "newCodePct": 60,
+    "note": "On track for 12 Oct; Wi-Fi 6 driver merged, BT LE audio behind a flag.",
+    "updatedOn": "2026-10-02"
   },
   {
     "chipset": "Indus-L",
@@ -173,7 +179,9 @@
     "dueDate": "2026-11-02",
     "submittedOn": null,
     "expectedOn": "2026-11-02",
-    "newCodePct": 85
+    "newCodePct": 85,
+    "note": "Mini-LED local dimming algorithm v4 in final tuning; on track for 2 Nov.",
+    "updatedOn": "2026-10-04"
   },
   {
     "chipset": "Rhine-L",
@@ -221,7 +229,9 @@
     "dueDate": "2026-10-05",
     "submittedOn": "2026-10-02",
     "expectedOn": null,
-    "newCodePct": 9
+    "newCodePct": 9,
+    "note": "Submitted on 2 Oct. Last fix: eARC timeout change aligned with the 7.4.2 hotfix.",
+    "updatedOn": "2026-10-02"
   },
   {
     "chipset": "Volga-M",
@@ -261,7 +271,9 @@
     "dueDate": "2026-10-05",
     "submittedOn": "2026-10-05",
     "expectedOn": null,
-    "newCodePct": 10
+    "newCodePct": 10,
+    "note": "Submitted on 5 Oct, 2 days late: waited for the eARC hotfix so it ships in the first test build.",
+    "updatedOn": "2026-10-05"
   },
   {
     "chipset": "Volga-L",
@@ -285,7 +297,9 @@
     "dueDate": "2026-11-09",
     "submittedOn": null,
     "expectedOn": "2026-11-09",
-    "newCodePct": 80
+    "newCodePct": 80,
+    "note": "USB 3.2 controller driver bring-up done on 10 pre-production boards; on track for 9 Nov.",
+    "updatedOn": "2026-10-05"
   },
   {
     "chipset": "Volga-X",
@@ -293,7 +307,9 @@
     "dueDate": "2026-11-09",
     "submittedOn": null,
     "expectedOn": "2026-11-09",
-    "newCodePct": 70
+    "newCodePct": 70,
+    "note": "OLED compensation (burn-in protection) needs 3 more weeks of panel data; still on track for 9 Nov.",
+    "updatedOn": "2026-10-01"
   },
   {
     "chipset": "Volga-X",

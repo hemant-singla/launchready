@@ -14,11 +14,13 @@ import stock from '../../data/stock.json';
 import suppliers from '../../data/suppliers.json';
 import deliveries from '../../data/deliveries.json';
 import substitutes from '../../data/substitutes.json';
+import testSuites from '../../data/testSuites.json';
+import testRuns from '../../data/testRuns.json';
 import type { Dataset } from './types';
 
 const DATASET = {
   config, teams, chipsets, models, submissions, tickets, parts, bom,
-  warehouses, stock, suppliers, deliveries, substitutes,
+  warehouses, stock, suppliers, deliveries, substitutes, testSuites, testRuns,
 } as unknown as Dataset;
 
 /** A fresh deep copy of the dataset; callers may change it freely. */

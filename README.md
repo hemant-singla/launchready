@@ -33,6 +33,14 @@ LaunchReady joins the two halves of a TV launch that usually live in different t
 
 The start page tells the problem as a story, with every number computed by the same engine, and compares the approach with how large TV makers handle this today (public information only): see [docs/LANDSCAPE.md](docs/LANDSCAPE.md).
 
+## The detail behind the dates
+
+- **Issues** (`Issues` view): every software problem with where it came from (the 24/7 **test lab**, e.g. a USB media soak test failing at "record to USB hard disk", or **customers** pressing "Report this issue" on TVs in homes), the TV log with the line that routed it, the team that has it, their latest comment, and their fix date. A **committed** fix date (plus 1–3 days of test-lab verification) replaces the generic estimate, so the software-ready date becomes a quote.
+- **Test lab** view: hours tested per day, pass rate by platform, which suites find the most issues, and the latest failures linked to the issues they raised.
+- **Code pushes**: each team's own explanation when its code is late (e.g. the Display team's 120 Hz panel timing).
+- **Supply detail**: each shipment's purchase order, tracking timeline, inspection and the supplier's latest update; a supplier scorecard (on-time rate, delays, defects).
+- **Data sources** view: the system of record for every table (Jira, test lab management, field reports, CI, SAP, carrier tracking, QMS, PLM), how it's fetched and how fresh it is, with tested adapters you can run on sample payloads. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+
 ## How the verdict is calculated
 
 - **Software (per chip platform):** testing starts at the latest of the planned start, code complete + 3 days of bring-up, and test boards available. The ready date is a **range**: the later of (test window + stabilisation) and (open-ticket fix days ÷ team capacity), at the optimistic and pessimistic ends. *Ready* when the latest date is at least 7 days before launch with no late code and no open critical bugs; *Blocked* when even the earliest date is after launch.
@@ -62,7 +70,7 @@ data/*.json ──► src/engine (pure TypeScript, no UI) ──► src/app (Rea
 - **Engine** (`src/engine`): pure functions over plain data, so the app, the unit tests and the AI agent tools all compute the same numbers. No React, no I/O.
 - **App** (`src/app`): React 19 + TypeScript, built with Vite. Workspace state (disruptions + approved actions) is a reducer whose shareable part is encoded into the URL. Derived results are memoised; the recovery search runs only where it's shown and is cached.
 - **Assistant** (`src/agent`, `src/app/assistant`, `proxy/`): Claude with ten strict tools that run in the browser over the live workspace; a streaming tool loop; a Cloudflare Worker that holds the key and rebuilds every request. Details: [docs/ASSISTANT.md](docs/ASSISTANT.md).
-- **Quality:** strict TypeScript, ESLint, 57 unit tests (engine, assistant tools, free mode, loop, proxy), 12 Playwright end-to-end tests (desktop + phone, including the assistant with scripted streams), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
+- **Quality:** strict TypeScript, ESLint, 69 unit tests (engine, assistant tools, free mode, loop, proxy, integrations, router), 16 Playwright end-to-end tests (desktop + phone, including the assistant with scripted streams), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
 
 Details and trade-offs: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the decision records in [docs/adr/](docs/adr/).
 
@@ -87,6 +95,7 @@ src/engine/   readiness engine: supply allocation, software ETA, recovery, what-
 src/app/      React app: state/, pages/, components/, story/, lib/
 src/agent/    the assistant: prompt, tools, tool runner, streaming loop
 proxy/        Cloudflare Worker that holds the API key for the assistant
+src/integrations/  adapters from source-system payloads (Jira, test lab, ERP, …) + samples
 tests/        unit tests (Vitest)            e2e/   browser tests (Playwright)
 data/         fictional dataset (JSON)        docs/  brief, architecture, ADRs, landscape
 scripts/      data generation, data overview, agent runner

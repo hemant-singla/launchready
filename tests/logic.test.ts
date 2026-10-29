@@ -51,12 +51,40 @@ test('rejected and undated deliveries are never counted', () => {
 });
 
 test('software ETA range uses the ticket backlog and team capacity', () => {
-  // Rhine-M Audio: 1 critical (3-14) + 2 major (2-7) + 1 minor (1-3) = 8..31 days / capacity 2 = 4..16
+  // Rhine-M Audio: the critical has a committed date, so the backlog is
+  // 2 major (2-7) + 1 minor (1-3) = 5..17 days / capacity 2 = 3..9
   const b = teamBacklog(base, 'Rhine-M');
-  assert.deepEqual(b.Audio, { tickets: 4, days: [4, 16] });
+  assert.deepEqual(b.Audio, { tickets: 3, days: [3, 9] });
   const eta = softwareEta(base, 'Rhine-M');
-  assert.equal(eta.late, addDays(base.config.asOf, 16));
+  assert.ok(eta.known);
   assert.ok(eta.early <= eta.late);
+  // The longest backlog (Display, capacity 3) or the test cycle sets the latest date.
+  const worst = Math.max(...Object.values(eta.backlog).map((x) => x.days[1]));
+  assert.ok(eta.late >= addDays(base.config.asOf, worst));
+});
+
+test('a committed fix date counts at that date plus verification, and is quoted in the reason', () => {
+  const eta = softwareEta(base, 'Rhine-M');
+  assert.ok(eta.known);
+  assert.equal(eta.committedFixes, base.tickets.filter((t) => t.chipset === 'Rhine-M' && t.status === 'open' && t.eta?.confidence === 'committed').length);
+  assert.equal(eta.lastCommittedFix, '2026-10-09');
+  // Push the critical fix out: the software date follows it (+3 days verification at worst).
+  const d = structuredClone(base);
+  d.tickets.find((t) => t.severity === 'critical')!.eta = { fixBy: '2026-11-20', confidence: 'committed' };
+  const later = softwareEta(d, 'Rhine-M');
+  assert.ok(later.known);
+  assert.equal(later.late, '2026-11-23');
+  assert.equal(later.early, '2026-11-21');
+  // Earliest 21 Nov is before the 23 Nov launch but after the 16 Nov cutoff: at risk.
+  assert.equal(model(computeAll(d), 'ZEN-55').status, 'at-risk');
+  d.tickets.find((t) => t.severity === 'critical')!.eta = { fixBy: '2026-11-25', confidence: 'committed' };
+  assert.equal(model(computeAll(d), 'ZEN-55').status, 'blocked');
+  const reason = model(computeAll(base), 'ZEN-55').software.reasons.join(' ');
+  assert.match(reason, /fix committed for 2026-10-09/);
+  // An estimate (not a commitment) stays in the generic backlog.
+  const est = structuredClone(base);
+  est.tickets.find((t) => t.severity === 'critical')!.eta = { fixBy: '2026-11-20', confidence: 'estimate' };
+  assert.equal(teamBacklog(est, 'Rhine-M').Audio.tickets, 4);
 });
 
 test('a late code submission pushes the test start (Indus-L display code)', () => {

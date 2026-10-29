@@ -70,6 +70,8 @@ export function LaunchDrawer({ model: m, onClose }: { model: ModelResult; onClos
         <ReadinessBar m={m} />
       </section>
 
+      <PlatformIssues chipset={m.chipset} />
+
       <section aria-label="Parts for this launch">
         <div className="section-title">Parts for this launch</div>
         <div className="card table-wrap">
@@ -120,6 +122,40 @@ export function LaunchDrawer({ model: m, onClose }: { model: ModelResult; onClos
         <Info size={14} style={{ flex: 'none', marginTop: 1 }} /> Every date and quantity above is calculated from the plan data by the tested engine; nothing is typed in.
       </p>
     </Drawer>
+  );
+}
+
+function PlatformIssues({ chipset }: { chipset: string }) {
+  const { data, result } = useWorkspace();
+  const open = data.tickets.filter((t) => t.chipset === chipset && t.status === 'open');
+  const eta = result.chipsets[chipset].eta;
+  if (!open.length) {
+    return (
+      <section aria-label="Open issues">
+        <div className="section-title">Open issues on {chipset}</div>
+        <p className="muted" style={{ fontSize: 13 }}>{result.chipsets[chipset].testStartedOn ? 'None open.' : 'Testing hasn\'t started yet, so there are no test-lab issues on this platform.'}</p>
+      </section>
+    );
+  }
+  const rank = { critical: 0, major: 1, minor: 2 } as const;
+  const top = [...open].sort((a, b) => rank[a.severity] - rank[b.severity] || (b.eta ? 1 : 0) - (a.eta ? 1 : 0)).slice(0, 4);
+  const committed = open.filter((t) => t.eta?.confidence === 'committed').length;
+  return (
+    <section aria-label="Open issues">
+      <div className="section-title">Open issues on {chipset}</div>
+      <p className="muted" style={{ fontSize: 13, marginBottom: 6 }}>
+        {open.length} open, {committed} with a committed fix date{eta.known && eta.lastCommittedFix ? ` (latest ${date(eta.lastCommittedFix)})` : ''}. Issues without a date count at their standard fix time.
+      </p>
+      <ul className="reason-list">
+        {top.map((t) => (
+          <li key={t.id} style={{ color: 'var(--text)' }}>
+            <a href={href(`/app/issues/${t.id}`)} className="mono" style={{ flex: 'none' }}>{t.id}</a>
+            <span>{t.title} <span className="faint">· {t.severity} · {t.team} · {t.eta ? `fix ${t.eta.confidence === 'committed' ? 'committed' : 'estimated'} ${date(t.eta.fixBy)}` : 'no date yet'}</span></span>
+          </li>
+        ))}
+      </ul>
+      {open.length > top.length && <a href={href(`/app/issues?platform=${chipset}`)} style={{ fontSize: 13 }}>All {open.length} issues on {chipset}</a>}
+    </section>
   );
 }
 

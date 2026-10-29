@@ -32,6 +32,10 @@ const TOOL_LABEL: Record<string, string> = {
   simulate_what_if: 'Simulated a what-if',
   get_recovery_options: 'Ran the recovery search',
   explain_rules: 'Read the rules',
+  search_issues: 'Searched issues',
+  get_issue: 'Read an issue',
+  get_test_lab_summary: 'Checked the test lab',
+  get_shipment: 'Tracked a shipment',
   propose_what_if: 'Prepared a what-if',
   propose_recovery: 'Prepared an approval',
 };

@@ -21,7 +21,8 @@ LaunchReady joins two things: software readiness (code submissions, test cycles,
 How to answer:
 - Every date, quantity, status and day count you state must come from a tool result in this conversation. Never estimate or do date arithmetic yourself; if you need a number, call a tool. If no tool can answer, say so.
 - The user can change the plan between messages (apply disruptions, approve recovery actions). Each user message starts with a note describing the current state; call tools again rather than reusing older results when the state may have changed.
-- Find ids with tools before using them: launches (e.g. HAL-77) from get_plan_overview, shipments from find_shipments, recovery options from get_recovery_options.
+- Find ids with tools before using them: launches (e.g. HAL-77) from get_plan_overview, shipments from find_shipments, issues from search_issues, recovery options from get_recovery_options.
+- For "when will it be fixed" questions, quote the team's fix date and say whether it is committed or an estimate; committed dates (plus 1–3 days of test lab verification) feed the software-ready date. For "why is it late", use the team's own note or latest comment.
 - Use plain language: say "USB 3.2 controller" rather than only "UC-300", and "platform" for chipset. Format dates like "18 Jan". Keep answers short: lead with the answer, then the reason as a short chain (parts → testing → software → launch) when it helps.
 - For "what if" questions, use simulate_what_if; it changes nothing.
 - You never change the plan. When the user wants to apply a what-if or approve a recovery option, call propose_what_if or propose_recovery: the app shows the user a button and nothing happens until they click it. Say that in one short sentence.
@@ -75,6 +76,40 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
       'Supply side for one part: free stock, every shipment of it (planned vs current date, status, which platform it was bought for), approved substitutes, and how the part is allocated to builds in need-date order.',
     strict: true,
     input_schema: obj({ part_id: { type: 'string', description: 'Part id, e.g. UC-300. Use find_shipments to find ids from a name.' } }),
+  },
+  {
+    name: 'search_issues',
+    description:
+      'Search software issues (bugs) by text, platform, team, source and state. Each result has severity, source (test lab or customer reports with TVs affected), stage, age, the latest comment from the team that has it, and the fix date (committed or estimate). Empty strings mean "any".',
+    strict: true,
+    input_schema: obj({
+      query: { type: 'string', description: 'Words to match in title, component or log signature, e.g. "earc" or "usb"; "" for all.' },
+      platform: { type: 'string', description: 'Platform id, e.g. Rhine-M, or "".' },
+      team: { type: 'string', description: 'USB, Display, Audio, Connectivity or Platform, or "".' },
+      source: { type: 'string', enum: ['any', 'test-lab', 'customer'] },
+      state: { type: 'string', enum: ['open', 'fixed', 'all'] },
+    }),
+  },
+  {
+    name: 'get_issue',
+    description:
+      'Everything about one issue: where it came from (the test lab suite and the step that failed, or the customer report with TVs affected and their words), the TV log excerpt, how triage routed it to the team, the full comment timeline, the fix date, and the launches on its platform.',
+    strict: true,
+    input_schema: obj({ issue_id: { type: 'string', description: 'Issue id, e.g. NWV-4211.' } }),
+  },
+  {
+    name: 'get_test_lab_summary',
+    description:
+      'The 24/7 test lab: hours tested and pass rate over the last 7 days, runs going now, per-suite pass rate and issues found, and the latest failures with the step that failed and the issue raised. Optionally for one platform.',
+    strict: true,
+    input_schema: obj({ platform: { type: 'string', description: 'Platform id, or "" for all.' } }),
+  },
+  {
+    name: 'get_shipment',
+    description:
+      'One supplier shipment in detail: the purchase order, transport and tracking number, the tracking timeline (done and planned steps, delays), incoming inspection, the supplier\'s latest update and track record, and which builds it feeds.',
+    strict: true,
+    input_schema: obj({ shipment_id: { type: 'string', description: 'Shipment id from find_shipments, e.g. DL-UC3-01.' } }),
   },
   {
     name: 'find_shipments',

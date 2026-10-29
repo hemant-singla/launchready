@@ -4,8 +4,10 @@
 //   1. Testing can only start when all teams' code is in AND test boards exist.
 //   2. Testing takes a fixed window (longer for new chipsets), followed by a
 //      stabilisation tail for issues found late in testing.
-//   3. Open tickets must be fixed. Each ticket takes a range of days by
-//      severity; each team works through its own backlog with its capacity.
+//   3. Open tickets must be fixed. A ticket the owning team has committed a
+//      fix date for counts at that date plus the test lab's verification
+//      time; any other ticket takes a range of days by severity, and each team
+//      works through that backlog at its capacity.
 // The earliest date uses the optimistic end of every range, the latest date
 // the pessimistic end. No guessing: every input comes from the data files.
 import { addDays, latest, daysBetween } from './dates';
@@ -21,10 +23,12 @@ export function openTickets(data: Dataset, chipset: string): OpenTicket[] {
     .map((t) => ({ ...t, ageDays: daysBetween(data.config.asOf, t.openedOn) }));
 }
 
-/** Per-team backlog in days: [optimistic, pessimistic], given team capacity. */
+const isCommitted = (t: Ticket) => t.eta?.confidence === 'committed';
+
+/** Per-team backlog in days for tickets without a committed date: [optimistic, pessimistic], given team capacity. */
 export function teamBacklog(data: Dataset, chipset: string, extraWork: ExtraWork[] = []): Record<string, TeamBacklog> {
   const { fixDays } = data.config;
-  const open = openTickets(data, chipset);
+  const open = openTickets(data, chipset).filter((t) => !isCommitted(t));
   const out: Record<string, TeamBacklog> = {};
   for (const team of data.teams) {
     const mine = open.filter((t) => t.team === team.id);
@@ -90,14 +94,20 @@ export function softwareEta(
   // Fixing can't start before boards are on the bench (or before today).
   const fixLo = latest(cfg.asOf, startLo) as IsoDate;
   const fixHi = latest(cfg.asOf, startHi) as IsoDate;
+  // Committed fixes: the latest committed date, plus verification.
+  const committed = openTickets(data, chipsetId).filter(isCommitted);
+  const lastCommit = latest(...committed.map((t) => t.eta!.fixBy));
+  const [verifyLo, verifyHi] = cfg.verifyDays ?? [0, 0];
 
   return {
     chipset: chipsetId, known: true, notes, pending, codeComplete,
     testStart: startLo, testStartLatest: startHi, testEnd: addDays(startHi, window + extraTestDays[1]),
     slipDays: daysBetween(startLo, c.plannedTestStart),
-    early: latest(addDays(startLo, window + extraTestDays[0] + tailLo), addDays(fixLo, worstLo)) as IsoDate,
-    late: latest(addDays(startHi, window + extraTestDays[1] + tailHi), addDays(fixHi, worstHi)) as IsoDate,
+    early: latest(addDays(startLo, window + extraTestDays[0] + tailLo), addDays(fixLo, worstLo), lastCommit && addDays(lastCommit, verifyLo)) as IsoDate,
+    late: latest(addDays(startHi, window + extraTestDays[1] + tailHi), addDays(fixHi, worstHi), lastCommit && addDays(lastCommit, verifyHi)) as IsoDate,
     backlog,
+    committedFixes: committed.length,
+    lastCommittedFix: lastCommit,
   };
 }
 
@@ -115,7 +125,11 @@ export function softwareStatus(data: Dataset, eta: SoftwareEta, launch: IsoDate)
   for (const s of eta.pending.filter((p) => (p.expectedOn ?? '') > p.dueDate || cfg.asOf > p.dueDate)) {
     reasons.push(`${s.team} code for ${eta.chipset} is late: due ${s.dueDate}, now expected ${s.expectedOn}`);
   }
-  if (crit.length) reasons.push(`${crit.length} open critical ticket${crit.length > 1 ? 's' : ''} on ${eta.chipset} (oldest ${Math.max(...crit.map((t) => t.ageDays))} days)`);
+  if (crit.length) {
+    const dated = crit.filter(isCommitted).map((t) => t.eta!.fixBy).sort();
+    const when = dated.length === crit.length ? `; fix committed for ${dated.at(-1)}` : dated.length ? `; ${dated.length} with a committed fix date` : '; no committed fix date yet';
+    reasons.push(`${crit.length} open critical ticket${crit.length > 1 ? 's' : ''} on ${eta.chipset} (oldest ${Math.max(...crit.map((t) => t.ageDays))} days${when})`);
+  }
   // A late test start is context, not a verdict: its effect is already in the ETA.
   const context: string[] = [];
   if (eta.slipDays > 0) {

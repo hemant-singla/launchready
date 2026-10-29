@@ -15,6 +15,9 @@ const RecoveryPage = lazy(() => import('./pages/RecoveryPage'));
 const SupplyPage = lazy(() => import('./pages/SupplyPage'));
 const SoftwarePage = lazy(() => import('./pages/SoftwarePage'));
 const ActivityPage = lazy(() => import('./pages/ActivityPage'));
+const IssuesPage = lazy(() => import('./pages/IssuesPage'));
+const TestLabPage = lazy(() => import('./pages/TestLabPage'));
+const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage'));
 const StoryPage = lazy(() => import('./story/StoryPage'));
 // The assistant (and the Anthropic SDK) load on first open, then stay mounted
 // so the conversation survives closing the panel.
@@ -64,7 +67,7 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
       } else if (!typing && !e.metaKey && !e.ctrlKey && !e.altKey && !document.querySelector('[role="dialog"]')) {
         if (e.key === 's') { e.preventDefault(); setSimulate(true); }
         if (e.key === 'a') { e.preventDefault(); setAssistant(true); }
-        const go: Record<string, View> = { '1': 'launches', '2': 'timeline', '3': 'recovery', '4': 'supply', '5': 'software', '6': 'activity' };
+        const go: Record<string, View> = { '1': 'launches', '2': 'timeline', '3': 'recovery', '4': 'software', '5': 'issues', '6': 'testlab', '7': 'supply', '8': 'activity' };
         if (go[e.key]) navigate(`/app/${go[e.key]}`);
       }
     };
@@ -81,9 +84,12 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
       case 'launches': return <LaunchesPage selected={id} />;
       case 'timeline': return <TimelinePage />;
       case 'recovery': return <RecoveryPage />;
-      case 'supply': return <SupplyPage chipset={query.get('chipset') ?? ''} />;
+      case 'supply': return <SupplyPage chipset={query.get('chipset') ?? ''} selected={id} />;
       case 'software': return <SoftwarePage chipset={query.get('chipset') ?? ''} />;
+      case 'issues': return <IssuesPage selected={id} query={query} />;
+      case 'testlab': return <TestLabPage />;
       case 'activity': return <ActivityPage />;
+      case 'sources': return <DataSourcesPage />;
     }
   })();
 

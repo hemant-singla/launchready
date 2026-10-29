@@ -1,0 +1,124 @@
+[
+  {
+    "id": "TS-USB-MEDIA",
+    "name": "USB media playback soak",
+    "hours": 24,
+    "teams": [
+      "USB",
+      "Audio",
+      "Display",
+      "Platform"
+    ],
+    "steps": [
+      "Insert a USB drive with the media test set",
+      "Drive pops up on the home screen within 5 s",
+      "Open the 4K HDR test video and play it on a loop",
+      "Every hour: check audio and video (A/V sync, no freezes, no artefacts)",
+      "Record live TV to a USB hard disk for 4 h",
+      "Eject and reinsert the drive every 2 h"
+    ]
+  },
+  {
+    "id": "TS-STANDBY",
+    "name": "Standby and wake cycling",
+    "hours": 48,
+    "teams": [
+      "Platform",
+      "USB",
+      "Display",
+      "Audio",
+      "Connectivity"
+    ],
+    "steps": [
+      "Cold boot to the home screen",
+      "Enter standby for 30 min",
+      "Wake with the Bluetooth remote",
+      "USB drive remounts within 5 s of wake",
+      "Picture and sound settings are unchanged after reboot",
+      "Power on with speakers: no pops or clicks",
+      "Stay in standby 8 h without waking by itself"
+    ]
+  },
+  {
+    "id": "TS-STREAM",
+    "name": "Streaming endurance",
+    "hours": 24,
+    "teams": [
+      "Connectivity",
+      "Platform"
+    ],
+    "steps": [
+      "Connect to the lab Wi-Fi 6 network",
+      "Stream 4K video for 24 h",
+      "Every hour: log memory, temperature and buffer health",
+      "Run the store demo loop for 2 h"
+    ]
+  },
+  {
+    "id": "TS-AUDIO",
+    "name": "Audio output matrix",
+    "hours": 12,
+    "teams": [
+      "Audio"
+    ],
+    "steps": [
+      "Play the A/V sync clip through an eARC soundbar and measure the offset",
+      "Pass Dolby Atmos through to the soundbar for 2 h",
+      "Play music to Bluetooth headphones on 2.4 GHz Wi-Fi",
+      "Switch HDMI inputs and check the volume level"
+    ]
+  },
+  {
+    "id": "TS-PQ",
+    "name": "Picture quality regression",
+    "hours": 8,
+    "teams": [
+      "Display"
+    ],
+    "steps": [
+      "Compare the dark gradient pattern with the golden capture",
+      "Measure HDR10 peak luminance on the test clips",
+      "Switch to a 4K/120 game input and measure frame pacing",
+      "Play the subtitle clip with local dimming on high"
+    ]
+  },
+  {
+    "id": "TS-WIFI",
+    "name": "Wi-Fi and screen mirroring",
+    "hours": 12,
+    "teams": [
+      "Connectivity"
+    ],
+    "steps": [
+      "Reconnect after the access point restarts",
+      "Mirror a phone screen on a 5 GHz network",
+      "Scan for networks on DFS channels"
+    ]
+  },
+  {
+    "id": "TS-PERIPH",
+    "name": "Camera and USB peripherals",
+    "hours": 6,
+    "teams": [
+      "USB"
+    ],
+    "steps": [
+      "Run a 30-minute 4K video call with a USB camera",
+      "Use a mouse through a powered USB hub"
+    ]
+  },
+  {
+    "id": "TS-UPDATE",
+    "name": "Software update and settings",
+    "hours": 6,
+    "teams": [
+      "USB",
+      "Platform"
+    ],
+    "steps": [
+      "Insert a USB drive with an update package and start the update",
+      "Update completes and the TV reboots on the new build",
+      "Change the system language and back"
+    ]
+  }
+]

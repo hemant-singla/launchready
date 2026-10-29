@@ -186,12 +186,14 @@ export function runAssistantTool(name: string, rawInput: unknown, ctx: AgentCont
             return {
               team: t.name,
               code: s ? (s.submittedOn ? { submitted: s.submittedOn } : { expected: s.expectedOn, due: s.dueDate }) : null,
+              team_note: s?.note ? { text: s.note, on: s.updatedOn } : undefined,
               new_code_pct: s?.newCodePct ?? null,
               open_tickets: { critical: mine.filter((x) => x.severity === 'critical').length, major: mine.filter((x) => x.severity === 'major').length, minor: mine.filter((x) => x.severity === 'minor').length },
               fix_backlog_days: c.eta.backlog[t.id]?.days ?? null,
             };
           }),
-          critical_tickets: tickets.filter((t) => t.severity === 'critical').map((t) => ({ id: t.id, team: t.team, title: t.title, age_days: t.ageDays })),
+          critical_tickets: tickets.filter((t) => t.severity === 'critical').map((t) => ({ id: t.id, team: t.team, title: t.title, age_days: t.ageDays, fix_date: t.eta ?? null })),
+          committed_fix_dates: c.eta.known ? { count: c.eta.committedFixes, latest: c.eta.lastCommittedFix } : undefined,
         },
       };
     }
@@ -211,6 +213,93 @@ export function runAssistantTool(name: string, rawInput: unknown, ctx: AgentCont
             needed_by: l.needDate, qty: l.qty, status: l.status, short: l.shortfall,
             covered_from: l.allocations.map((a) => ({ source: a.source, qty: a.qty, arrives: a.date })),
           })),
+        },
+      };
+    }
+
+    case 'search_issues': {
+      const q = str(input.query).toLowerCase();
+      const plat = str(input.platform).toLowerCase();
+      const team = str(input.team).toLowerCase();
+      const src = str(input.source) || 'any';
+      const state = str(input.state) || 'open';
+      const rank = { critical: 0, major: 1, minor: 2 };
+      const rows = data.tickets
+        .filter((t) => (state === 'all' || t.status === state) && (src === 'any' || t.source === src) && (!plat || t.chipset.toLowerCase() === plat) && (!team || t.team.toLowerCase() === team))
+        .filter((t) => !q || q.split(/\s+/).every((w) => `${t.id} ${t.title} ${t.component ?? ''} ${t.triage?.signature ?? ''}`.toLowerCase().includes(w)))
+        .sort((a, b) => rank[a.severity] - rank[b.severity] || a.openedOn.localeCompare(b.openedOn));
+      return {
+        result: {
+          matches: rows.length,
+          issues: rows.slice(0, 25).map((t) => ({
+            issue_id: t.id, title: t.title, platform: t.chipset, team: t.team, severity: t.severity, source: t.source,
+            tvs_reporting: t.report?.units, stage: t.workflow, opened: t.openedOn, age_days: t.status === 'open' ? daysBetween(data.config.asOf, t.openedOn) : undefined,
+            latest_comment: t.comments?.at(-1), fix_date: t.status === 'fixed' ? { fixed_on: t.fixedOn } : t.eta ?? 'no date yet',
+          })),
+          note: rows.length > 25 ? `Showing 25 of ${rows.length}; narrow the search.` : undefined,
+        },
+      };
+    }
+
+    case 'get_issue': {
+      const t = data.tickets.find((x) => x.id.toLowerCase() === str(input.issue_id).toLowerCase());
+      if (!t) return fail(`unknown issue "${str(input.issue_id)}"; use search_issues to find ids`);
+      const suite = t.testCase ? data.testSuites.find((x) => x.id === t.testCase!.suite) : undefined;
+      const chip = result.chipsets[t.chipset];
+      return {
+        result: {
+          issue_id: t.id, title: t.title, platform: t.chipset, team: t.team, component: t.component, severity: t.severity, stage: t.workflow, opened: t.openedOn, fixed: t.fixedOn,
+          source: t.source,
+          customer_report: t.report,
+          found_by_test: suite && t.testCase ? { suite: suite.name, failed_step: suite.steps[t.testCase.step], steps_before_passed: suite.steps.slice(0, t.testCase.step), run: t.testCase.runId } : undefined,
+          tv_log: t.log, log_line_matched: t.triage ? t.log?.[t.triage.line] : undefined,
+          routing: t.triage,
+          timeline: t.comments,
+          fix_date: t.status === 'fixed' ? null : t.eta ?? 'no date yet (the plan uses the standard fix time for its severity)',
+          verification_days: data.config.verifyDays,
+          platform_software_ready: chip?.eta.known ? { earliest: chip.eta.early, latest: chip.eta.late } : 'unknown',
+          launches_on_platform: result.models.filter((m) => m.chipset === t.chipset).map((m) => ({ name: m.name, launch_date: m.launchDate, status: m.status })),
+        },
+      };
+    }
+
+    case 'get_test_lab_summary': {
+      const plat = str(input.platform).toLowerCase();
+      const runs = data.testRuns.filter((r) => !plat || r.chipset.toLowerCase() === plat);
+      if (!runs.length) return fail(`no test runs${plat ? ` for ${str(input.platform)} (testing may not have started)` : ''}`);
+      const asOf = data.config.asOf;
+      const week = runs.filter((r) => daysBetween(asOf, r.startedOn) < 7);
+      const done = (rs: typeof runs) => rs.filter((r) => r.result !== 'running');
+      const rate = (rs: typeof runs) => { const d = done(rs); return d.length ? Math.round((d.filter((r) => r.result === 'pass').length / d.length) * 100) : null; };
+      return {
+        result: {
+          platforms_in_testing: [...new Set(runs.map((r) => r.chipset))],
+          last_7_days: { hours_tested: week.reduce((n, r) => n + r.hours, 0), runs_finished: done(week).length, pass_rate_pct: rate(week), new_issues: week.filter((r) => r.newIssue).reduce((n, r) => n + r.ticketIds.length, 0) },
+          running_now: runs.filter((r) => r.result === 'running').length,
+          suites: data.testSuites.map((st) => {
+            const rs = runs.filter((r) => r.suite === st.id);
+            return { suite: st.name, hours: st.hours, runs: rs.length, pass_rate_pct: rate(rs), issues_found: data.tickets.filter((t) => t.testCase?.suite === st.id && (!plat || t.chipset.toLowerCase() === plat)).length };
+          }),
+          latest_failures: runs.filter((r) => r.result === 'fail').slice(-6).reverse().map((r) => {
+            const st = data.testSuites.find((x) => x.id === r.suite)!;
+            return { run: r.id, suite: st.name, platform: r.chipset, date: r.startedOn, failed_step: r.failedStep !== null ? st.steps[r.failedStep] : null, issue: r.ticketIds[0], new_issue: r.newIssue };
+          }),
+        },
+      };
+    }
+
+    case 'get_shipment': {
+      const d = data.deliveries.find((x) => x.id.toLowerCase() === str(input.shipment_id).toLowerCase());
+      if (!d) return fail(`unknown shipment "${str(input.shipment_id)}"; use find_shipments to look up ids`);
+      const sup = data.suppliers.find((s) => s.id === d.supplier);
+      return {
+        result: {
+          shipment_id: d.id, part: partName(data, d.part), qty: d.qty, status: d.status, planned_arrival: d.originalEta, current_arrival: d.eta, bought_for: d.forChipset ?? 'any',
+          latest_update: d.lastUpdate, purchase_order: d.po, transport: d.transport,
+          tracking: d.events?.map((e) => ({ date: e.at, step: e.stage, text: e.text, planned: e.planned })),
+          inspection: d.inspection,
+          supplier: sup && { name: sup.name, region: sup.region, on_time_rate_pct: sup.onTimeRate !== undefined ? Math.round(sup.onTimeRate * 100) : undefined, avg_delay_days: sup.avgDelayDays, defect_ppm: sup.defectPpm, lead_time_days: sup.leadTimeDays, latest_note: sup.latestNote },
+          feeds: result.lines.flatMap((l) => l.allocations.filter((a) => a.source === d.id).map((a) => ({ build: l.kind === 'test-boards' ? `${l.chipset} test boards` : data.models.find((m) => m.id === l.model)?.name, qty: a.qty, needed_by: l.needDate, arrives: a.date, status: l.status }))),
         },
       };
     }

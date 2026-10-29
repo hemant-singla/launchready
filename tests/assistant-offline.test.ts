@@ -73,3 +73,14 @@ test('unrelated questions get help, not a guess, and nothing ever changes the pl
   for (const q of ['how do we recover', 'what if usb is 3 weeks late', 'why is halo 77 at risk']) answerOffline(q, c);
   assert.equal(JSON.stringify(c), before);
 });
+
+test('free mode answers issue, fix-date, test lab, shipment and late-code questions', () => {
+  const fix = ask('When will the eARC issue be fixed?');
+  assert.match(fix.text, /NWV-4211.*fix committed for 9 Oct/);
+  assert.equal(fix.steps[0].input.state, 'open');
+  assert.match(ask('Tell me about NWV-4211').text, /1,240 TVs reported it/);
+  assert.match(ask('How is the test lab doing?').text, /hours tested/);
+  assert.match(ask('Why is the Display code late?').text, /Display code for Indus-L.*120 Hz panel/);
+  assert.match(ask('Where is shipment DL-UC3-01?', ['usbDelay']).text, /arriving 10 Dec \(planned 6 Nov\)/);
+  assert.match(ask('show fixed issues on indus-s').text, /fixed issue/);
+});

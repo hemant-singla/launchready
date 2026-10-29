@@ -105,3 +105,30 @@ test('rules come from the config, and unknown tools fail cleanly', () => {
   assert.match(run('explain_rules', {}).cutoff, /7 days before launch/);
   assert.equal(runAssistantTool('rm_rf', {}, ctx()).isError, true);
 });
+
+test('issue, test lab and shipment tools return the detail behind the dates', () => {
+  const s = run('search_issues', { query: 'earc', platform: 'Rhine-M', team: '', source: 'any', state: 'open' });
+  assert.equal(s.matches, 1);
+  assert.equal(s.issues[0].issue_id, 'NWV-4211');
+  assert.deepEqual(s.issues[0].fix_date, { fixBy: '2026-10-09', confidence: 'committed' });
+  assert.equal(s.issues[0].tvs_reporting, 1240);
+
+  const i = run('get_issue', { issue_id: 'nwv-4211' });
+  assert.equal(i.customer_report.units, 1240);
+  assert.match(i.log_line_matched, /capability handshake timeout/);
+  assert.ok(i.timeline.length >= 3);
+  assert.equal(runAssistantTool('get_issue', { issue_id: 'NWV-1' }, ctx()).isError, true);
+
+  const lab = run('get_test_lab_summary', { platform: '' });
+  assert.deepEqual(lab.platforms_in_testing.sort(), ['Indus-M', 'Indus-S', 'Rhine-M']);
+  assert.ok(lab.last_7_days.hours_tested > 0);
+  assert.equal(runAssistantTool('get_test_lab_summary', { platform: 'Volga-X' }, ctx()).isError, true);
+
+  const sh = run('get_shipment', { shipment_id: 'DL-UC3-01' }, ctx({ scenarios: ['usbDelay'] }));
+  assert.equal(sh.current_arrival, '2026-12-10');
+  assert.match(sh.latest_update.text, /Supplier notice/);
+  assert.equal(sh.supplier.on_time_rate_pct, 82);
+
+  const p = run('get_platform_software', { platform: 'Indus-L' });
+  assert.match(p.teams.find((t: { team: string }) => t.team === 'Display').team_note.text, /120 Hz panel/);
+});

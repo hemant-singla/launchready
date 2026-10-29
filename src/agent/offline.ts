@@ -25,9 +25,23 @@ interface OptionResult { launch_id: string; name: string; status_now: Status; st
 interface RecoveryOption { option_key: string; kind: string; action: string; trade_offs: string[]; approval: string; launch_date_change_days: number; results: OptionResult[]; still_open: string[] }
 interface Recovery { launches_needing_recovery: string[]; options_ranked?: RecoveryOption[]; recommended?: string | null; ruled_out?: { action: string; why: string }[]; escalation?: string | null; note?: string }
 interface WhatIf { what_if: string; launches_changed: { launch_id: string; name: string; status_now: Status; status_after: Status; software_ready_after: Range; explanation_after: string }[] }
-interface Platform { platform: string; new_platform: boolean; testing_started: string | null; computed_test_start: string | null; planned_test_start: string; testing_days_late: number | null; software_ready: Range; launches: { name: string; launch_date: string; status: Status }[]; teams: { team: string; code: { submitted?: string; expected?: string | null; due?: string } | null; open_tickets: { critical: number; major: number; minor: number } }[]; critical_tickets: { id: string; team: string; title: string; age_days: number }[] }
+interface Platform { platform: string; new_platform: boolean; testing_started: string | null; computed_test_start: string | null; planned_test_start: string; testing_days_late: number | null; software_ready: Range; launches: { name: string; launch_date: string; status: Status }[]; teams: { team: string; code: { submitted?: string; expected?: string | null; due?: string } | null; team_note?: { text: string; on: string }; open_tickets: { critical: number; major: number; minor: number } }[]; critical_tickets: { id: string; team: string; title: string; age_days: number }[] }
 interface PartSupply { part_id: string; name: string; stock: { free: number }[]; shipments: { shipment_id: string; qty: number; planned: string | null; current: string | null; status: string; bought_for: string }[]; builds_in_need_order: { build: string; needed_by: string; qty: number; status: Status; short: number }[] }
 interface Rules { software: string; cutoff: string; supply: string; launch: string; recovery: string }
+type FixDate = { fixBy: string; confidence: 'committed' | 'estimate' } | 'no date yet' | { fixed_on: string };
+interface IssueRow { issue_id: string; title: string; platform: string; team: string; severity: string; source: string; tvs_reporting?: number; stage: string; age_days?: number; latest_comment?: { at: string; by: string; text: string }; fix_date: FixDate }
+interface IssueSearch { matches: number; issues: IssueRow[] }
+interface Issue {
+  issue_id: string; title: string; platform: string; team: string; component: string; severity: string; stage: string; opened: string; source: string;
+  customer_report?: { units: number; devices: string; firmware: string; quote: string };
+  found_by_test?: { suite: string; failed_step: string; run?: string };
+  log_line_matched?: string; routing?: { signature: string; rule: string };
+  timeline?: { at: string; by: string; text: string }[];
+  fix_date: { fixBy: string; confidence: string } | string | null; verification_days: [number, number];
+  platform_software_ready: Range; launches_on_platform: { name: string; launch_date: string; status: Status }[];
+}
+interface Lab { last_7_days: { hours_tested: number; runs_finished: number; pass_rate_pct: number | null; new_issues: number }; running_now: number; platforms_in_testing: string[]; suites: { suite: string; pass_rate_pct: number | null; issues_found: number }[]; latest_failures: { suite: string; platform: string; date: string; failed_step: string | null; issue?: string }[] }
+interface Shipment { shipment_id: string; part: string; qty: number; status: string; planned_arrival: string | null; current_arrival: string | null; latest_update?: { at: string; text: string } | null; tracking?: { date: string; text: string; planned: boolean }[]; inspection?: { result: string; failed: number; sampled: number; reason?: string }; supplier?: { name: string; on_time_rate_pct?: number; avg_delay_days?: number; latest_note?: string }; feeds: { build: string; qty: number; needed_by: string; status: Status }[] }
 
 const LABEL: Record<Status, string> = { ready: 'Ready', 'at-risk': 'At risk', blocked: 'Blocked' };
 const d = (iso: string | null | undefined) => fmtDate(iso, true);
@@ -97,10 +111,16 @@ export function answerOffline(question: string, ctx: AgentContext): OfflineAnswe
   const platform = platformIn(q, data);
   const part = partIn(q, data);
   const shipmentId = q.match(/dl-[a-z0-9-]+/)?.[0]?.toUpperCase();
+  const issueId = q.match(/nwv-\d+/)?.[0]?.toUpperCase();
 
   const has = (re: RegExp) => re.test(q);
   const text = (() => {
     if (has(/^(hi|hello|hey)\b|what can you|help\b|how do i use/)) return help();
+    if (issueId) return issueAnswer(issueId);
+    if (shipmentId && !has(/what if|suppose|simulate|reject|fail|lose|lost|\d+\s*(week|day)/)) return shipmentAnswer(shipmentId);
+    if (has(/test lab|testing|pass rate|test runs?|suites?|24\/7/) && !has(/when .*test(ing)? start/)) return testLab();
+    if (has(/\bcode\b|submission|code push|merge/) && has(/late|why|behind|not (in|submitted)|missing/)) return lateCode();
+    if (has(/\b(bugs?|issues?|tickets?|defects?)\b|when .*fix|fix date|\beta\b|latest on|latest comment|update on/)) return issues();
     if (has(/\b(how|why)\b.*\b(calculat|work|decid|determin)|\brules?\b|cutoff|\bbuffer\b|threshold|formula/)) return rules(call<Rules>('explain_rules'), q);
     if ((part || shipmentId) && has(/what if|what happens if|simulate|suppose|\blate\b|delay|slip|reject|fail|inspection|lose|lost|no date|withdraw|early/)) return whatIf();
     if (has(/what if|what happens if|simulate|suppose/) && !has(/do nothing|nothing is done|we wait|ignore/)) return whatIfHelp();
@@ -116,6 +136,87 @@ export function answerOffline(question: string, ctx: AgentContext): OfflineAnswe
   return { steps, text };
 
   // --- answers ---
+
+  function fixText(f: FixDate | Issue['fix_date']): string {
+    if (!f || typeof f === 'string') return 'no date yet';
+    if ('fixed_on' in f) return `fixed ${d(f.fixed_on as string)}`;
+    return `${f.confidence === 'committed' ? 'fix committed for' : 'fix estimated'} ${d(f.fixBy)}`;
+  }
+
+  function issueAnswer(id: string): string {
+    const i = call<Issue | { error: string }>('get_issue', { issue_id: id });
+    if ('error' in i) return `I couldn't find ${id}. Try "open issues on Rhine-M" to list them.`;
+    const last = i.timeline?.at(-1);
+    return [
+      `**${i.issue_id}: ${i.title}** (${i.severity}, ${i.stage}). With the ${i.team} team, ${i.platform} platform, opened ${d(i.opened)}.`,
+      i.customer_report ? `**From customers:** ${i.customer_report.units.toLocaleString('en-US')} TVs reported it (${i.customer_report.devices}, ${i.customer_report.firmware}): "${i.customer_report.quote}"` : i.found_by_test ? `**Found by the test lab:** ${i.found_by_test.suite} failed at "${i.found_by_test.failed_step}".` : '',
+      i.routing ? `**Routed** by the log signature \`${i.routing.signature}\` (${i.routing.rule}).` : '',
+      last ? `**Latest (${last.by}, ${d(last.at)}):** ${pretty(last.text)}` : '',
+      `**Fix date:** ${fixText(i.fix_date)}${typeof i.fix_date === 'object' && i.fix_date ? `, then ${i.verification_days.join('–')} days of test lab verification` : ''}. ${i.platform} software is ready ${range(i.platform_software_ready)}; launches on it: ${i.launches_on_platform.map((l) => `${l.name} (${d(l.launch_date)}, ${LABEL[l.status]})`).join(', ')}.`,
+    ].filter(Boolean).join('\n\n');
+  }
+
+  function issues(): string {
+    const words = q.replace(/[^a-z0-9 -]/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !['when', 'will', 'the', 'fix', 'fixed', 'date', 'latest', 'issue', 'issues', 'bug', 'bugs', 'ticket', 'tickets', 'open', 'what', 'are', 'there', 'any', 'for', 'with', 'about', 'update', 'comment', 'comments', 'status', 'from', 'customers', 'customer', 'test', 'lab', 'which', 'all', 'show', 'list', 'eta', 'and', 'how', 'many', 'be', 'on', 'is', 'critical', 'major', 'minor'].includes(w) && !data.chipsets.some((c) => c.id.toLowerCase() === w) && !data.models.some((m) => m.line.toLowerCase() === w));
+    const input = {
+      query: words.join(' '),
+      platform: platform ?? (launches[0]?.chipset ?? ''),
+      team: data.teams.find((t) => q.includes(t.id.toLowerCase()))?.id ?? '',
+      source: has(/customer|users?|homes?|field/) ? 'customer' : has(/test lab/) ? 'test-lab' : 'any',
+      // "when will it be fixed" asks about open issues; "fixed/closed issues" about done ones.
+      state: has(/\b(closed|resolved|already fixed|were fixed|was fixed|fixed (issues|bugs|tickets))\b/) ? 'fixed' : 'open',
+    };
+    let r = call<IssueSearch>('search_issues', input);
+    if (!r.matches && input.query) r = call<IssueSearch>('search_issues', { ...input, query: '' });
+    if (!r.matches) return 'No issues match that. Try "open issues on Rhine-M" or "customer issues".';
+    const crit = has(/critical/) ? r.issues.filter((x) => x.severity === 'critical') : r.issues;
+    const list = (crit.length ? crit : r.issues).slice(0, 6);
+    const scope = [input.platform, input.team && `${input.team} team`, input.source !== 'any' && (input.source === 'customer' ? 'from customers' : 'from the test lab')].filter(Boolean).join(', ');
+    return [
+      `**${r.matches} ${input.state} issue${r.matches === 1 ? '' : 's'}${scope ? ` (${scope})` : ''}${input.query ? ` matching "${input.query}"` : ''}.** ${list.length < r.matches ? `Most severe ${list.length}:` : ''}`,
+      list.map((x) => `- **${x.issue_id}** ${x.title} (${x.severity}, ${x.team}, ${x.platform}${x.tvs_reporting ? `, ${x.tvs_reporting.toLocaleString('en-US')} TVs reporting` : ''}): ${fixText(x.fix_date)}.${x.latest_comment ? ` Latest from ${x.latest_comment.by}: "${pretty(x.latest_comment.text)}"` : ''}`).join('\n'),
+      'Committed fix dates (plus 1–3 days of verification) feed the software-ready date; issues without one count at their standard fix time. Ask about an id (e.g. "NWV-4211") for the full story.',
+    ].join('\n\n');
+  }
+
+  function testLab(): string {
+    const l = call<Lab>('get_test_lab_summary', { platform: platform ?? '' });
+    if ('error' in (l as object)) return `${platform} isn't in testing yet, so there are no test runs. Testing runs on ${data.chipsets.filter((c) => c.testStartedOn).map((c) => c.id).join(', ')}.`;
+    const worst = [...l.suites].filter((x) => x.pass_rate_pct !== null).sort((a, b) => (a.pass_rate_pct ?? 0) - (b.pass_rate_pct ?? 0))[0];
+    return [
+      `**Test lab${platform ? ` (${platform})` : ''}, last 7 days:** ${l.last_7_days.hours_tested.toLocaleString('en-US')} hours tested, ${l.last_7_days.runs_finished} runs finished, ${l.last_7_days.pass_rate_pct}% passed, ${l.last_7_days.new_issues} new issues. ${l.running_now} runs going now on ${l.platforms_in_testing.join(', ')}.`,
+      worst ? `Hardest suite: **${worst.suite}** (${worst.pass_rate_pct}% pass, ${worst.issues_found} issues found).` : '',
+      `Latest failures:\n\n${l.latest_failures.slice(0, 4).map((f) => `- ${f.suite} on ${f.platform}, ${d(f.date)}: failed at "${f.failed_step}"${f.issue ? ` → ${f.issue}` : ''}`).join('\n')}`,
+    ].filter(Boolean).join('\n\n');
+  }
+
+  function shipmentAnswer(id: string): string {
+    const s = call<Shipment | { error: string }>('get_shipment', { shipment_id: id });
+    if ('error' in s) return `I couldn't find shipment ${id}. Try "find usb shipments".`;
+    const next = s.tracking?.find((e) => e.planned);
+    return [
+      `**${s.shipment_id}: ${s.qty.toLocaleString('en-US')} × ${s.part}** is ${s.status}: ${s.current_arrival ? `arriving ${d(s.current_arrival)}` : 'no confirmed date'}${s.planned_arrival && s.current_arrival && s.planned_arrival !== s.current_arrival ? ` (planned ${d(s.planned_arrival)})` : ''}.`,
+      s.latest_update ? `**Latest (${d(s.latest_update.at)}):** ${s.latest_update.text}` : '',
+      next ? `Next step: ${next.text} on ${d(next.date)}.` : '',
+      s.inspection ? `Inspection: ${s.inspection.result}${s.inspection.failed ? ` (${s.inspection.failed} of ${s.inspection.sampled} failed${s.inspection.reason ? `, ${s.inspection.reason}` : ''})` : ''}.` : '',
+      s.feeds.length ? `Feeds: ${s.feeds.map((f) => `${f.build} (${f.qty.toLocaleString('en-US')} by ${d(f.needed_by)}, ${LABEL[f.status]})`).join('; ')}.` : 'It isn\'t counted as supply for any build.',
+      s.supplier ? `Supplier ${s.supplier.name.replace(' (fictional)', '')}: ${s.supplier.on_time_rate_pct}% on time over 12 months, late ones average ${s.supplier.avg_delay_days} days. ${s.supplier.latest_note ?? ''}` : '',
+    ].filter(Boolean).join('\n\n');
+  }
+
+  function lateCode(): string {
+    const late = data.submissions.filter((sub) => !sub.submittedOn && (sub.expectedOn ?? '') > sub.dueDate);
+    const plats = [...new Set(late.map((x) => x.chipset))].filter((c) => !platform || c === platform);
+    if (!plats.length) return platform ? `No team is late with ${platform} code.` : 'No team is late with its code right now.';
+    const lines: string[] = [];
+    for (const c of plats) {
+      const p = call<Platform>('get_platform_software', { platform: c });
+      for (const t of p.teams.filter((x) => x.code?.expected && x.code.due && x.code.expected > x.code.due)) {
+        lines.push(`- **${t.team} code for ${c}**: due ${d(t.code?.due)}, now expected ${d(t.code?.expected)}.${t.team_note ? ` The team says (${d(t.team_note.on)}): "${t.team_note.text}"` : ''} Affects ${p.launches.map((l) => l.name).join(', ')}.`);
+      }
+    }
+    return ['Code pushes that are late:', lines.join('\n'), 'Testing on a platform can only start once every team\'s code is in, so a late push moves the test start and the software-ready date.'].join('\n\n');
+  }
 
   function overview(): string {
     const o = call<Overview>('get_plan_overview');
@@ -257,6 +358,9 @@ export function answerOffline(question: string, ctx: AgentContext): OfflineAnswe
         '- "What if the Wi-Fi 6 shipment is 3 weeks late?"',
         '- "How do we recover?" and "Who needs to act?"',
         '- "How is the software-ready date calculated?"',
+        '- "When will the eARC issue be fixed?" or "Tell me about NWV-4211"',
+        '- "How is the test lab doing?" or "Why is the Display code late?"',
+        '- "Where is shipment DL-UC3-01?"',
       ].join('\n'),
       'You can also press S to simulate a disruption, then ask again.',
     ].join('\n\n');

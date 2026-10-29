@@ -5,6 +5,7 @@
 // seed so the output is identical every run.
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { addDays } from '../src/engine/dates.ts';
+import { TEST_SUITES, enrichTickets, makeTestRuns, enrichSubmissions, enrichSuppliers, enrichDeliveries } from './data-detail.mjs';
 
 const AS_OF = '2026-10-05';
 const out = {};
@@ -22,6 +23,7 @@ out.config = {
   testWindowDays: { new: 28, reused: 14 },
   stabilisationDays: { new: [3, 10], reused: [1, 4] },
   fixDays: { critical: [3, 14], major: [2, 7], minor: [1, 3] },
+  verifyDays: [1, 3],         // after a committed fix lands: test lab re-verifies it
 };
 
 out.teams = [
@@ -218,6 +220,14 @@ out.substitutes = [
   { part: 'UC-300', substitute: 'UC-310', approvedFor: ['Volga-X', 'Rhine-L'], driverTeam: 'USB', driverChangeDays: [1, 14], validationDays: [2, 4],
     note: 'Pin-compatible, different firmware interface; USB team must port the driver' },
 ];
+
+// Operational detail (separate seed; base tables above are unchanged).
+enrichTickets(out, AS_OF);
+out.testSuites = TEST_SUITES;
+out.testRuns = makeTestRuns(out, AS_OF);
+enrichSubmissions(out);
+enrichSuppliers(out);
+enrichDeliveries(out, AS_OF);
 
 mkdirSync(new URL('../data/', import.meta.url), { recursive: true });
 for (const [name, value] of Object.entries(out)) {

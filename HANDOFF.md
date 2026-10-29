@@ -19,6 +19,16 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | **Rebuild (v2)** | 🔄 2026-10-29, branch `claude/charming-ptolemy-usvvwd` (not merged). Hemant: the app "seems like a basic version", wants it to feel built by an experienced engineer, with a better story, and a Samsung comparison. See "Rebuild v2" below |
 | Clarity pass | ✅ 2026-10-06 (Hemant: "go with the plan", from a ChatGPT review): new headline, start page = intro → worked example → try-it workspace → assumptions; plain-language `explain()` per affected launch; three questions in the lab panel; options as action / result / trade-off / approval; terms explained on demand; evidence row. Open: ChatGPT's "calculation mismatch" (details asked from Hemant, not yet received) |
 
+## Software and supply detail + data sources (2026-10-29, facts)
+- Hemant asked for the real software story (24/7 test lab like the USB pen-drive soak; customer "Report this issue" reports; logs; routing to teams; latest team comments; fix dates to quote) and the same depth on supply, plus naming the real data sources.
+- Data: `scripts/data-detail.mjs` (own seed; base tables unchanged): 8 test suites, ~650 runs, issue origin/log/triage/workflow/comments/ETA, team notes on late code, supplier scorecards, PO/transport/tracking/inspection per shipment.
+- Engine: committed fix dates (+ `verifyDays` 1–3) replace the severity estimate in the software-ready range; reasons quote them; scenarios add shipment events.
+- Views: Issues (+ drawer), Test lab (charts per the data-viz spec), Software team notes, launch drawer issues, Supply shipment drawer + supplier scorecard, Data sources (adapters run live).
+- Integrations: `src/integrations/` adapters for Jira, TestRail-style runs, field reports, SAP OData POs, carrier tracking, with samples and tests. Doc: docs/DATA_SOURCES.md.
+- Assistant: 4 new tools (search_issues, get_issue, get_test_lab_summary, get_shipment); free mode answers issue/fix-date/test-lab/shipment/late-code questions.
+- Fixed a router bug: links with their own query dropped the workspace (w).
+- Tests: 69 unit, 16 e2e, all passing locally.
+
 ## Assistant (2026-10-29, facts)
 - Hemant: "lets work on the real AI agent which can answer all the questions of the app". Built "Ask LaunchReady" (press A / "Ask AI"): Claude Sonnet 5.5 (Hemant's earlier model choice, for budget), adaptive thinking at medium effort, prompt caching, server-side refusal fallback.
 - 10 strict tools in `src/agent/assistant.ts`, run in the browser by `src/agent/runAssistantTool.ts` over the live workspace; `propose_*` tools only render Apply/Approve buttons. Loop: `src/agent/loop.ts`. Panel: `src/app/assistant/`.
