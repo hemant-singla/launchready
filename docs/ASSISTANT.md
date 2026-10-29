@@ -2,7 +2,12 @@
 
 An AI assistant inside the app that answers questions about the plan: why a launch is at risk, what a supplier delay would do, which recovery option is best, how the rules work. It can also set up a what-if or a recovery approval, which the user applies with a click.
 
-## How it works
+## Two modes
+
+- **Free mode (default).** With no proxy and no key, the panel answers common questions straight from the plan with no AI and no cost (`src/agent/offline.ts`). It recognises what a question is about (a launch, platform, part or shipment) and what's asked (why, what if, how to recover, who acts, how it works), runs the same tools listed below, and writes the answer from their results, with the same tool chips and Approve / Apply buttons. Questions it can't place get a short help message rather than a guess. It's labelled "Free mode" in the panel.
+- **Claude.** With the proxy configured (below), or a visitor's own API key ("use Claude with your own API key" in the panel), Claude answers open-ended questions using the same tools.
+
+## How it works (Claude mode)
 
 ```mermaid
 sequenceDiagram
@@ -58,7 +63,7 @@ A static site can't hold an API key, so the hosted site talks to a small Cloudfl
    - Variable: `AGENT_PROXY_URL` = that URL.
 4. Re-run the **CI** workflow on `main` (or push any change). The site is rebuilt with the proxy URL, and "Ask AI" works for every visitor.
 
-Until then, the panel asks visitors for their own API key, which stays in that browser tab (sessionStorage) and goes only to `api.anthropic.com`.
+Until then, visitors get free mode, and can switch to Claude with their own API key, which stays in that browser tab (sessionStorage) and goes only to `api.anthropic.com`.
 
 ## Running it locally
 
@@ -78,6 +83,7 @@ Each question is typically 2–4 model calls: roughly 5–15K input tokens (most
 - `tests/assistant-tools.test.ts`: strict schemas; each tool's numbers match the engine; what-ifs and proposals never change the plan.
 - `tests/assistant-loop.test.ts`: the loop with a scripted fake model (parallel tool results, tool errors, refusals, cut-off tool calls, round limit).
 - `tests/assistant-proxy.test.ts`: request rebuilding, origins, methods, bad bodies, rate limit.
-- `e2e/assistant.spec.ts`: the real browser path with scripted streamed responses: a question answered from the live plan; a proposed recovery applied only on click; the connect screen; error and retry.
+- `tests/assistant-offline.test.ts`: free mode's answers for each kind of question match the engine and never change the plan.
+- `e2e/assistant.spec.ts`: the real browser path with scripted streamed responses (a question answered from the live plan; a proposed recovery applied only on click; error and retry), and free mode end to end with no API calls.
 
 None of the tests call the real API. Before relying on the hosted assistant, ask it a handful of real questions and read its tool calls in the panel.

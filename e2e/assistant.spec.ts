@@ -91,13 +91,28 @@ test('a proposed recovery changes the plan only after the user approves it', asy
   await expect(page.getByRole('region', { name: 'Impact of the current disruption' })).toContainText('No launch is worse than the original plan');
 });
 
-test('without a key or proxy, the panel asks to connect', async ({ page, context }) => {
-  await context.clearCookies();
+test('without a key or proxy, free mode answers from the plan and never calls the API', async ({ page }) => {
+  let apiCalls = 0;
+  await page.route('**/v1/messages**', (route) => { apiCalls++; return route.abort(); });
   await page.addInitScript(() => sessionStorage.removeItem('lr-anthropic-key'));
-  await page.goto('/#/app/launches');
+  await page.goto('/#/app/launches?w=eyJzIjpbInVzYkRlbGF5Il19');
   await page.keyboard.press('a');
-  await expect(page.getByRole('heading', { name: 'Connect the assistant' })).toBeVisible();
-  await expect(page.getByRole('textbox', { name: 'Anthropic API key' })).toBeVisible();
+  const panel = page.getByRole('complementary', { name: 'Ask LaunchReady' });
+  await expect(panel.getByText('Free mode', { exact: true })).toBeVisible();
+
+  await panel.getByText('What are my options to recover, and which do you recommend?').click();
+  await expect(panel.getByText('Ran the recovery search')).toBeVisible();
+  const card = panel.locator('.proposal');
+  await expect(card).toContainText('Borrow 20 USB 3.2 controllers from the Rhine-L order');
+  await card.getByRole('button', { name: 'Approve' }).click();
+  await expect(page.getByRole('region', { name: 'Impact of the current disruption' })).toContainText('No launch is worse than the original plan');
+
+  // Claude stays available behind a link.
+  await panel.getByRole('button', { name: 'use Claude with your own API key' }).click();
+  await expect(panel.getByRole('heading', { name: 'Use Claude' })).toBeVisible();
+  await panel.getByRole('button', { name: 'Back to free mode' }).click();
+  await expect(panel.getByText('Free mode', { exact: true })).toBeVisible();
+  expect(apiCalls).toBe(0);
 });
 
 test('API errors are shown with a retry, not a crash', async ({ page }) => {

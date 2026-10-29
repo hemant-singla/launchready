@@ -1,11 +1,16 @@
 // "Ask LaunchReady": a chat panel that answers questions about the plan by
 // calling tools over the live workspace. It can offer changes (a what-if, a
 // recovery approval) as buttons; only the user's click applies them.
+//
+// Two modes: Claude (through the proxy, or the visitor's own key) and free
+// mode, the default without either, which answers common questions straight
+// from the plan with no AI (agent/offline.ts).
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import type Anthropic from '@anthropic-ai/sdk';
 import { ArrowUp, Check, ChevronRight, KeyRound, Loader2, RotateCcw, Sparkles, Square, Wrench, X } from 'lucide-react';
 import { runTurn, type TurnEnd } from '../../agent/loop';
-import { runAssistantTool, type Proposal, type ToolOutcome } from '../../agent/runAssistantTool';
+import { runAssistantTool, type AgentContext, type Proposal, type ToolOutcome } from '../../agent/runAssistantTool';
+import { answerOffline } from '../../agent/offline';
 import { recoveryOptions } from '../../engine/recovery';
 import { useWorkspace, type Workspace } from '../state/workspace';
 import { useToast } from '../components/useToast';
@@ -60,6 +65,7 @@ export default function AssistantPanel({ open, onClose, view }: { open: boolean;
   const ws = useWorkspace();
   const toast = useToast();
   const [conn, setConn] = useState<Connection | null>(() => savedConnection());
+  const [connecting, setConnecting] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [history, setHistory] = useState<Anthropic.Beta.BetaMessageParam[]>([]);
   const [draft, setDraft] = useState('');
@@ -81,20 +87,33 @@ export default function AssistantPanel({ open, onClose, view }: { open: boolean;
       return [...t.slice(0, -1), { ...last, ...patch, parts: fn(last.parts) }];
     });
 
+  const agentContext = (): AgentContext => {
+    const w = wsRef.current;
+    return { base: w.base, baseline: w.baseline, state: { scenarios: w.state.scenarios, lab: w.state.lab, actions: w.state.decisions.actions } };
+  };
+
   const ask = async (question: string) => {
     const q = question.trim();
-    if (!q || busy || !conn) return;
+    if (!q || busy) return;
     setDraft('');
+    if (!conn) {
+      // Free mode: answer from the plan directly, no model call.
+      const a = answerOffline(q, agentContext());
+      const parts: Part[] = [
+        ...a.steps.filter((st) => !st.outcome.proposal).map((st): Part => ({ kind: 'tool', id: st.id, name: st.name, input: st.input, outcome: st.outcome })),
+        { kind: 'text', text: a.text },
+        ...a.steps.filter((st) => st.outcome.proposal).map((st): Part => ({ kind: 'proposal', id: st.id, proposal: st.outcome.proposal!, status: 'pending' })),
+      ];
+      setTurns((t) => [...t, { role: 'user', text: q }, { role: 'assistant', parts, end: 'answered' }]);
+      return;
+    }
     setBusy(true);
     setTurns((t) => [...t, { role: 'user', text: q }, { role: 'assistant', parts: [] }]);
     const controller = new AbortController();
     abort.current = controller;
     const userMsg: Anthropic.Beta.BetaMessageParam = { role: 'user', content: [{ type: 'text', text: `${stateNote(wsRef.current, view)}\n\n${q}` }] };
     try {
-      const r = await runTurn([...history, userMsg], createStream(conn, controller.signal), (name, input) => {
-        const w = wsRef.current;
-        return runAssistantTool(name, input, { base: w.base, baseline: w.baseline, state: { scenarios: w.state.scenarios, lab: w.state.lab, actions: w.state.decisions.actions } });
-      }, {
+      const r = await runTurn([...history, userMsg], createStream(conn, controller.signal), (name, input) => runAssistantTool(name, input, agentContext()), {
         onText: (delta) => updateLast((parts) => {
           const last = parts.at(-1);
           return last?.kind === 'text' ? [...parts.slice(0, -1), { ...last, text: last.text + delta }] : [...parts, { kind: 'text', text: delta }];
@@ -153,20 +172,22 @@ export default function AssistantPanel({ open, onClose, view }: { open: boolean;
       <header className="assistant-head">
         <Sparkles size={16} className="accent" />
         <h2>Ask LaunchReady</h2>
+        <span className={`badge ${conn ? 'accent' : 'neutral'}`} title={conn ? 'Answers written by Claude' : 'Answers built from the plan, no AI'}>{conn ? 'Claude' : 'Free mode'}</span>
         <span style={{ flex: 1 }} />
         {turns.length > 0 && <button className="btn ghost sm icon" onClick={clear} aria-label="New conversation" title="New conversation"><RotateCcw size={15} /></button>}
-        {conn?.mode === 'key' && <button className="btn ghost sm icon" onClick={() => { forgetKey(); setConn(null); clear(); }} aria-label="Forget API key" title="Forget API key"><KeyRound size={15} /></button>}
+        {conn?.mode === 'key' && <button className="btn ghost sm icon" onClick={() => { forgetKey(); setConn(null); clear(); }} aria-label="Forget API key and use free mode" title="Forget API key and use free mode"><KeyRound size={15} /></button>}
         <button className="btn ghost sm icon" onClick={onClose} aria-label="Close assistant"><X size={16} /></button>
       </header>
 
-      {!conn ? (
-        <ConnectForm onConnect={(key) => setConn(saveKey(key))} />
+      {connecting ? (
+        <ConnectForm onConnect={(key) => { setConn(saveKey(key)); setConnecting(false); clear(); }} onCancel={() => setConnecting(false)} />
       ) : (
         <>
           <div className="assistant-body" ref={listRef} aria-live="polite">
             {turns.length === 0 && (
               <div className="assistant-empty">
                 <p>Ask about any launch, part, platform or what-if. I look everything up in the plan you're viewing, including any disruption you've applied, and I can set up a what-if or an approval for you to confirm.</p>
+                {!conn && <p className="faint" style={{ fontSize: 13, marginTop: 8 }}>Free mode answers common questions instantly from the plan, with no AI and no cost.</p>}
                 <div className="assistant-ideas">
                   {ideas.map((s) => <button key={s} className="chip idea" onClick={() => void ask(s)}>{s}</button>)}
                 </div>
@@ -215,7 +236,11 @@ export default function AssistantPanel({ open, onClose, view }: { open: boolean;
             )}
           </form>
           <p className="assistant-foot">
-            AI answers can be wrong; numbers come from the app's engine, and changes only happen when you click.
+            {conn ? (
+              <>AI answers can be wrong; numbers come from the app's engine, and changes only happen when you click.</>
+            ) : (
+              <>Free mode: answers come straight from the plan, no AI. For open-ended questions, <button className="linklike" onClick={() => setConnecting(true)}>use Claude with your own API key</button>.</>
+            )}
           </p>
         </>
       )}
@@ -258,19 +283,22 @@ function ProposalCard({ part, onApply, onDismiss }: { part: Extract<Part, { kind
   );
 }
 
-function ConnectForm({ onConnect }: { onConnect: (key: string) => void }) {
+function ConnectForm({ onConnect, onCancel }: { onConnect: (key: string) => void; onCancel: () => void }) {
   const [key, setKey] = useState('');
   return (
     <form className="assistant-connect" onSubmit={(e) => { e.preventDefault(); if (key.trim()) onConnect(key.trim()); }}>
       <Sparkles size={24} className="accent" />
-      <h3>Connect the assistant</h3>
+      <h3>Use Claude</h3>
       <p className="muted">
-        {PROXY_URL ? '' : "This copy of LaunchReady isn't connected to the hosted assistant service. "}
-        To try it here, paste an Anthropic API key. It stays in this browser tab and is sent only to Anthropic.
+        {PROXY_URL ? '' : 'Free mode handles common questions. '}
+        For open-ended questions, paste an Anthropic API key. It stays in this browser tab and is sent only to Anthropic.
       </p>
       <input className="input" type="password" autoComplete="off" placeholder="sk-ant-…" value={key} onChange={(e) => setKey(e.target.value)} aria-label="Anthropic API key" />
-      <button className="btn primary" type="submit" disabled={!key.trim()}>Connect</button>
-      <p className="faint" style={{ fontSize: 12 }}>The assistant uses Claude; each question costs a fraction of a cent to a few cents.</p>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button className="btn primary" type="submit" disabled={!key.trim()}>Connect</button>
+        <button className="btn ghost" type="button" onClick={onCancel}>Back to free mode</button>
+      </div>
+      <p className="faint" style={{ fontSize: 12 }}>Each question costs your API account a fraction of a cent to a few cents.</p>
     </form>
   );
 }
