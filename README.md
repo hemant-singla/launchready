@@ -19,7 +19,7 @@ LaunchReady joins the two halves of a TV launch that usually live in different t
 | **See every launch at once.** One status per launch, the worse of software and supply, with buffer days, the main risk and who owns the fix. Whatever changed sorts to the top. | **Simulate a disruption** (press `S`). Delay any shipment, fail it at inspection, lose its date, or move a launch. Preview the impact before applying it. |
 | **Follow the chain.** Each launch opens a drawer with a plain-language explanation and the dependency chain (test boards → testing → software → production parts → launch), with the first broken link highlighted. | **Recover.** Options are applied to a copy of the plan and recalculated against all 16 launches. Anything that would hurt another launch is ruled out. Approve, reject, or undo. |
 | **Share the exact view.** The disruption and approved actions live in the URL, so a link reopens the same state. | **Keyboard first.** `⌘K` command palette, `S` simulate, `A` ask AI, `1`–`6` switch views, `j`/`k` and `↵` in tables, `/` filter, `Esc` closes. Dark mode follows the system. |
-| **Ask in plain language** (press `A`). An AI assistant answers questions about the plan by calling tools over the live workspace, so every number comes from the engine. It can set up a what-if or a recovery approval, which you apply with a click. See [docs/ASSISTANT.md](docs/ASSISTANT.md). | |
+| **Ask in plain language** (press `A`). An AI assistant answers questions about the plan by calling tools over the live workspace, so every number comes from the engine. It can set up a what-if or a recovery approval, which you apply with a click. **Free mode** answers common questions with no AI and no cost; Claude handles open-ended ones when connected. See [docs/ASSISTANT.md](docs/ASSISTANT.md). | |
 
 | Launch detail | Recovery |
 |---|---|
@@ -62,7 +62,7 @@ data/*.json ──► src/engine (pure TypeScript, no UI) ──► src/app (Rea
 - **Engine** (`src/engine`): pure functions over plain data, so the app, the unit tests and the AI agent tools all compute the same numbers. No React, no I/O.
 - **App** (`src/app`): React 19 + TypeScript, built with Vite. Workspace state (disruptions + approved actions) is a reducer whose shareable part is encoded into the URL. Derived results are memoised; the recovery search runs only where it's shown and is cached.
 - **Assistant** (`src/agent`, `src/app/assistant`, `proxy/`): Claude with ten strict tools that run in the browser over the live workspace; a streaming tool loop; a Cloudflare Worker that holds the key and rebuilds every request. Details: [docs/ASSISTANT.md](docs/ASSISTANT.md).
-- **Quality:** strict TypeScript, ESLint, 51 unit tests (engine, assistant tools, loop, proxy), 12 Playwright end-to-end tests (desktop + phone, including the assistant with scripted streams), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
+- **Quality:** strict TypeScript, ESLint, 57 unit tests (engine, assistant tools, free mode, loop, proxy), 12 Playwright end-to-end tests (desktop + phone, including the assistant with scripted streams), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
 
 Details and trade-offs: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the decision records in [docs/adr/](docs/adr/).
 
