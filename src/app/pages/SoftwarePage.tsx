@@ -4,7 +4,7 @@ import { openTickets } from '../../engine/software';
 import type { Severity } from '../../engine/types';
 import { useWorkspace } from '../state/workspace';
 import { date, plural, STATUS_RANK } from '../lib/format';
-import { navigate } from '../lib/router';
+import { href, navigate } from '../lib/router';
 import { StatusText } from '../components/ui';
 
 const SEV: Severity[] = ['critical', 'major', 'minor'];
@@ -68,12 +68,13 @@ export default function SoftwarePage({ chipset }: { chipset: string }) {
                             {!s ? <span className="faint">–</span> : s.submittedOn ? <span className="status ready">In {date(s.submittedOn)}</span>
                               : <span className={`status ${late ? 'at-risk' : 'ready'}`}>{s.expectedOn ? `Expected ${date(s.expectedOn)}` : 'No date'}</span>}
                             {late && <div className="cell-sub" style={{ color: 'var(--risk)' }}>due {date(s.dueDate)}</div>}
+                            {s?.note && <div className="team-note"><b>{t.name} team, {date(s.updatedOn)}:</b> {s.note}</div>}
                           </td>
                           <td className="right num muted">{s ? `${s.newCodePct}%` : ''}</td>
                           <td>
-                            {mine.length === 0 ? <span className="faint">none</span> : SEV.filter((sv) => mine.some((x) => x.severity === sv)).map((sv) => (
+                            {mine.length === 0 ? <span className="faint">none</span> : <a href={href(`/app/issues?platform=${c.id}&team=${t.id}`)} className="plain">{SEV.filter((sv) => mine.some((x) => x.severity === sv)).map((sv) => (
                               <span key={sv} style={{ marginRight: 10, color: SEV_COLOR[sv], fontWeight: sv === 'critical' ? 600 : 500 }}>{mine.filter((x) => x.severity === sv).length} {sv}</span>
-                            ))}
+                            ))}</a>}
                           </td>
                           <td className="right num">{b ? (b.days[1] ? `${b.days[0]}–${b.days[1]} days` : <span className="faint">–</span>) : ''}</td>
                         </tr>
@@ -87,7 +88,7 @@ export default function SoftwarePage({ chipset }: { chipset: string }) {
                   <div className="section-title">Critical tickets</div>
                   <ul className="reason-list">
                     {tickets.filter((t) => t.severity === 'critical').map((t) => (
-                      <li key={t.id}><span className="mono faint">{t.id}</span> {t.title} <span className="faint">· {t.team} · open {t.ageDays} days</span></li>
+                      <li key={t.id}><a href={href(`/app/issues/${t.id}`)} className="mono">{t.id}</a> {t.title} <span className="faint">· {t.team} · open {t.ageDays} days{t.eta ? ` · fix ${t.eta.confidence === 'committed' ? 'committed for' : 'estimated'} ${date(t.eta.fixBy)}` : ''}</span></li>
                     ))}
                   </ul>
                 </div>

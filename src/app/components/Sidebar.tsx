@@ -6,17 +6,19 @@ import { useTheme } from '../lib/theme';
 import { dateLong } from '../lib/format';
 
 export function Sidebar({ view, open, onNavigate }: { view: View; open: boolean; onNavigate: () => void }) {
-  const { result, affected, base, state } = useWorkspace();
+  const { result, affected, base, state, data } = useWorkspace();
   const [theme, toggleTheme] = useTheme();
   const needAttention = result.models.filter((m) => m.status !== 'ready').length;
   const counts: Partial<Record<View, { n: number; alert?: boolean }>> = {
     launches: { n: needAttention, alert: affected.models.length > 0 },
     recovery: affected.models.length ? { n: affected.models.length, alert: true } : undefined,
     activity: state.decisions.log.length ? { n: state.decisions.log.length } : undefined,
+    issues: { n: data.tickets.filter((t) => t.status === 'open').length },
   };
   const groups: [string, View[]][] = [
     ['Plan', ['launches', 'timeline', 'recovery']],
-    ['Evidence', ['supply', 'software']],
+    ['Software', ['software', 'issues', 'testlab']],
+    ['Supply', ['supply']],
     ['History', ['activity']],
   ];
 

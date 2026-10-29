@@ -24,7 +24,8 @@
     "triage": {
       "signature": "hid-generic: urb timeout",
       "rule": "USB input (HID) → USB team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "verifying",
     "eta": {
@@ -84,7 +85,8 @@
     "triage": {
       "signature": "uvcvideo: Dropped frames",
       "rule": "USB video class → USB team",
-      "routedOn": "2026-09-23"
+      "routedOn": "2026-09-23",
+      "line": 1
     },
     "workflow": "in-review",
     "eta": {
@@ -146,7 +148,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-09-22"
+      "routedOn": "2026-09-22",
+      "line": 2
     },
     "workflow": "in-progress",
     "eta": {
@@ -202,7 +205,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -253,7 +257,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 3
     },
     "workflow": "fixed",
     "comments": [
@@ -299,7 +304,8 @@
     "triage": {
       "signature": "uvcvideo: Dropped frames",
       "rule": "USB video class → USB team",
-      "routedOn": "2026-09-20"
+      "routedOn": "2026-09-20",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -346,7 +352,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -393,7 +400,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -440,7 +448,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-22"
+      "routedOn": "2026-09-22",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -488,7 +497,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-09-21"
+      "routedOn": "2026-09-21",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -535,7 +545,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-09-21"
+      "routedOn": "2026-09-21",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -585,7 +596,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 3
     },
     "workflow": "fixed",
     "comments": [
@@ -631,7 +643,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-09-18"
+      "routedOn": "2026-09-18",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -685,7 +698,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-09-19"
+      "routedOn": "2026-09-19",
+      "line": 1
     },
     "workflow": "in-review",
     "eta": {
@@ -745,7 +759,8 @@
     "triage": {
       "signature": "pq_check: hdr10_peak above target",
       "rule": "HDR tone mapping → Display team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -791,7 +806,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -837,7 +853,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -883,7 +900,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -929,7 +947,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-09-23"
+      "routedOn": "2026-09-23",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -974,7 +993,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-09-18"
+      "routedOn": "2026-09-18",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1020,7 +1040,8 @@
     "triage": {
       "signature": "audio_hal: bitstream underrun, fallback to PCM",
       "rule": "Audio passthrough → Audio team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 1
     },
     "workflow": "verifying",
     "eta": {
@@ -1080,7 +1101,8 @@
     "triage": {
       "signature": "av_sync: offset above limit",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-09-22"
+      "routedOn": "2026-09-22",
+      "line": 1
     },
     "workflow": "verifying",
     "eta": {
@@ -1139,7 +1161,8 @@
     "triage": {
       "signature": "audio_probe: power-on transient",
       "rule": "Audio amplifier control → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1184,7 +1207,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-09-22"
+      "routedOn": "2026-09-22",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1230,7 +1254,8 @@
     "triage": {
       "signature": "av_sync: offset above limit",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-09-19"
+      "routedOn": "2026-09-19",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1276,7 +1301,8 @@
     "triage": {
       "signature": "av_sync: offset above limit",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-09-18"
+      "routedOn": "2026-09-18",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1324,7 +1350,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -1373,7 +1400,8 @@
     "triage": {
       "signature": "p2p0: GO negotiation failed",
       "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "triaged",
     "comments": [
@@ -1417,7 +1445,8 @@
     "triage": {
       "signature": "p2p0: GO negotiation failed",
       "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -1465,7 +1494,8 @@
     "triage": {
       "signature": "wlan0: scan results missing DFS channels",
       "rule": "Wi-Fi regulatory → Connectivity team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -1510,7 +1540,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-09-22"
+      "routedOn": "2026-09-22",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1558,7 +1589,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-09-20"
+      "routedOn": "2026-09-20",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -1607,7 +1639,8 @@
     "triage": {
       "signature": "boot: home ready above target",
       "rule": "Boot and startup → Platform team",
-      "routedOn": "2026-09-18"
+      "routedOn": "2026-09-18",
+      "line": 2
     },
     "workflow": "verifying",
     "eta": {
@@ -1666,7 +1699,8 @@
     "triage": {
       "signature": "pm: unexpected wakeup source",
       "rule": "Power management → Platform team",
-      "routedOn": "2026-09-18"
+      "routedOn": "2026-09-18",
+      "line": 0
     },
     "workflow": "in-progress",
     "eta": {
@@ -1720,7 +1754,8 @@
     "triage": {
       "signature": "pm: unexpected wakeup source",
       "rule": "Power management → Platform team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 0
     },
     "workflow": "fixed",
     "comments": [
@@ -1769,7 +1804,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -1815,7 +1851,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1861,7 +1898,8 @@
     "triage": {
       "signature": "boot: home ready above target",
       "rule": "Boot and startup → Platform team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1907,7 +1945,8 @@
     "triage": {
       "signature": "thermal: cpu throttled",
       "rule": "Thermal management → Platform team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1953,7 +1992,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -1999,7 +2039,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-09-20"
+      "routedOn": "2026-09-20",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -2047,7 +2088,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "triaged",
     "comments": [
@@ -2089,7 +2131,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 2
     },
     "workflow": "verifying",
     "eta": {
@@ -2154,7 +2197,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 3
     },
     "workflow": "verifying",
     "eta": {
@@ -2216,7 +2260,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "in-progress",
     "eta": {
@@ -2272,7 +2317,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-09-24"
+      "routedOn": "2026-09-24",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -2328,7 +2374,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 2
     },
     "workflow": "new",
     "comments": [
@@ -2370,7 +2417,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "in-progress",
     "eta": {
@@ -2428,7 +2476,8 @@
     "triage": {
       "signature": "uvcvideo: Dropped frames",
       "rule": "USB video class → USB team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -2477,7 +2526,8 @@
     "triage": {
       "signature": "uvcvideo: Dropped frames",
       "rule": "USB video class → USB team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -2527,7 +2577,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 3
     },
     "workflow": "fixed",
     "comments": [
@@ -2574,7 +2625,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -2621,7 +2673,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -2671,7 +2724,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 3
     },
     "workflow": "fixed",
     "comments": [
@@ -2719,7 +2773,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -2769,7 +2824,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-09-24"
+      "routedOn": "2026-09-24",
+      "line": 3
     },
     "workflow": "fixed",
     "comments": [
@@ -2818,7 +2874,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-09-27"
+      "routedOn": "2026-09-27",
+      "line": 2
     },
     "workflow": "in-progress",
     "eta": {
@@ -2872,7 +2929,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -2916,7 +2974,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 2
     },
     "workflow": "in-review",
     "eta": {
@@ -2976,7 +3035,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -3031,7 +3091,8 @@
     "triage": {
       "signature": "settings: picture_mode reverted",
       "rule": "Settings storage → Display team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -3072,7 +3133,8 @@
     "triage": {
       "signature": "pq_check: hdr10_peak above target",
       "rule": "HDR tone mapping → Display team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3121,7 +3183,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -3167,7 +3230,8 @@
     "triage": {
       "signature": "pq_check: hdr10_peak above target",
       "rule": "HDR tone mapping → Display team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3212,7 +3276,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3258,7 +3323,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-09-24"
+      "routedOn": "2026-09-24",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3303,7 +3369,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3352,7 +3419,8 @@
     "triage": {
       "signature": "pq_check: hdr10_peak above target",
       "rule": "HDR tone mapping → Display team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -3401,7 +3469,8 @@
     "triage": {
       "signature": "bt_a2dp: packet drops",
       "rule": "Bluetooth audio → Audio team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 2
     },
     "workflow": "in-progress",
     "comments": [
@@ -3447,7 +3516,8 @@
     "triage": {
       "signature": "av_sync: offset above limit",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -3487,7 +3557,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -3530,7 +3601,8 @@
     "triage": {
       "signature": "audio_probe: power-on transient",
       "rule": "Audio amplifier control → Audio team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -3575,7 +3647,8 @@
     "triage": {
       "signature": "audio_probe: power-on transient",
       "rule": "Audio amplifier control → Audio team",
-      "routedOn": "2026-09-28"
+      "routedOn": "2026-09-28",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3620,7 +3693,8 @@
     "triage": {
       "signature": "audio_probe: power-on transient",
       "rule": "Audio amplifier control → Audio team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3665,7 +3739,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3711,7 +3786,8 @@
     "triage": {
       "signature": "net: tcp retransmits above limit",
       "rule": "Network stack → Connectivity team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -3765,7 +3841,8 @@
     "triage": {
       "signature": "wlan0: scan results missing DFS channels",
       "rule": "Wi-Fi regulatory → Connectivity team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -3805,7 +3882,8 @@
     "triage": {
       "signature": "wlan0: scan results missing DFS channels",
       "rule": "Wi-Fi regulatory → Connectivity team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -3845,7 +3923,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 1
     },
     "workflow": "verifying",
     "eta": {
@@ -3905,7 +3984,8 @@
     "triage": {
       "signature": "net: tcp retransmits above limit",
       "rule": "Network stack → Connectivity team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -3954,7 +4034,8 @@
     "triage": {
       "signature": "p2p0: GO negotiation failed",
       "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -3999,7 +4080,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-09-25"
+      "routedOn": "2026-09-25",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -4044,7 +4126,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-09-24"
+      "routedOn": "2026-09-24",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -4093,7 +4176,8 @@
     "triage": {
       "signature": "net: tcp retransmits above limit",
       "rule": "Network stack → Connectivity team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4139,7 +4223,8 @@
     "triage": {
       "signature": "thermal: cpu throttled",
       "rule": "Thermal management → Platform team",
-      "routedOn": "2026-09-29"
+      "routedOn": "2026-09-29",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -4194,7 +4279,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -4249,7 +4335,8 @@
     "triage": {
       "signature": "thermal: cpu throttled",
       "rule": "Thermal management → Platform team",
-      "routedOn": "2026-09-27"
+      "routedOn": "2026-09-27",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -4304,7 +4391,8 @@
     "triage": {
       "signature": "FATAL: com.nwv.settings NullPointerException",
       "rule": "Settings app → Platform team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -4359,7 +4447,8 @@
     "triage": {
       "signature": "boot: home ready above target",
       "rule": "Boot and startup → Platform team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -4404,7 +4493,8 @@
     "triage": {
       "signature": "pm: unexpected wakeup source",
       "rule": "Power management → Platform team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 0
     },
     "workflow": "fixed",
     "comments": [
@@ -4453,7 +4543,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4502,7 +4593,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4548,7 +4640,8 @@
     "triage": {
       "signature": "boot: home ready above target",
       "rule": "Boot and startup → Platform team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -4597,7 +4690,8 @@
     "triage": {
       "signature": "FATAL: com.nwv.settings NullPointerException",
       "rule": "Settings app → Platform team",
-      "routedOn": "2026-09-30"
+      "routedOn": "2026-09-30",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4643,7 +4737,8 @@
     "triage": {
       "signature": "uvcvideo: Dropped frames",
       "rule": "USB video class → USB team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -4686,7 +4781,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 2
     },
     "workflow": "new",
     "comments": [
@@ -4728,7 +4824,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 2
     },
     "workflow": "triaged",
     "comments": [
@@ -4770,7 +4867,8 @@
     "triage": {
       "signature": "swupdate: verify chunk failed: CRC mismatch",
       "rule": "Software updater → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4817,7 +4915,8 @@
     "triage": {
       "signature": "usb-storage: reset high-speed USB device",
       "rule": "USB mass storage → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -4865,7 +4964,8 @@
     "triage": {
       "signature": "usb 1-1: device descriptor read/64, error -71",
       "rule": "USB host controller → USB team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 2
     },
     "workflow": "fixed",
     "comments": [
@@ -4910,7 +5010,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -4951,7 +5052,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -5006,7 +5108,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "in-progress",
     "comments": [
@@ -5052,7 +5155,8 @@
     "triage": {
       "signature": "settings: picture_mode reverted",
       "rule": "Settings storage → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -5106,7 +5210,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -5146,7 +5251,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "in-progress",
     "eta": {
@@ -5201,7 +5307,8 @@
     "triage": {
       "signature": "settings: picture_mode reverted",
       "rule": "Settings storage → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "in-progress",
     "comments": [
@@ -5246,7 +5353,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5292,7 +5400,8 @@
     "triage": {
       "signature": "pq_check: gradient_dark delta-E above limit",
       "rule": "Picture processing → Display team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5337,7 +5446,8 @@
     "triage": {
       "signature": "pq_check: halo_score above limit",
       "rule": "Local dimming → Display team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5383,7 +5493,8 @@
     "triage": {
       "signature": "vrr: frame pacing jitter above limit",
       "rule": "Variable refresh rate → Display team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5433,7 +5544,8 @@
     "triage": {
       "signature": "earc: capability handshake timeout",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-09-26"
+      "routedOn": "2026-09-26",
+      "line": 2
     },
     "workflow": "in-review",
     "eta": {
@@ -5492,7 +5604,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -5532,7 +5645,8 @@
     "triage": {
       "signature": "audio_policy: volume reset on source change",
       "rule": "Audio policy → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -5572,7 +5686,8 @@
     "triage": {
       "signature": "audio_probe: power-on transient",
       "rule": "Audio amplifier control → Audio team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -5613,7 +5728,8 @@
     "triage": {
       "signature": "av_sync: offset above limit",
       "rule": "HDMI eARC audio → Audio team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5659,7 +5775,8 @@
     "triage": {
       "signature": "audio_hal: bitstream underrun, fallback to PCM",
       "rule": "Audio passthrough → Audio team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5704,7 +5821,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "new",
     "comments": [
@@ -5745,7 +5863,8 @@
     "triage": {
       "signature": "wlan0: association took too long",
       "rule": "Wi-Fi driver → Connectivity team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 2
     },
     "workflow": "new",
     "comments": [
@@ -5786,7 +5905,8 @@
     "triage": {
       "signature": "p2p0: GO negotiation failed",
       "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -5827,7 +5947,8 @@
     "triage": {
       "signature": "net: tcp retransmits above limit",
       "rule": "Network stack → Connectivity team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5872,7 +5993,8 @@
     "triage": {
       "signature": "bt: link key missing for remote",
       "rule": "Bluetooth → Connectivity team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -5918,7 +6040,8 @@
     "triage": {
       "signature": "boot: home ready above target",
       "rule": "Boot and startup → Platform team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -5959,7 +6082,8 @@
     "triage": {
       "signature": "thermal: cpu throttled",
       "rule": "Thermal management → Platform team",
-      "routedOn": "2026-10-02"
+      "routedOn": "2026-10-02",
+      "line": 1
     },
     "workflow": "triaged",
     "comments": [
@@ -6000,7 +6124,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-01"
+      "routedOn": "2026-10-01",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -6046,7 +6171,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-03"
+      "routedOn": "2026-10-03",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [
@@ -6092,7 +6218,8 @@
     "triage": {
       "signature": "lowmemorykiller: killing home app",
       "rule": "Media player memory → Platform team",
-      "routedOn": "2026-10-04"
+      "routedOn": "2026-10-04",
+      "line": 1
     },
     "workflow": "fixed",
     "comments": [

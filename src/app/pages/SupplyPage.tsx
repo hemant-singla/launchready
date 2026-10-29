@@ -7,8 +7,9 @@ import { useWorkspace } from '../state/workspace';
 import { date, modelName, num, partName, supplierName } from '../lib/format';
 import { navigate } from '../lib/router';
 import { StatusText } from '../components/ui';
+import { ShipmentDrawer, SupplierScorecard } from './SupplyDetail';
 
-export default function SupplyPage({ chipset }: { chipset: string }) {
+export default function SupplyPage({ chipset, selected }: { chipset: string; selected?: string }) {
   const { data, base, result } = useWorkspace();
   const [problemsOnly, setProblemsOnly] = useState(false);
   const setChipset = (c: string) => navigate(`/app/supply${c ? `?chipset=${encodeURIComponent(c)}` : ''}`);
@@ -80,7 +81,7 @@ export default function SupplyPage({ chipset }: { chipset: string }) {
             </thead>
             <tbody>
               {deliveries.map(({ d, changed, slip }) => (
-                <tr key={d.id} className={changed ? 'changed' : undefined}>
+                <tr key={d.id} className={`clickable${changed ? ' changed' : ''}`} onClick={() => navigate(`/app/supply/${d.id}${chipset ? `?chipset=${chipset}` : ''}`)}>
                   <td><div className="cell-title">{partName(data, d.part)}</div><div className="cell-sub mono">{d.id}</div></td>
                   <td className="hide-md muted">{supplierName(data, d.supplier)}</td>
                   <td className="right num">{num(d.qty)}</td>
@@ -102,6 +103,8 @@ export default function SupplyPage({ chipset }: { chipset: string }) {
         </div>
       </div>
 
+      <SupplierScorecard />
+
       <div className="card">
         <div className="card-head"><h3>Stock on hand</h3><span className="faint" style={{ fontSize: 12 }}>all warehouses</span></div>
         <div className="table-wrap">
@@ -120,6 +123,9 @@ export default function SupplyPage({ chipset }: { chipset: string }) {
           </table>
         </div>
       </div>
+      {data.deliveries.some((d) => d.id === selected) && (
+        <ShipmentDrawer id={selected!} onClose={() => navigate(`/app/supply${chipset ? `?chipset=${chipset}` : ''}`)} />
+      )}
     </>
   );
 }

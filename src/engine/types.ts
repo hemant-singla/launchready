@@ -85,7 +85,7 @@ export interface Ticket {
   /** Excerpt of the TV log attached to the issue. */
   log?: string[];
   /** How it reached the team: the log signature and routing rule. */
-  triage?: { signature: string; rule: string; routedOn: IsoDate };
+  triage?: { signature: string; rule: string; routedOn: IsoDate; /** Index of the log line the signature matched. */ line: number };
   comments?: TicketComment[];
   /** The team's fix date: committed dates feed the software-ready date. */
   eta?: { fixBy: IsoDate; confidence: 'committed' | 'estimate' };

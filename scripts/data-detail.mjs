@@ -172,7 +172,11 @@ export function enrichTickets(out, asOf) {
       t.testCase = { suite: suite.id, step: meta.step };
       t.log = meta.log;
     }
-    t.triage = { signature: meta.sig, rule: `${meta.component} → ${ROLE[t.team]}`, routedOn: t.openedOn };
+    // The log line the signature matched: the one sharing the most words with it.
+    const words = meta.sig.toLowerCase().split(/[^a-z0-9_]+/).filter((w) => w.length > 2);
+    const score = (line) => words.filter((w) => line.toLowerCase().includes(w)).length;
+    const line = t.log.reduce((best, l, i) => (score(l) > score(t.log[best]) ? i : best), 0);
+    t.triage = { signature: meta.sig, rule: `${meta.component} → ${ROLE[t.team]}`, routedOn: t.openedOn, line };
 
     const comments = [{ at: t.openedOn, by: 'Triage bot', text: `Log signature "${meta.sig}" matches the ${meta.component} rule. Routed to the ${ROLE[t.team]}.` }];
     const ack = addDays(t.openedOn, between(0, 1));
