@@ -9,6 +9,8 @@ export interface LogEntry {
   decision: 'approved' | 'rejected' | 'note';
   title: string;
   result: string;
+  /** When it happened (ISO timestamp); set by the app, not by the engine. */
+  at?: string;
 }
 export interface Decisions { actions: Action[]; log: LogEntry[] }
 
@@ -29,6 +31,13 @@ export function decide(state: Decisions, option: Action & { title: string }, app
     actions: approved ? [...state.actions, actionOf(option)] : state.actions,
     log: [...state.log, entry],
   };
+}
+
+/** Withdraw the most recent approval: its action is removed and the log says so. */
+export function undoLast(state: Decisions): Decisions {
+  if (!state.actions.length) return state;
+  const last = [...state.log].reverse().find((e) => e.decision === 'approved');
+  return note({ ...state, actions: state.actions.slice(0, -1) }, `Undid approval: ${last?.title ?? 'last action'}`);
 }
 
 /** Add a plain note (e.g. "agent run started") to the log. */
