@@ -24,8 +24,21 @@ out.push(t(['Chipset', 'New?', 'Test boards', 'Code deadline', 'Planned test sta
     return [c.id, c.isNew ? 'new' : 'reused', c.testBoards, c.codeDeadline, c.plannedTestStart, e.testStart ?? '?', `${k('critical')}/${k('major')}/${k('minor')}`, `${Math.round(s.reduce((a, x) => a + x.newCodePct, 0) / s.length)}%`];
   })));
 out.push(`\nTickets: ${d.tickets.length} in total (${d.tickets.filter((x) => x.status === 'open').length} open), raised by testing teams and clients on the three chipsets already in testing.\n`);
-out.push('## Late or missing code submissions\n');
-out.push(t(['Chipset', 'Team', 'Due', 'Expected'], d.submissions.filter((s) => !s.submittedOn && s.expectedOn > s.dueDate).map((s) => [s.chipset, s.team, s.dueDate, s.expectedOn])));
+out.push('## Issues: where they come from and when they will be fixed\n');
+const open = d.tickets.filter((x) => x.status === 'open');
+const bySrc = (src) => open.filter((x) => x.source === src);
+out.push(t(['Source', 'Open', 'Critical', 'Major', 'Minor', 'With committed fix date', 'TVs reporting'], ['test-lab', 'customer'].map((src) => {
+  const o = bySrc(src);
+  return [src === 'customer' ? 'Customer reports' : 'Test lab', o.length, ...['critical', 'major', 'minor'].map((v) => o.filter((x) => x.severity === v).length), o.filter((x) => x.eta?.confidence === 'committed').length, src === 'customer' ? o.reduce((n, x) => n + (x.report?.units ?? 0), 0).toLocaleString('en-US') : '–'];
+})));
+out.push('\nOpen issues by stage: ' + ['new', 'triaged', 'in-progress', 'in-review', 'verifying'].map((w) => `${w} ${open.filter((x) => x.workflow === w).length}`).join(', ') + '.\n');
+out.push('## Test lab\n');
+out.push(t(['Suite', 'Hours', 'Runs', 'Pass rate', 'Issues found'], d.testSuites.map((s) => {
+  const rs = d.testRuns.filter((x) => x.suite === s.id); const done = rs.filter((x) => x.result !== 'running');
+  return [s.name, s.hours, rs.length, `${Math.round((100 * done.filter((x) => x.result === 'pass').length) / done.length)}%`, d.tickets.filter((x) => x.testCase?.suite === s.id).length];
+})));
+out.push('\n## Late or missing code submissions\n');
+out.push(t(['Chipset', 'Team', 'Due', 'Expected', "Team's note"], d.submissions.filter((s) => !s.submittedOn && s.expectedOn > s.dueDate).map((s) => [s.chipset, s.team, s.dueDate, s.expectedOn, s.note ?? ''])));
 out.push('\n## Parts: free stock and deliveries\n');
 out.push(t(['Part', 'Name', 'Used by', 'On hand', 'Allocated', 'Free'], d.parts.map((p) => {
   const st = d.stock.filter((s) => s.part === p.id); const sum = (f) => st.reduce((a, s) => a + f(s), 0);
@@ -33,6 +46,8 @@ out.push(t(['Part', 'Name', 'Used by', 'On hand', 'Allocated', 'Free'], d.parts.
 })));
 out.push('\n');
 out.push(t(['PO', 'Part', 'Qty', 'Planned', 'Current', 'Status', 'For', 'Note'], d.deliveries.map((x) => [x.id, x.part, x.qty, x.originalEta, x.eta ?? '**no date**', x.status, x.forChipset ?? 'any', x.note])));
+out.push('\n## Suppliers\n');
+out.push(t(['Supplier', 'Region', 'Lead time', 'On time (12 mo)', 'Avg delay', 'Defects (ppm)', 'Latest note'], d.suppliers.map((s) => [s.name, s.region, `${s.leadTimeDays} d`, `${Math.round(s.onTimeRate * 100)}%`, `${s.avgDelayDays} d`, s.defectPpm, s.latestNote])));
 out.push('\n## Approved substitutes\n');
 out.push(t(['Part', 'Substitute', 'Approved for', 'Driver change'], d.substitutes.map((s) => [s.part, s.substitute, s.approvedFor.join(', '), `${s.driverTeam}, ${s.driverChangeDays[0]}–${s.driverChangeDays[1]} days`])));
 out.push('\n## What each scenario changes\n');

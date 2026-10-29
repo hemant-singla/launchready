@@ -78,7 +78,7 @@ test('command palette jumps to a launch', async ({ page }) => {
 
 test('every view renders without errors', async ({ page }) => {
   const errors = errorsOf(page);
-  for (const view of ['launches', 'timeline', 'recovery', 'supply', 'software', 'activity']) {
+  for (const view of ['launches', 'timeline', 'recovery', 'supply', 'software', 'issues', 'testlab', 'activity', 'sources']) {
     await page.goto(`/#/app/${view}`);
     await expect(page.locator('main h2').first()).toBeVisible();
   }
@@ -94,4 +94,44 @@ test('story page: the guess reveals Halo 77" and the CTA opens the app with the 
   await page.getByRole('link', { name: 'See the delay in the app' }).click();
   await expect(page.getByRole('region', { name: 'Impact of the current disruption' })).toContainText('Halo 77"');
   expect(errors).toEqual([]);
+});
+
+test('issues: a customer-reported critical shows its origin, log, routing and committed fix date', async ({ page }) => {
+  const errors = errorsOf(page);
+  await page.goto('/#/app/issues');
+  await page.getByRole('button', { name: 'Customers', exact: true }).click();
+  await page.getByRole('link', { name: 'No sound over eARC with soundbars from two brands' }).click();
+  const drawer = page.getByRole('dialog', { name: 'NWV-4211 details' });
+  await expect(drawer).toContainText('1,240 TVs used "Report this issue"');
+  await expect(drawer.locator('.tvlog .hit')).toContainText('capability handshake timeout');
+  await expect(drawer).toContainText('committed to a fix in a release build by 9 Oct');
+  await expect(drawer.getByRole('region', { name: 'Timeline' }).locator('li')).toHaveCount(5);
+  expect(errors).toEqual([]);
+});
+
+test('test lab charts render with a hover tooltip, and suites link to their issues', async ({ page }) => {
+  await page.goto('/#/app/testlab');
+  await expect(page.getByRole('img', { name: 'Test hours per day by result' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Daily pass rate by platform' })).toBeVisible();
+  await page.getByRole('img', { name: 'Test hours per day by result' }).locator('g[tabindex]').nth(3).focus();
+  await expect(page.locator('.chart-tip')).toContainText('Passed:');
+  await page.locator('table.data tbody tr').filter({ hasText: 'USB media playback soak' }).getByRole('link').click();
+  await expect(page).toHaveURL(/#\/app\/issues\?.*suite=TS-USB-MEDIA/);
+  await expect(page.locator('table.data tbody tr').first()).toBeVisible();
+});
+
+test('a delayed shipment shows the supplier notice in its tracking and keeps the disruption', async ({ page }) => {
+  await page.goto('/#/app/supply?w=eyJzIjpbInVzYkRlbGF5Il19');
+  await page.locator('table.data tbody tr').filter({ hasText: 'DL-UC3-01' }).click();
+  const drawer = page.getByRole('dialog', { name: 'DL-UC3-01 shipment details' });
+  await expect(drawer).toContainText('Supplier notice');
+  await expect(drawer).toContainText('arrives 10 Dec (planned 6 Nov)');
+  await expect(page).toHaveURL(/w=/);
+});
+
+test('data sources run each adapter on its sample payload', async ({ page }) => {
+  await page.goto('/#/app/sources');
+  const jira = page.locator('article').filter({ hasText: 'Issue tracker' });
+  await jira.getByRole('button', { name: /Run the adapter on a sample/ }).click();
+  await expect(jira.locator('pre.json').nth(1)).toContainText('"severity": "critical"');
 });

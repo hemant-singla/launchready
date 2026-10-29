@@ -224,7 +224,8 @@ export function enrichTickets(out, asOf) {
 export function makeTestRuns(out, asOf) {
   const runs = [];
   let n = 1;
-  const perDay = (s) => (s.hours >= 48 ? 0.5 : Math.floor(24 / s.hours));
+  // Suites of 24 h or more start one run a day on rotating rigs; shorter ones repeat.
+  const perDay = (s) => Math.max(1, Math.floor(24 / s.hours));
   for (const c of out.chipsets.filter((x) => x.testStartedOn)) {
     for (let day = c.testStartedOn; day <= asOf; day = addDays(day, 1)) {
       const dayIndex = daysApart(day, c.testStartedOn);

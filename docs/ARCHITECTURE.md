@@ -21,6 +21,7 @@ flowchart LR
 | Engine | `src/engine/` | All business logic, as pure functions over plain data | data types only |
 | App | `src/app/` | Views, interaction, workspace state, URL sync | engine |
 | Assistant | `src/agent/`, `src/app/assistant/` | In-app AI assistant: prompt, strict tools over the live workspace, streaming tool loop, chat panel | engine, app formatting |
+| Integrations | `src/integrations/` | Adapters from source-system payloads (Jira, TestRail, field reports, SAP OData, carrier tracking) to the dataset's tables, with sample payloads; see [DATA_SOURCES.md](DATA_SOURCES.md) | data types |
 | Proxy | `proxy/` | Cloudflare Worker holding the API key; rebuilds every request from `src/agent/assistant.ts` | assistant config |
 
 The engine never imports from the app. That boundary is what lets the same numbers appear in the UI, the tests and an agent's tool results.
@@ -31,7 +32,7 @@ The engine never imports from the app. That boundary is what lets the same numbe
 |---|---|
 | `types.ts` | Domain types for the dataset and every derived result. |
 | `supply.ts` | `allocate()`: builds demand lines (test boards per platform, production per model, one per part), sorts them by need date, and hands out stock and dated deliveries once each. Pegged orders go to their platform first. A second pass finds approved substitutes in what's left. Undated deliveries are reported, never counted. |
-| `software.ts` | `softwareEta()`: test start = latest of plan, code complete + bring-up, boards ready. Ready range = max(test window + stabilisation, backlog ÷ capacity), at both ends. `softwareStatus()` turns that into a verdict against the 7-day cutoff. |
+| `software.ts` | `softwareEta()`: test start = latest of plan, code complete + bring-up, boards ready. Ready range = max(test window + stabilisation, uncommitted backlog ÷ capacity, latest committed fix + verification), at both ends. `softwareStatus()` turns that into a verdict against the 7-day cutoff. |
 | `compute.ts` | `computeAll()`: joins the two sides. Test-board readiness from supply feeds the software ETA, which is how a parts delay becomes a software delay. Each model's status is the worse side. |
 | `recovery.ts` | `recoveryOptions()`: what got worse vs the original plan, the eligible actions, each tested by re-running `computeAll` on a copy, filtered (must help, must not hurt others) and ranked. `applyActions()` applies approved actions. |
 | `lab.ts` | What-if edits (`applyLab`), the knock-on trail, and `explain()`: one plain sentence per launch built from computed values. |

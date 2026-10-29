@@ -60,7 +60,7 @@ test('answers a question by looking up the live plan', async ({ page }) => {
 
   // First request: fixed model and tools, and the question carries the app state.
   expect(bodies[0].model).toBe('claude-sonnet-5-5');
-  expect((bodies[0].tools as unknown[]).length).toBe(10);
+  expect((bodies[0].tools as unknown[]).length).toBe(14);
   expect(JSON.stringify(bodies[0].messages)).toContain('[App state] Disruptions: The USB 3.2 controller shipment');
   // Second request: the tool ran in the browser against the disrupted plan.
   const toolResult = JSON.stringify((bodies[1].messages as { content: unknown }[]).at(-1));

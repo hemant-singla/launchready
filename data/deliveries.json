@@ -12,20 +12,20 @@
     "po": {
       "number": "PO-26-4410",
       "placedOn": "2026-08-04",
-      "unitCost": 15.56,
+      "unitCost": 23.68,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL216442"
+      "tracking": "BWL885055"
     },
     "events": [
       {
         "at": "2026-08-04",
         "stage": "ordered",
-        "text": "PO-26-4410 placed: 8,000 × Indus-M SoC at $15.56",
+        "text": "PO-26-4410 placed: 8,000 × Indus-M SoC at $23.68",
         "planned": false
       },
       {
@@ -35,15 +35,15 @@
         "planned": false
       },
       {
-        "at": "2026-09-28",
+        "at": "2026-09-22",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-09",
+        "at": "2026-10-11",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL216442)",
+        "text": "Shipped by sea (BWL885055)",
         "planned": true
       },
       {
@@ -60,7 +60,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-28",
+      "at": "2026-09-22",
       "text": "Production started"
     }
   },
@@ -77,20 +77,20 @@
     "po": {
       "number": "PO-26-4411",
       "placedOn": "2026-08-11",
-      "unitCost": 34.98,
+      "unitCost": 14.47,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL124891"
+      "tracking": "BWL167907"
     },
     "events": [
       {
         "at": "2026-08-11",
         "stage": "ordered",
-        "text": "PO-26-4411 placed: 5,000 × Indus-L SoC at $34.98",
+        "text": "PO-26-4411 placed: 5,000 × Indus-L SoC at $14.47",
         "planned": false
       },
       {
@@ -100,21 +100,21 @@
         "planned": false
       },
       {
+        "at": "2026-09-25",
+        "stage": "production",
+        "text": "Production started",
+        "planned": false
+      },
+      {
         "at": "2026-09-29",
         "stage": "delayed",
         "text": "Supplier notice: Wafer lot re-test, +7 days. New arrival 2026-11-10.",
         "planned": false
       },
       {
-        "at": "2026-10-03",
-        "stage": "production",
-        "text": "Production started",
-        "planned": false
-      },
-      {
-        "at": "2026-10-22",
+        "at": "2026-10-21",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL124891)",
+        "text": "Shipped by sea (BWL167907)",
         "planned": true
       },
       {
@@ -131,8 +131,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-10-03",
-      "text": "Production started"
+      "at": "2026-09-29",
+      "text": "Supplier notice: Wafer lot re-test, +7 days. New arrival 2026-11-10."
     }
   },
   {
@@ -148,20 +148,20 @@
     "po": {
       "number": "PO-26-4412",
       "placedOn": "2026-09-14",
-      "unitCost": 19.89,
+      "unitCost": 29,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY443094"
+      "tracking": "SKY548308"
     },
     "events": [
       {
         "at": "2026-09-14",
         "stage": "ordered",
-        "text": "PO-26-4412 placed: 2,400 × Rhine-L SoC at $19.89",
+        "text": "PO-26-4412 placed: 2,400 × Rhine-L SoC at $29",
         "planned": false
       },
       {
@@ -171,15 +171,15 @@
         "planned": false
       },
       {
-        "at": "2026-11-22",
+        "at": "2026-11-14",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-12-03",
+        "at": "2026-12-02",
         "stage": "shipped",
-        "text": "Shipped by air (SKY443094)",
+        "text": "Shipped by air (SKY548308)",
         "planned": true
       },
       {
@@ -213,30 +213,30 @@
     "po": {
       "number": "PO-26-4413",
       "placedOn": "2026-09-17",
-      "unitCost": 38.42,
+      "unitCost": 14.77,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY860121"
+      "tracking": "SKY136080"
     },
     "events": [
       {
         "at": "2026-09-17",
         "stage": "ordered",
-        "text": "PO-26-4413 placed: 600 × Volga-X SoC at $38.42",
+        "text": "PO-26-4413 placed: 600 × Volga-X SoC at $14.77",
         "planned": false
       },
       {
-        "at": "2026-09-20",
+        "at": "2026-09-19",
         "stage": "confirmed",
         "text": "Kestrel Semi confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-11-21",
+        "at": "2026-11-23",
         "stage": "production",
         "text": "Production started",
         "planned": true
@@ -244,7 +244,7 @@
       {
         "at": "2026-12-06",
         "stage": "shipped",
-        "text": "Shipped by air (SKY860121)",
+        "text": "Shipped by air (SKY136080)",
         "planned": true
       },
       {
@@ -261,7 +261,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-20",
+      "at": "2026-09-19",
       "text": "Kestrel Semi confirmed the order and ship date"
     }
   },
@@ -278,39 +278,39 @@
     "po": {
       "number": "PO-26-4414",
       "placedOn": "2026-08-27",
-      "unitCost": 1.74,
+      "unitCost": 1.77,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL903128"
+      "tracking": "BWL957536"
     },
     "events": [
       {
         "at": "2026-08-27",
         "stage": "ordered",
-        "text": "PO-26-4414 placed: 10,000 × USB 3.0 controller at $1.74",
+        "text": "PO-26-4414 placed: 10,000 × USB 3.0 controller at $1.77",
         "planned": false
       },
       {
-        "at": "2026-08-30",
+        "at": "2026-08-28",
         "stage": "confirmed",
         "text": "Northbay Components confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-18",
+        "at": "2026-09-22",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-06",
+        "at": "2026-10-03",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL903128)",
-        "planned": true
+        "text": "Shipped by sea (BWL957536)",
+        "planned": false
       },
       {
         "at": "2026-10-20",
@@ -326,8 +326,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-18",
-      "text": "Production started"
+      "at": "2026-10-03",
+      "text": "Shipped by sea (BWL957536)"
     }
   },
   {
@@ -343,38 +343,38 @@
     "po": {
       "number": "PO-26-4415",
       "placedOn": "2026-09-07",
-      "unitCost": 2.5,
+      "unitCost": 2.49,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL938834"
+      "tracking": "BWL591626"
     },
     "events": [
       {
         "at": "2026-09-07",
         "stage": "ordered",
-        "text": "PO-26-4415 placed: 6,000 × USB 3.0 controller at $2.5",
+        "text": "PO-26-4415 placed: 6,000 × USB 3.0 controller at $2.49",
         "planned": false
       },
       {
-        "at": "2026-09-10",
+        "at": "2026-09-08",
         "stage": "confirmed",
         "text": "Northbay Components confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-28",
+        "at": "2026-10-05",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-13",
+        "at": "2026-10-15",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL938834)",
+        "text": "Shipped by sea (BWL591626)",
         "planned": true
       },
       {
@@ -391,7 +391,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-28",
+      "at": "2026-10-05",
       "text": "Production started"
     }
   },
@@ -408,20 +408,20 @@
     "po": {
       "number": "PO-26-4416",
       "placedOn": "2026-09-11",
-      "unitCost": 1.67,
+      "unitCost": 2.77,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY488724"
+      "tracking": "SKY554223"
     },
     "events": [
       {
         "at": "2026-09-11",
         "stage": "ordered",
-        "text": "PO-26-4416 placed: 100 × USB 3.2 controller at $1.67",
+        "text": "PO-26-4416 placed: 100 × USB 3.2 controller at $2.77",
         "planned": false
       },
       {
@@ -431,15 +431,15 @@
         "planned": false
       },
       {
-        "at": "2026-10-20",
+        "at": "2026-10-18",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-11-03",
+        "at": "2026-11-02",
         "stage": "shipped",
-        "text": "Shipped by air (SKY488724)",
+        "text": "Shipped by air (SKY554223)",
         "planned": true
       },
       {
@@ -473,20 +473,20 @@
     "po": {
       "number": "PO-26-4417",
       "placedOn": "2026-09-14",
-      "unitCost": 3.32,
+      "unitCost": 2.42,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL267888"
+      "tracking": "BWL736621"
     },
     "events": [
       {
         "at": "2026-09-14",
         "stage": "ordered",
-        "text": "PO-26-4417 placed: 5,200 × USB 3.2 controller at $3.32",
+        "text": "PO-26-4417 placed: 5,200 × USB 3.2 controller at $2.42",
         "planned": false
       },
       {
@@ -496,15 +496,15 @@
         "planned": false
       },
       {
-        "at": "2026-10-11",
+        "at": "2026-09-29",
         "stage": "production",
         "text": "Production started",
-        "planned": true
+        "planned": false
       },
       {
-        "at": "2026-10-24",
+        "at": "2026-10-18",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL267888)",
+        "text": "Shipped by sea (BWL736621)",
         "planned": true
       },
       {
@@ -521,8 +521,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-15",
-      "text": "Northbay Components confirmed the order and ship date"
+      "at": "2026-09-29",
+      "text": "Production started"
     }
   },
   {
@@ -538,39 +538,39 @@
     "po": {
       "number": "PO-26-4418",
       "placedOn": "2026-09-03",
-      "unitCost": 2.58,
+      "unitCost": 2.59,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL219615"
+      "tracking": "BWL182857"
     },
     "events": [
       {
         "at": "2026-09-03",
         "stage": "ordered",
-        "text": "PO-26-4418 placed: 2,500 × USB 3.2 controller at $2.58",
+        "text": "PO-26-4418 placed: 2,500 × USB 3.2 controller at $2.59",
         "planned": false
       },
       {
-        "at": "2026-09-04",
+        "at": "2026-09-05",
         "stage": "confirmed",
         "text": "Northbay Components confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-23",
+        "at": "2026-09-15",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-09",
+        "at": "2026-10-05",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL219615)",
-        "planned": true
+        "text": "Shipped by sea (BWL182857)",
+        "planned": false
       },
       {
         "at": "2026-10-27",
@@ -586,8 +586,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-23",
-      "text": "Production started"
+      "at": "2026-10-05",
+      "text": "Shipped by sea (BWL182857)"
     }
   },
   {
@@ -603,38 +603,38 @@
     "po": {
       "number": "PO-26-4419",
       "placedOn": "2026-10-13",
-      "unitCost": 2.51,
+      "unitCost": 2.9,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY187295"
+      "tracking": "SKY984889"
     },
     "events": [
       {
         "at": "2026-10-13",
         "stage": "ordered",
-        "text": "PO-26-4419 placed: 600 × USB 3.2 controller at $2.51",
+        "text": "PO-26-4419 placed: 600 × USB 3.2 controller at $2.9",
         "planned": true
       },
       {
-        "at": "2026-10-15",
+        "at": "2026-10-14",
         "stage": "confirmed",
         "text": "Northbay Components confirmed the order and ship date",
         "planned": true
       },
       {
-        "at": "2026-11-16",
+        "at": "2026-11-23",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-12-04",
+        "at": "2026-12-03",
         "stage": "shipped",
-        "text": "Shipped by air (SKY187295)",
+        "text": "Shipped by air (SKY984889)",
         "planned": true
       },
       {
@@ -665,38 +665,38 @@
     "po": {
       "number": "PO-26-4420",
       "placedOn": "2026-09-11",
-      "unitCost": 6.42,
+      "unitCost": 6.31,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL206484"
+      "tracking": "BWL621611"
     },
     "events": [
       {
         "at": "2026-09-11",
         "stage": "ordered",
-        "text": "PO-26-4420 placed: 10,000 × Wi-Fi 5 module at $6.42",
+        "text": "PO-26-4420 placed: 10,000 × Wi-Fi 5 module at $6.31",
         "planned": false
       },
       {
-        "at": "2026-09-14",
+        "at": "2026-09-12",
         "stage": "confirmed",
         "text": "Tamarind Wireless confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-20",
+        "at": "2026-10-04",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-10",
+        "at": "2026-10-14",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL206484)",
+        "text": "Shipped by sea (BWL621611)",
         "planned": true
       },
       {
@@ -713,7 +713,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-20",
+      "at": "2026-10-04",
       "text": "Production started"
     }
   },
@@ -730,14 +730,14 @@
     "po": {
       "number": "PO-26-4421",
       "placedOn": "2026-08-10",
-      "unitCost": 4.14,
+      "unitCost": 7.26,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY518985"
+      "tracking": "SKY323803"
     },
     "inspection": {
       "sampled": 80,
@@ -749,25 +749,25 @@
       {
         "at": "2026-08-10",
         "stage": "ordered",
-        "text": "PO-26-4421 placed: 500 × Wi-Fi 6 module at $4.14",
+        "text": "PO-26-4421 placed: 500 × Wi-Fi 6 module at $7.26",
         "planned": false
       },
       {
-        "at": "2026-08-13",
+        "at": "2026-08-11",
         "stage": "confirmed",
         "text": "Tamarind Wireless confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-06",
+        "at": "2026-09-13",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-09-24",
+        "at": "2026-09-23",
         "stage": "shipped",
-        "text": "Shipped by air (SKY518985)",
+        "text": "Shipped by air (SKY323803)",
         "planned": false
       },
       {
@@ -807,20 +807,20 @@
     "po": {
       "number": "PO-26-4422",
       "placedOn": "2026-09-22",
-      "unitCost": 7.44,
+      "unitCost": 4.55,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL139143"
+      "tracking": "BWL831652"
     },
     "events": [
       {
         "at": "2026-09-22",
         "stage": "ordered",
-        "text": "PO-26-4422 placed: 8,000 × Wi-Fi 6 module at $7.44",
+        "text": "PO-26-4422 placed: 8,000 × Wi-Fi 6 module at $4.55",
         "planned": false
       },
       {
@@ -830,15 +830,15 @@
         "planned": false
       },
       {
-        "at": "2026-10-09",
+        "at": "2026-09-30",
         "stage": "production",
         "text": "Production started",
-        "planned": true
+        "planned": false
       },
       {
         "at": "2026-10-19",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL139143)",
+        "text": "Shipped by sea (BWL831652)",
         "planned": true
       },
       {
@@ -855,8 +855,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-23",
-      "text": "Tamarind Wireless confirmed the order and ship date"
+      "at": "2026-09-30",
+      "text": "Production started"
     }
   },
   {
@@ -872,38 +872,38 @@
     "po": {
       "number": "PO-26-4423",
       "placedOn": "2026-08-30",
-      "unitCost": 6.6,
+      "unitCost": 8.47,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL106952"
+      "tracking": "BWL356801"
     },
     "events": [
       {
         "at": "2026-08-30",
         "stage": "ordered",
-        "text": "PO-26-4423 placed: 8,000 × 4K timing controller at $6.6",
+        "text": "PO-26-4423 placed: 8,000 × 4K timing controller at $8.47",
         "planned": false
       },
       {
-        "at": "2026-08-31",
+        "at": "2026-09-02",
         "stage": "confirmed",
         "text": "Quill Logic confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-23",
+        "at": "2026-09-20",
         "stage": "production",
         "text": "Production started",
         "planned": false
       },
       {
-        "at": "2026-10-10",
+        "at": "2026-10-08",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL106952)",
+        "text": "Shipped by sea (BWL356801)",
         "planned": true
       },
       {
@@ -920,7 +920,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-23",
+      "at": "2026-09-20",
       "text": "Production started"
     }
   },
@@ -937,38 +937,38 @@
     "po": {
       "number": "PO-26-4424",
       "placedOn": "2026-09-22",
-      "unitCost": 4.09,
+      "unitCost": 5.77,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL245255"
+      "tracking": "BWL413848"
     },
     "events": [
       {
         "at": "2026-09-22",
         "stage": "ordered",
-        "text": "PO-26-4424 placed: 3,000 × Mini-LED driver at $4.09",
+        "text": "PO-26-4424 placed: 3,000 × Mini-LED driver at $5.77",
         "planned": false
       },
       {
-        "at": "2026-09-23",
+        "at": "2026-09-24",
         "stage": "confirmed",
         "text": "Orinoco Display Tech confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-10-21",
+        "at": "2026-10-30",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-11-07",
+        "at": "2026-11-12",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL245255)",
+        "text": "Shipped by sea (BWL413848)",
         "planned": true
       },
       {
@@ -985,7 +985,7 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-23",
+      "at": "2026-09-24",
       "text": "Orinoco Display Tech confirmed the order and ship date"
     }
   },
@@ -1002,38 +1002,38 @@
     "po": {
       "number": "PO-26-4425",
       "placedOn": "2026-10-27",
-      "unitCost": 8.38,
+      "unitCost": 4.63,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL285572"
+      "tracking": "BWL574935"
     },
     "events": [
       {
         "at": "2026-10-27",
         "stage": "ordered",
-        "text": "PO-26-4425 placed: 2,000 × Mini-LED driver at $8.38",
+        "text": "PO-26-4425 placed: 2,000 × Mini-LED driver at $4.63",
         "planned": true
       },
       {
-        "at": "2026-10-30",
+        "at": "2026-10-28",
         "stage": "confirmed",
         "text": "Orinoco Display Tech confirmed the order and ship date",
         "planned": true
       },
       {
-        "at": "2026-11-29",
+        "at": "2026-12-01",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-12-19",
+        "at": "2026-12-16",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL285572)",
+        "text": "Shipped by sea (BWL574935)",
         "planned": true
       },
       {
@@ -1064,38 +1064,38 @@
     "po": {
       "number": "PO-26-4426",
       "placedOn": "2026-08-28",
-      "unitCost": 4.37,
+      "unitCost": 9.59,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL986125"
+      "tracking": "BWL291452"
     },
     "events": [
       {
         "at": "2026-08-28",
         "stage": "ordered",
-        "text": "PO-26-4426 placed: 2,000 × OLED timing controller at $4.37",
+        "text": "PO-26-4426 placed: 2,000 × OLED timing controller at $9.59",
         "planned": false
       },
       {
-        "at": "2026-08-31",
+        "at": "2026-08-30",
         "stage": "confirmed",
         "text": "Orinoco Display Tech confirmed the order and ship date",
         "planned": false
       },
       {
-        "at": "2026-09-30",
+        "at": "2026-10-09",
         "stage": "production",
         "text": "Production started",
-        "planned": false
+        "planned": true
       },
       {
-        "at": "2026-10-14",
+        "at": "2026-10-21",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL986125)",
+        "text": "Shipped by sea (BWL291452)",
         "planned": true
       },
       {
@@ -1112,8 +1112,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-09-30",
-      "text": "Production started"
+      "at": "2026-08-30",
+      "text": "Orinoco Display Tech confirmed the order and ship date"
     }
   },
   {
@@ -1129,20 +1129,20 @@
     "po": {
       "number": "PO-26-4427",
       "placedOn": "2026-10-05",
-      "unitCost": 4.85,
+      "unitCost": 3.22,
       "currency": "USD",
       "incoterm": "FCA"
     },
     "transport": {
       "mode": "air",
       "carrier": "Skylane Air Cargo (fictional)",
-      "tracking": "SKY608882"
+      "tracking": "SKY989865"
     },
     "events": [
       {
         "at": "2026-10-05",
         "stage": "ordered",
-        "text": "PO-26-4427 placed: 700 × OLED timing controller at $4.85",
+        "text": "PO-26-4427 placed: 700 × OLED timing controller at $3.22",
         "planned": false
       },
       {
@@ -1152,15 +1152,15 @@
         "planned": true
       },
       {
-        "at": "2026-11-25",
+        "at": "2026-11-19",
         "stage": "production",
         "text": "Production started",
         "planned": true
       },
       {
-        "at": "2026-12-10",
+        "at": "2026-12-09",
         "stage": "shipped",
-        "text": "Shipped by air (SKY608882)",
+        "text": "Shipped by air (SKY989865)",
         "planned": true
       },
       {
@@ -1178,7 +1178,7 @@
     ],
     "lastUpdate": {
       "at": "2026-10-05",
-      "text": "PO-26-4427 placed: 700 × OLED timing controller at $4.85"
+      "text": "PO-26-4427 placed: 700 × OLED timing controller at $3.22"
     }
   },
   {
@@ -1194,24 +1194,24 @@
     "po": {
       "number": "PO-26-4428",
       "placedOn": "2026-09-08",
-      "unitCost": 1.52,
+      "unitCost": 1.1,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL153307"
+      "tracking": "BWL767391"
     },
     "events": [
       {
         "at": "2026-09-08",
         "stage": "ordered",
-        "text": "PO-26-4428 placed: 12,000 × Audio amplifier at $1.52",
+        "text": "PO-26-4428 placed: 12,000 × Audio amplifier at $1.1",
         "planned": false
       },
       {
-        "at": "2026-09-10",
+        "at": "2026-09-11",
         "stage": "confirmed",
         "text": "Pallas Audio confirmed the order and ship date",
         "planned": false
@@ -1225,7 +1225,7 @@
       {
         "at": "2026-10-02",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL153307)",
+        "text": "Shipped by sea (BWL767391)",
         "planned": false
       },
       {
@@ -1243,7 +1243,7 @@
     ],
     "lastUpdate": {
       "at": "2026-10-02",
-      "text": "Shipped by sea (BWL153307)"
+      "text": "Shipped by sea (BWL767391)"
     }
   },
   {
@@ -1259,38 +1259,38 @@
     "po": {
       "number": "PO-26-4429",
       "placedOn": "2026-10-04",
-      "unitCost": 1.27,
+      "unitCost": 1.39,
       "currency": "USD",
       "incoterm": "FOB"
     },
     "transport": {
       "mode": "sea",
       "carrier": "Bluewater Lines (fictional)",
-      "tracking": "BWL521558"
+      "tracking": "BWL636610"
     },
     "events": [
       {
         "at": "2026-10-04",
         "stage": "ordered",
-        "text": "PO-26-4429 placed: 8,000 × Audio amplifier at $1.27",
+        "text": "PO-26-4429 placed: 8,000 × Audio amplifier at $1.39",
         "planned": false
       },
       {
-        "at": "2026-10-04",
-        "stage": "production",
-        "text": "Production started",
-        "planned": false
-      },
-      {
-        "at": "2026-10-05",
+        "at": "2026-10-06",
         "stage": "confirmed",
         "text": "Pallas Audio confirmed the order and ship date",
-        "planned": false
+        "planned": true
       },
       {
-        "at": "2026-10-22",
+        "at": "2026-10-09",
+        "stage": "production",
+        "text": "Production started",
+        "planned": true
+      },
+      {
+        "at": "2026-10-29",
         "stage": "shipped",
-        "text": "Shipped by sea (BWL521558)",
+        "text": "Shipped by sea (BWL636610)",
         "planned": true
       },
       {
@@ -1307,8 +1307,8 @@
       }
     ],
     "lastUpdate": {
-      "at": "2026-10-05",
-      "text": "Pallas Audio confirmed the order and ship date"
+      "at": "2026-10-04",
+      "text": "PO-26-4429 placed: 8,000 × Audio amplifier at $1.39"
     }
   }
 ]
