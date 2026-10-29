@@ -3,3 +3,8 @@ dist/
 playwright-report/
 test-results/
 *.tsbuildinfo
+
+# Local secrets for `wrangler dev`
+.dev.vars
+proxy/.dev.vars
+.wrangler/

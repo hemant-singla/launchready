@@ -18,11 +18,14 @@ LaunchReady joins the two halves of a TV launch that usually live in different t
 |---|---|
 | **See every launch at once.** One status per launch, the worse of software and supply, with buffer days, the main risk and who owns the fix. Whatever changed sorts to the top. | **Simulate a disruption** (press `S`). Delay any shipment, fail it at inspection, lose its date, or move a launch. Preview the impact before applying it. |
 | **Follow the chain.** Each launch opens a drawer with a plain-language explanation and the dependency chain (test boards → testing → software → production parts → launch), with the first broken link highlighted. | **Recover.** Options are applied to a copy of the plan and recalculated against all 16 launches. Anything that would hurt another launch is ruled out. Approve, reject, or undo. |
-| **Share the exact view.** The disruption and approved actions live in the URL, so a link reopens the same state. | **Keyboard first.** `⌘K` command palette, `S` simulate, `1`–`6` switch views, `j`/`k` and `↵` in tables, `/` filter, `Esc` closes. Dark mode follows the system. |
+| **Share the exact view.** The disruption and approved actions live in the URL, so a link reopens the same state. | **Keyboard first.** `⌘K` command palette, `S` simulate, `A` ask AI, `1`–`6` switch views, `j`/`k` and `↵` in tables, `/` filter, `Esc` closes. Dark mode follows the system. |
+| **Ask in plain language** (press `A`). An AI assistant answers questions about the plan by calling tools over the live workspace, so every number comes from the engine. It can set up a what-if or a recovery approval, which you apply with a click. See [docs/ASSISTANT.md](docs/ASSISTANT.md). | |
 
 | Launch detail | Recovery |
 |---|---|
 | ![Launch drawer for Halo 77": plain-language explanation, the dependency chain with the first broken link highlighted, and the readiness window against the cutoff](docs/img/drawer.png) | ![Recovery view: three tested options side by side with result, trade-off and approver](docs/img/recovery.png) |
+
+![The assistant answering why Halo 77" is at risk, with the tool calls it made, a comparison of recovery options and an Approve button](docs/img/assistant.png)
 
 | Timeline (dark mode) | Command palette |
 |---|---|
@@ -52,12 +55,14 @@ Options are ranked by launches restored, then by how disruptive the action is, t
 data/*.json ──► src/engine (pure TypeScript, no UI) ──► src/app (React views)
                      ▲                                   │
                      ├──── tests/ (Vitest)               └── e2e/ (Playwright)
-                     └──── src/agent/tools.ts (Claude tool calls, same engine)
+                     ├──── src/agent/runAssistantTool.ts (in-app assistant's tools, same engine)
+                     └──── src/agent/tools.ts (offline agent script's tools)
 ```
 
 - **Engine** (`src/engine`): pure functions over plain data, so the app, the unit tests and the AI agent tools all compute the same numbers. No React, no I/O.
 - **App** (`src/app`): React 19 + TypeScript, built with Vite. Workspace state (disruptions + approved actions) is a reducer whose shareable part is encoded into the URL. Derived results are memoised; the recovery search runs only where it's shown and is cached.
-- **Quality:** strict TypeScript, ESLint, 32 unit tests on the engine, Playwright end-to-end tests (desktop + phone), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
+- **Assistant** (`src/agent`, `src/app/assistant`, `proxy/`): Claude with ten strict tools that run in the browser over the live workspace; a streaming tool loop; a Cloudflare Worker that holds the key and rebuilds every request. Details: [docs/ASSISTANT.md](docs/ASSISTANT.md).
+- **Quality:** strict TypeScript, ESLint, 51 unit tests (engine, assistant tools, loop, proxy), 12 Playwright end-to-end tests (desktop + phone, including the assistant with scripted streams), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
 
 Details and trade-offs: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the decision records in [docs/adr/](docs/adr/).
 
@@ -80,7 +85,8 @@ Other scripts: `npm run data:generate` rebuilds the fictional dataset, `npm run 
 ```
 src/engine/   readiness engine: supply allocation, software ETA, recovery, what-if
 src/app/      React app: state/, pages/, components/, story/, lib/
-src/agent/    tool definitions for a Claude agent that calls the engine
+src/agent/    the assistant: prompt, tools, tool runner, streaming loop
+proxy/        Cloudflare Worker that holds the API key for the assistant
 tests/        unit tests (Vitest)            e2e/   browser tests (Playwright)
 data/         fictional dataset (JSON)        docs/  brief, architecture, ADRs, landscape
 scripts/      data generation, data overview, agent runner
@@ -94,5 +100,6 @@ scripts/      data generation, data overview, agent runner
 - The rules (buffers, fix-time ranges, allocation order) are reasonable defaults, not validated ones.
 - Recovery options are single actions; approve one and the search re-checks what's left.
 - Decisions live in the page link and this browser session; there's no shared backend.
+- The assistant's wording comes from a model and can be wrong; its numbers come from tools, which the panel shows. Its tests use scripted responses, not the live API.
 
 More in the [product brief](docs/PRODUCT_BRIEF.md) §8.

@@ -24,6 +24,10 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+        env:
+          # The deployed assistant proxy (a repository variable); empty means
+          # the assistant asks visitors for their own API key.
+          VITE_AGENT_PROXY_URL: ${{ vars.AGENT_PROXY_URL }}
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main'
         with:

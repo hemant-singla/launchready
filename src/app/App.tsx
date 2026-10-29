@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
-import { Link2, Menu, Search, Zap, RotateCcw } from 'lucide-react';
+import { Link2, Menu, Search, Sparkles, Zap, RotateCcw } from 'lucide-react';
 import { useRoute, navigate } from './lib/router';
 import { useWorkspace } from './state/workspace';
 import { useToast } from './components/useToast';
@@ -16,6 +16,9 @@ const SupplyPage = lazy(() => import('./pages/SupplyPage'));
 const SoftwarePage = lazy(() => import('./pages/SoftwarePage'));
 const ActivityPage = lazy(() => import('./pages/ActivityPage'));
 const StoryPage = lazy(() => import('./story/StoryPage'));
+// The assistant (and the Anthropic SDK) load on first open, then stay mounted
+// so the conversation survives closing the panel.
+const AssistantPanel = lazy(() => import('./assistant/AssistantPanel'));
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
@@ -39,6 +42,9 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
   const [palette, setPalette] = useState(false);
   const [simulate, setSimulate] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [assistant, setAssistant] = useState(false);
+  const [assistantLoaded, setAssistantLoaded] = useState(false);
+  if (assistant && !assistantLoaded) setAssistantLoaded(true);
 
   const share = useCallback(async () => {
     try {
@@ -57,6 +63,7 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
         setPalette((p) => !p);
       } else if (!typing && !e.metaKey && !e.ctrlKey && !e.altKey && !document.querySelector('[role="dialog"]')) {
         if (e.key === 's') { e.preventDefault(); setSimulate(true); }
+        if (e.key === 'a') { e.preventDefault(); setAssistant(true); }
         const go: Record<string, View> = { '1': 'launches', '2': 'timeline', '3': 'recovery', '4': 'supply', '5': 'software', '6': 'activity' };
         if (go[e.key]) navigate(`/app/${go[e.key]}`);
       }
@@ -83,7 +90,7 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
   const changes = state.scenarios.length + (state.lab ? 1 : 0);
 
   return (
-    <div className="shell">
+    <div className={`shell${assistant ? ' with-assistant' : ''}`}>
       <a className="skip-link" href="#main">Skip to content</a>
       <Sidebar view={view} open={menu} onNavigate={() => setMenu(false)} />
       {menu && <div className="scrim" style={{ zIndex: 44 }} onClick={() => setMenu(false)} />}
@@ -106,6 +113,9 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
             </button>
           )}
           <button className="btn ghost icon hide-sm" onClick={share} aria-label="Copy link to this view" title="Copy link to this view"><Link2 size={16} /></button>
+          <button className="btn" onClick={() => setAssistant((v) => !v)} aria-pressed={assistant} title="Ask LaunchReady (A)">
+            <Sparkles size={15} /> <span className="hide-sm">Ask AI</span>
+          </button>
           <button className="btn primary" onClick={() => setSimulate(true)} title="Simulate a disruption (S)">
             <Zap size={15} /> <span className="hide-sm">Simulate disruption</span>
           </button>
@@ -114,7 +124,12 @@ function AppShell({ view, id, query }: { view: View; id?: string; query: URLSear
           <Suspense fallback={<div className="empty">Loading…</div>}>{page}</Suspense>
         </main>
       </div>
-      {palette && <CommandPalette onClose={() => setPalette(false)} onSimulate={() => setSimulate(true)} onShare={share} />}
+      {assistantLoaded && (
+        <Suspense fallback={null}>
+          <AssistantPanel open={assistant} onClose={() => setAssistant(false)} view={id ? `${VIEWS[view].title} › ${id}` : VIEWS[view].title} />
+        </Suspense>
+      )}
+      {palette && <CommandPalette onClose={() => setPalette(false)} onSimulate={() => setSimulate(true)} onShare={share} onAsk={() => setAssistant(true)} />}
       {simulate && <SimulateDialog onClose={() => setSimulate(false)} />}
     </div>
   );
