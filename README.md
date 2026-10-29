@@ -1,68 +1,98 @@
 # LaunchReady
 
-**A launch go/no-go tool for a fictional TV maker that joins software readiness and supply in one view.**
+[![CI](https://github.com/hemant-singla/launchready/actions/workflows/ci.yml/badge.svg)](https://github.com/hemant-singla/launchready/actions/workflows/ci.yml)
 
-> Portfolio project by [Hemant Singla](https://hemant-singla.github.io). **Fictional company and data.** It isn't deployed, has no real users and claims no savings. Every date and quantity shown is calculated by the code in this repo.
+**When a supplier slips, which TV launches break, why, and what's the best way to recover?**
 
-**Live demo:** https://hemant-singla.github.io/launchready/ · **Product brief:** [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md)
+LaunchReady joins the two halves of a TV launch that usually live in different tools: **software readiness** (code submissions, test cycles, bug backlogs) and **parts supply** (stock, supplier shipments, allocation). The key link is that *test boards need parts*. A late shipment of a cheap chip can delay testing, which delays the software, which misses a launch two months later. LaunchReady computes that chain for every launch and tests the ways to recover before it shows them.
 
-![LaunchReady start page: the what-if lab with a delayed shipment and its knock-on effects](docs/img/home.png)
+**Live:** https://hemant-singla.github.io/launchready/ · **Product brief:** [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-![Recovery workflow: options compared against the original plan and the disruption, with an approve button](docs/img/recovery.png)
+> Portfolio project by [Hemant Singla](https://hemant-singla.github.io). **Fictional company (Northwind Vision) and data.** It has no real users and claims no savings. Every date and quantity shown is calculated by the code in this repo.
 
-![Launch view with the USB controller delay scenario: timeline of software-ready ranges against launch dates](docs/img/launch-usb-delay.png)
+![Launches view with a USB controller delay applied: one launch hit, KPIs against plan, and a sortable table with buffer, main risk and owner](docs/img/launches.png)
 
-## What it is
-The start page tells one story in order: a short intro, one worked example (original plan → after a supplier delay → after recovery), then a workspace to try it yourself, then assumptions and background. The hero plays a short animated scene on a TV (Play/Pause, step dots, paused under reduced motion): a shipment slips, the delay moves through parts → testing → software → launch, and a recovery restores it. Its dates and quantities come from the engine. In the workspace, each edit says what changed since the last one ("1 more launch now needs attention: Halo 77""), counts tick to their new values, and any model card opens its details. In the recovery workflow, selecting an option animates a preview timeline from the current disruption to the option's result. Every affected launch gets one plain sentence explaining why, e.g. *"Halo 77" may miss its 18 Jan launch: 20 of its 60 test boards depend on a delayed USB 3.2 controller delivery…"* (built by `explain()` in `src/lab.js` from calculated values).
+## What you can do
 
-A TV launch needs two things at once: software that's ready, and parts to build both the test boards and the TVs. They're usually tracked in different tools (issue trackers on one side, ERP and spreadsheets on the other). LaunchReady joins them:
-- **Launch view:** Ready / At risk / Blocked for 16 models, with the reasons from both sides; filters by line, chipset and status.
-- **Software team view:** each component team's code submission against the deadline, new vs reused code, open tickets by severity and age, and an estimated software-ready **range** per chipset.
-- **Supply view:** stock by warehouse (including what's already allocated), supplier deliveries and delays, rejected shipments, approved substitutes, and which build gets which units.
-- **What-if lab (start page):** pick any supplier shipment and move its date (14 days early to 60 days late), reject it or remove its date, or move a launch. All 16 launches recalculate as you drag, with the knock-on chain: parts → testing → software → launch. Launch dates can also be dragged on the timeline (or moved with ← / →).
-- **Scenarios:** a USB controller delay, two launches competing for one part, and a delivery with no date. They stack with the lab. *Reset demo* restores the original data, filters, decisions and log.
-- **Recovery workflow (simulated agent):** detect the change → pull the records → find affected launches → compare recovery options → recommend one with evidence and trade-offs → you approve or reject. Each option reads as action → expected result → trade-off → approval needed; unresolved launches stay listed. Approving applies the action to the demo data and every view recalculates; rejecting changes nothing. Both go in the activity log.
-- **Affected first:** with a disruption active, every view puts affected launches, chipsets and parts first, says why each matters, and offers *Affected only / Show all*. Launch details link to the software and supply evidence.
-- **60-second tour:** a skippable walk through one delay, its impact, the recovery comparison and an approval.
+| | |
+|---|---|
+| **See every launch at once.** One status per launch, the worse of software and supply, with buffer days, the main risk and who owns the fix. Whatever changed sorts to the top. | **Simulate a disruption** (press `S`). Delay any shipment, fail it at inspection, lose its date, or move a launch. Preview the impact before applying it. |
+| **Follow the chain.** Each launch opens a drawer with a plain-language explanation and the dependency chain (test boards → testing → software → production parts → launch), with the first broken link highlighted. | **Recover.** Options are applied to a copy of the plan and recalculated against all 16 launches. Anything that would hurt another launch is ruled out. Approve, reject, or undo. |
+| **Share the exact view.** The disruption and approved actions live in the URL, so a link reopens the same state. | **Keyboard first.** `⌘K` command palette, `S` simulate, `1`–`6` switch views, `j`/`k` and `↵` in tables, `/` filter, `Esc` closes. Dark mode follows the system. |
 
-The key link: **test boards need parts**. A late USB controller means fewer test boards, which means testing starts late and the software date slips. That chain crosses both tools, which is why it's usually discovered late.
+| Launch detail | Recovery |
+|---|---|
+| ![Launch drawer for Halo 77": plain-language explanation, the dependency chain with the first broken link highlighted, and the readiness window against the cutoff](docs/img/drawer.png) | ![Recovery view: three tested options side by side with result, trade-off and approver](docs/img/recovery.png) |
+
+| Timeline (dark mode) | Command palette |
+|---|---|
+| ![Timeline showing each launch's software-ready range against its cutoff and launch date, with the original range dashed](docs/img/timeline-dark.png) | ![Command palette searching launches](docs/img/palette.png) |
+
+The start page tells the problem as a story, with every number computed by the same engine, and compares the approach with how large TV makers handle this today (public information only): see [docs/LANDSCAPE.md](docs/LANDSCAPE.md).
 
 ## How the verdict is calculated
-- **Software (per chipset):** test start = latest of planned start, code complete + 3 days, and test boards available. Ready range = the later of (test window + stabilisation tail) and (open-ticket fix days ÷ team capacity). Ready if the latest date is ≥ 7 days before launch, with no late code and no open criticals. Blocked if even the earliest date is after launch.
-- **Supply (per model):** parts are handed out in need-date order, and each unit only once. Rejected and undated deliveries are never counted. Late, tight, substitute-dependent or undated coverage → At risk. Missing parts, or production parts more than 7 days late → Blocked.
-- **Launch:** the worse of the two, with reasons from both. All thresholds are in [`data/config.json`](data/config.json).
 
-## Recovery options
-`src/recovery.js` generates only the actions the data supports, tests each one with the engine, and drops any that don't help or that make another launch worse:
-- **Re-peg a purchase order** bought for another program (same part only). Units arrive 2 days after the order (transfer), and the other program keeps the rest.
-- **Approved substitute** for test boards, if enough free substitute stock covers the whole gap (a partial substitute doesn't save the build). Adds the driver change before testing (1–14 days) and validation inside testing (2–4 days).
+- **Software (per chip platform):** testing starts at the latest of the planned start, code complete + 3 days of bring-up, and test boards available. The ready date is a **range**: the later of (test window + stabilisation) and (open-ticket fix days ÷ team capacity), at the optimistic and pessimistic ends. *Ready* when the latest date is at least 7 days before launch with no late code and no open critical bugs; *Blocked* when even the earliest date is after launch.
+- **Supply (per launch):** parts are allocated in need-date order (test boards first on a tie), each unit once. Orders bought for a platform go to it first. Rejected and undated shipments never count. Late, tight, substitute-dependent or undated coverage is *At risk*; uncovered parts, or production parts more than 7 days late, are *Blocked*.
+- **Launch:** the worse of the two, with reasons from both. Every threshold is in [`data/config.json`](data/config.json).
+
+## Recovery
+
+`src/engine/recovery.ts` generates only the actions the data supports, applies each to a copy of the plan, recalculates everything, and drops any that don't help or that make another launch worse:
+
+- **Re-allocate an order** bought for another program (same part only), with a 2-day transfer. The other program keeps the rest, and that's checked.
+- **Approved substitute** for test boards, if free stock covers the whole gap. Adds the driver change before testing (1–14 days) and validation inside testing (2–4 days).
 - **Move the launch** to the earliest date that restores the original verdict, up to 42 days.
-- Undated and rejected deliveries are never used. If nothing resolves the issue, it says which launches remain and what to escalate.
 
-## The agent: simulated in the app, real code in `agent/`
-The **Recovery** tab is labelled **"Simulated agent workflow"**: its steps and wording are scripted, and every number on it is calculated in the browser by `src/`. No AI model runs on the site, and it needs no API key.
-`agent/run.mjs` is a real tool-use loop with Claude (Sonnet 5.5) and 7 tools (`agent/tools.js`) that call the same logic. **No runs have been recorded yet** (it needs an API key). If runs are recorded later they're saved to `runs/` and must carry the label "Real agent run, recorded during the build and replayed" (a test enforces it).
+Options are ranked by launches restored, then by how disruptive the action is, then by the earliest software date. When nothing fully resolves a launch, the view says what to escalate. The search is deterministic and fully tested; it is not an AI.
 
-## Publish
-GitHub Pages serves `main` from the repository root (no build step). Push to `main` and Pages redeploys in a minute or two; all paths are relative, so it works under `/launchready/`.
+## Architecture in brief
+
+```
+data/*.json ──► src/engine (pure TypeScript, no UI) ──► src/app (React views)
+                     ▲                                   │
+                     ├──── tests/ (Vitest)               └── e2e/ (Playwright)
+                     └──── src/agent/tools.ts (Claude tool calls, same engine)
+```
+
+- **Engine** (`src/engine`): pure functions over plain data, so the app, the unit tests and the AI agent tools all compute the same numbers. No React, no I/O.
+- **App** (`src/app`): React 19 + TypeScript, built with Vite. Workspace state (disruptions + approved actions) is a reducer whose shareable part is encoded into the URL. Derived results are memoised; the recovery search runs only where it's shown and is cached.
+- **Quality:** strict TypeScript, ESLint, 32 unit tests on the engine, Playwright end-to-end tests (desktop + phone), and GitHub Actions on every push. `main` deploys to GitHub Pages after all checks pass.
+
+Details and trade-offs: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the decision records in [docs/adr/](docs/adr/).
 
 ## Run it
+
+Requires Node 22+.
+
 ```bash
-npm test                                  # 32 tests: logic, lab, recovery, agent tools (Node 20+, no installs)
-python3 -m http.server 8000               # open http://localhost:8000
-npm install && ANTHROPIC_API_KEY=... node agent/run.mjs   # record real agent runs (costs API credits; none recorded yet)
-node tools/generate-data.mjs && node tools/data-overview.mjs   # rebuild data + docs/DATA.md
+npm install
+npm run dev            # http://localhost:5173
+npm run check          # typecheck + lint + unit tests
+npm run test:e2e       # Playwright (first time: npx playwright install chromium)
+npm run build          # production build in dist/
 ```
-Plain HTML/CSS/JavaScript with no framework and no build step. [docs/CODE_WALKTHROUGH.md](docs/CODE_WALKTHROUGH.md) explains the code in five minutes.
+
+Other scripts: `npm run data:generate` rebuilds the fictional dataset, `npm run data:overview` regenerates [docs/DATA.md](docs/DATA.md), and `ANTHROPIC_API_KEY=... npm run agent` records a real Claude agent run over the same tools (costs API credits; no runs are recorded yet).
+
+## Project layout
+
+```
+src/engine/   readiness engine: supply allocation, software ETA, recovery, what-if
+src/app/      React app: state/, pages/, components/, story/, lib/
+src/agent/    tool definitions for a Claude agent that calls the engine
+tests/        unit tests (Vitest)            e2e/   browser tests (Playwright)
+data/         fictional dataset (JSON)        docs/  brief, architecture, ADRs, landscape
+scripts/      data generation, data overview, agent runner
+```
 
 ## Honest limitations
-- Fictional data, and the baseline was designed so the scenarios show clear effects.
-- No real integrations (Jira, ERP, supplier portals); data quality is assumed.
+
+- Fictional data; the baseline was designed so the scenarios show clear effects.
+- No real integrations (issue tracker, ERP, supplier portals). Data quality is assumed.
 - Simplified model: key parts only, one flat transfer time, no test-lab capacity, no costs or expediting.
 - The rules (buffers, fix-time ranges, allocation order) are reasonable defaults, not validated ones.
-- The agent workflow is simulated: scripted steps over calculated results. It is not an AI making decisions, and a human approves every action.
-- One launch move at a time in the lab; recovery options are single actions (approve one, and the agent re-checks what's left).
+- Recovery options are single actions; approve one and the search re-checks what's left.
+- Decisions live in the page link and this browser session; there's no shared backend.
 
 More in the [product brief](docs/PRODUCT_BRIEF.md) §8.
-
-<p align="center"><img src="docs/img/mobile-launch.png" width="260" alt="Launch view on a phone"></p>

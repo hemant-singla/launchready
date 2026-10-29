@@ -16,10 +16,20 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | 8 — Gaps | ✅ Brief §8 done (README + case study copy are part of Step 6) |
 | Finish | ✅ 2026-10-06: links, mobile, tests checked; deliverables listed below |
 | Motion pass | ✅ 2026-10-06 (Hemant raised the budget to ~$62; skipped the demo video): animated TV scene in the hero with Play/Pause (assets/scene.js), signal-line background, workspace change messages + counting numbers + clickable cards, animated recovery preview in the Recovery tab |
+| **Rebuild (v2)** | 🔄 2026-10-29, branch `claude/charming-ptolemy-usvvwd` (not merged). Hemant: the app "seems like a basic version", wants it to feel built by an experienced engineer, with a better story, and a Samsung comparison. See "Rebuild v2" below |
 | Clarity pass | ✅ 2026-10-06 (Hemant: "go with the plan", from a ChatGPT review): new headline, start page = intro → worked example → try-it workspace → assumptions; plain-language `explain()` per affected launch; three questions in the lab panel; options as action / result / trade-off / approval; terms explained on demand; evidence row. Open: ChatGPT's "calculation mismatch" (details asked from Hemant, not yet received) |
 
+## Rebuild v2 (2026-10-29, facts)
+- **Stack:** engine ported to strict TypeScript (`src/engine`, logic unchanged, 32 Vitest tests pass); UI rebuilt in React 19 + Vite (`src/app`). Deps: react, cmdk, lucide-react. Old vanilla UI (`index.html`, `assets/`) removed; the old "simulated agent workflow" is gone (Recovery now shows the deterministic search as what it is).
+- **App** (`#/app/...`): sidebar shell, ⌘K palette, shortcuts (S, 1–6, j/k, /), dark mode, toasts with Undo. Views: Launches (KPIs vs plan, impact banner, sortable table with buffer/main risk/owner, drawer with plain sentence + 5-step chain + readiness bar + parts), Timeline (SVG Gantt, original range dashed), Recovery (option cards, approve/reject/undo, ruled-out list, method), Supply, Software, Activity. Workspace state is in the URL (`?w=`), so links reopen the same view.
+- **Story page** (`#/`): routine supplier email → what each team sees → guess-first question → computed chain → three tested options → before/after → "How large TV makers handle this today" (Samsung from public info, with sources) → under the hood → what I'd validate. All numbers from the engine.
+- **Quality:** ESLint + tsc clean; 8 Playwright e2e tests (desktop + phone) pass; GitHub Actions CI runs on every push (green on the branch).
+- **Docs:** README rewritten with new screenshots; `docs/ARCHITECTURE.md`, `docs/adr/0001–0004`, `docs/LANDSCAPE.md` (Samsung/industry research), `docs/CODE_WALKTHROUGH.md` updated; brief §5 paths updated.
+- **Deploy change needed at merge:** CI now builds `dist/` and deploys with GitHub Actions. Hemant must set *Settings → Pages → Source* to **GitHub Actions** (it currently serves `main` from the root, which no longer works because the app needs a build).
+- **Open questions for Hemant:** OK to name Samsung on the story page (public info only, no affiliation implied)? Merge the branch? Portfolio case study (PR #1 on the portfolio repo) still describes v1 and its screenshot.
+
 ## Decisions (facts)
-- Tech: plain HTML/CSS/JS, no build step, served by GitHub Pages. Core logic lives in shared JS modules used by both the app and the Node tests (`node --test`). Data is JSON.
+- Tech (v2): TypeScript engine + React/Vite app, built in CI and deployed to GitHub Pages. Core logic in `src/engine`, shared by the app, Vitest tests and agent tools. Data is JSON. (v1 was plain HTML/CSS/JS with no build step.)
 - Agent: the app shows a simulated workflow over `src/recovery.js`. The real agent (Sonnet via the Anthropic API, tool calls into the same JS logic) can record runs to `runs/` if a key is added later.
 - Readiness rules (thresholds are defaults and can change):
   - Software ETA range = test start + test window (longer for new chipsets) + backlog fix time (critical 3–14 d, major 2–7, minor 1–3), divided by team capacity. Ready = all submitted, no open criticals, late ETA ≤ launch − 7 d. At risk = range straddles that buffer. Blocked = early ETA after launch.

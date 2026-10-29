@@ -93,7 +93,7 @@ The costly problems sit **between** the two systems. A parts delay → fewer tes
 ## 4. Product manager specs
 
 ### MVP scope
-**In:** one fictional TV maker; 16 models, 8 chipsets, 5 component teams, key parts per chipset; Launch, Software and Supply views with filters; a readiness verdict with reasons; three scenarios; a recovery workflow (simulated agent) that compares options and applies the approved one; human approval before anything is "done".
+**In:** one fictional TV maker; 16 models, 8 chipsets, 5 component teams, key parts per chipset; Launch, Software and Supply views with filters; a readiness verdict with reasons; three scenarios; a recovery view that compares tested options and applies the approved one; human approval before anything is "done".
 
 **Out of scope (for now):** live connections to Jira, ERP or supplier portals; login and roles; editing data in the app; full bills of materials (only key parts are modelled); cost and margin; multi-site production planning; transfer lead times between warehouses; capacity of test labs; the agent taking any action by itself.
 
@@ -141,7 +141,7 @@ Software ready range = the later of (test window + stabilisation tail) and (open
 8. **Could:** history of verdicts to measure early-warning accuracy.
 
 ### Roadmap
-- **Now (this demo):** rules engine, three views, scenarios, what-if lab, recovery options with approval, simulated agent workflow.
+- **Now (this demo):** rules engine, three views, scenarios, what-if lab, recovery options with approval and undo, shareable links, an activity log.
 - **Next:** live agent (Claude with the same tools) plus read-only imports from Jira and an ERP sandbox; a pilot with one product line.
 - **Later:** two-way integrations (create Jira tickets, propose PO changes for approval), notifications to owners, verdict history and accuracy tracking, multi-site planning.
 
@@ -149,7 +149,7 @@ Software ready range = the later of (test window + stabilisation tail) and (open
 
 ## 5. The AI agent
 
-> **Status (Oct 2026):** the site shows a **simulated agent workflow**: scripted steps whose numbers, options and outcomes are calculated live by the tested code in `src/recovery.js`. The real agent code below exists but no runs have been recorded (no API key in the build environment).
+> **Status (Oct 2026):** the app's Recovery view shows options found by a deterministic, tested search (`src/engine/recovery.ts`), not by AI. The real agent code below exists and uses the same engine as tools, but no runs have been recorded (no API key in the build environment).
 
 ### What it does
 When something changes (a supplier slips, a shipment is rejected, a date disappears), the agent:
@@ -159,16 +159,16 @@ When something changes (a supplier slips, a shipment is rejected, a date disappe
 4. **Waits for a human.** In the app, you approve the plan, assign owners and mark items done; every action goes in an activity log. Nothing is sent anywhere.
 
 ### How it's built
-- `agent/tools.js`: 7 tools. Six are lookups and simulations that call the same `src/` logic as the app (tested in `tests/agent-tools.test.mjs`); the seventh, `propose_plan`, records the final plan in a fixed structure.
-- `agent/run.mjs`: a plain agent loop. It sends the event and tools to Claude, runs each tool call in code, returns the result, and repeats until `propose_plan`. Each step is saved to `runs/<scenario>.json`.
+- `src/agent/tools.ts`: 7 tools. Six are lookups and simulations that call the same engine as the app (tested in `tests/agent-tools.test.ts`); the seventh, `propose_plan`, records the final plan in a fixed structure.
+- `scripts/agent-run.mjs` (`npm run agent`): a plain agent loop. It sends the event and tools to Claude, runs each tool call in code, returns the result, and repeats until `propose_plan`. Each step is saved to `runs/<scenario>.json`.
 - **Model:** Claude Sonnet 5.5 (Hemant's choice, for budget), with adaptive thinking (reasoning summaries are recorded) and medium effort.
-- **If runs are recorded,** they must be labelled **"Real agent run, recorded during the build and replayed"** (a test enforces it). None are recorded yet; the app's Recovery tab is a simulated workflow instead.
+- **If runs are recorded,** they must be labelled **"Real agent run, recorded during the build and replayed"** (a test enforces it). None are recorded yet.
 
 ### Why the agent can't make up numbers
 The system prompt says every date, quantity and status must come from a tool result, and the tools do all the calculation. The agent's job is to decide *what to look at* and *how to explain the trade-offs*, not to do the maths. The plan schema asks for a remaining gap and uncertainties on every option, so they can't be left out.
 
 ### Limits
-- **Not live.** The site has no server and no API key. Visitors see a simulated, scripted workflow over calculated results, never live AI output.
+- **Not live.** The site has no server and no API key. Visitors see the deterministic recovery search, never live AI output.
 - **Only as good as its tools.** It can only consider options the tools can simulate (move stock, substitute, move date). It knows nothing about expediting cost, overtime or supplier negotiations.
 - **The wording is the model's.** Numbers come from tools, but the summary and messages are written by the model. They're checked by a person before approval, not by code. A run can also miss an option, which is why a human approves.
 - **One event at a time.** Each run handles one scenario; it doesn't keep memory across runs.
