@@ -19,6 +19,13 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 | **Rebuild (v2)** | 🔄 2026-10-29, branch `claude/charming-ptolemy-usvvwd` (not merged). Hemant: the app "seems like a basic version", wants it to feel built by an experienced engineer, with a better story, and a Samsung comparison. See "Rebuild v2" below |
 | Clarity pass | ✅ 2026-10-06 (Hemant: "go with the plan", from a ChatGPT review): new headline, start page = intro → worked example → try-it workspace → assumptions; plain-language `explain()` per affected launch; three questions in the lab panel; options as action / result / trade-off / approval; terms explained on demand; evidence row. Open: ChatGPT's "calculation mismatch" (details asked from Hemant, not yet received) |
 
+## Assistant (2026-10-29, facts)
+- Hemant: "lets work on the real AI agent which can answer all the questions of the app". Built "Ask LaunchReady" (press A / "Ask AI"): Claude Sonnet 5.5 (Hemant's earlier model choice, for budget), adaptive thinking at medium effort, prompt caching, server-side refusal fallback.
+- 10 strict tools in `src/agent/assistant.ts`, run in the browser by `src/agent/runAssistantTool.ts` over the live workspace; `propose_*` tools only render Apply/Approve buttons. Loop: `src/agent/loop.ts`. Panel: `src/app/assistant/`.
+- Proxy: `proxy/` Cloudflare Worker (owns model/prompt/tools, origin allowlist, 20 calls/min/IP, size caps). `wrangler deploy --dry-run` bundles it (10.8 KiB). Deploy workflow: `.github/workflows/assistant-proxy.yml` (skips until secrets exist). CI build reads `vars.AGENT_PROXY_URL`.
+- Tests: 51 unit (incl. 19 assistant/proxy), 12 e2e (4 assistant, scripted SSE). **Not tested against the live API** (no key in the build environment).
+- **Blocked on Hemant:** Anthropic API key + Console spend limit; Cloudflare API token + account ID; GitHub secrets; then set repository variable `AGENT_PROXY_URL`. Steps in docs/ASSISTANT.md. Until then the panel asks visitors for their own key.
+
 ## Rebuild v2 (2026-10-29, facts)
 - **Stack:** engine ported to strict TypeScript (`src/engine`, logic unchanged, 32 Vitest tests pass); UI rebuilt in React 19 + Vite (`src/app`). Deps: react, cmdk, lucide-react. Old vanilla UI (`index.html`, `assets/`) removed; the old "simulated agent workflow" is gone (Recovery now shows the deterministic search as what it is).
 - **App** (`#/app/...`): sidebar shell, ⌘K palette, shortcuts (S, 1–6, j/k, /), dark mode, toasts with Undo. Views: Launches (KPIs vs plan, impact banner, sortable table with buffer/main risk/owner, drawer with plain sentence + 5-step chain + readiness bar + parts), Timeline (SVG Gantt, original range dashed), Recovery (option cards, approve/reject/undo, ruled-out list, method), Supply, Software, Activity. Workspace state is in the URL (`?w=`), so links reopen the same view.
@@ -61,7 +68,7 @@ Resume prompt: "Continue LaunchReady. Read HANDOFF.md in hemant-singla/launchrea
 - Decision: no agent runs recorded (no key), so the app shows a clearly labelled simulation. `agent/run.mjs` stays as the proposed real-agent path.
 
 ## Blockers
-- Agent runs need ANTHROPIC_API_KEY (environment variable in the project's cloud environment; only new sessions see it).
+- Hosted assistant needs Hemant's Anthropic key and Cloudflare account (docs/ASSISTANT.md). Recorded agent runs (`npm run agent`) also need ANTHROPIC_API_KEY.
 
 ## Finish checks (2026-10-06, facts)
 - `npm test`: 32 pass, 0 fail.

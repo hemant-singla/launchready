@@ -20,7 +20,8 @@ flowchart LR
 | Data | `data/*.json` | Fictional plan: models, chip platforms, teams, tickets, parts, stock, deliveries, substitutes, thresholds | nothing |
 | Engine | `src/engine/` | All business logic, as pure functions over plain data | data types only |
 | App | `src/app/` | Views, interaction, workspace state, URL sync | engine |
-| Agent tools | `src/agent/tools.ts` | JSON-schema tools for a Claude agent; thin wrappers over the engine | engine |
+| Assistant | `src/agent/`, `src/app/assistant/` | In-app AI assistant: prompt, strict tools over the live workspace, streaming tool loop, chat panel | engine, app formatting |
+| Proxy | `proxy/` | Cloudflare Worker holding the API key; rebuilds every request from `src/agent/assistant.ts` | assistant config |
 
 The engine never imports from the app. That boundary is what lets the same numbers appear in the UI, the tests and an agent's tool results.
 
@@ -79,12 +80,16 @@ Hash routes (`#/app/launches/HAL-77?w=…`) because GitHub Pages serves static f
 - Views are code-split (`React.lazy`) except the default Launches view.
 - Accessibility: labelled landmarks and dialogs, focus moves into and back out of modals, Escape closes, focus trap in dialogs, `aria-sort` on sortable headers, `aria-live` for toasts and previews, visible focus rings, reduced-motion respected.
 
+## Assistant
+
+See [ASSISTANT.md](ASSISTANT.md) and [ADR 0005](adr/0005-in-app-assistant.md). In short: tools run in the browser against the workspace at call time; the model only chooses what to look up and how to explain it; changes are proposals the user applies with a click; a Worker proxy holds the key and rebuilds each request, so the endpoint can't be repurposed.
+
 ## Testing
 
 | Level | Tool | What it covers |
 |---|---|---|
-| Unit | Vitest (`tests/`) | Every engine rule: allocation never double-counts, undated/rejected supply is never used, software ranges, the three scenarios, recovery options never hurt another launch, partial fixes don't mark a launch ready, scenario order doesn't matter, approve/reject/reset semantics, agent tool outputs. |
-| End to end | Playwright (`e2e/`) | Baseline counts; simulate → impact → drawer chain; approve → restored → undo; shared links reopen the same state; command palette; every view renders without console errors; story page guess and CTA; phone layout has no horizontal scroll. |
+| Unit | Vitest (`tests/`) | Assistant tools match the engine and never change the plan; the tool loop (refusals, cut-off calls, round limit); the proxy (request rebuilding, origins, limits). Every engine rule: allocation never double-counts, undated/rejected supply is never used, software ranges, the three scenarios, recovery options never hurt another launch, partial fixes don't mark a launch ready, scenario order doesn't matter, approve/reject/reset semantics, agent tool outputs. |
+| End to end | Playwright (`e2e/`) | The assistant with scripted streamed responses (answer from the live plan, proposal applied only on click, errors); baseline counts; simulate → impact → drawer chain; approve → restored → undo; shared links reopen the same state; command palette; every view renders without console errors; story page guess and CTA; phone layout has no horizontal scroll. |
 | Static | `tsc --strict`, ESLint (typescript-eslint, react-hooks) | Types and hook rules. |
 
 CI (`.github/workflows/ci.yml`) runs typecheck, lint, unit tests and the build, then the browser tests, on every push and pull request. Pushes to `main` deploy `dist/` to GitHub Pages only after both jobs pass.
@@ -97,4 +102,4 @@ The dataset is small (16 models, 8 platforms, ~130 tickets, 20 deliveries). `com
 
 - **Data in, not data entry:** read-only connectors to the planning system (ERP/SCM) and the issue tracker, on a schedule, with a "data as of" timestamp per source.
 - **A small backend** for shared decisions, audit and permissions (who can approve a re-allocation), instead of URL + session.
-- **Agent layer:** the existing tool definitions let an AI agent investigate, explain options and draft messages to owners, with every number coming from tool calls and a human approving. See [ADR 0002](adr/0002-deterministic-engine-ai-on-top.md).
+- **Assistant:** store conversations and approvals server-side with the decisions, add drafting messages to owners, and evaluate answers against a fixed question set before changing the prompt or model.

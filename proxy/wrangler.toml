@@ -1,0 +1,17 @@
+# Cloudflare Worker that proxies the in-app assistant to the Claude API.
+# Deploy: see docs/ASSISTANT.md. Set the key with:
+#   npx wrangler secret put ANTHROPIC_API_KEY --config proxy/wrangler.toml
+name = "launchready-assistant"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Origins allowed to call the proxy (the live site and local development).
+ALLOWED_ORIGINS = "https://hemant-singla.github.io,http://localhost:5173"
+
+# Per-visitor limit: 20 model calls per minute per IP. One question usually
+# takes 2-4 calls (the model looks things up, then answers).
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }

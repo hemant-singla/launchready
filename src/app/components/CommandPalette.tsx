@@ -1,6 +1,6 @@
 // ⌘K command palette: jump to any view or launch, apply a disruption, reset.
 import { Command } from 'cmdk';
-import { Link2, Moon, RotateCcw, Zap } from 'lucide-react';
+import { Link2, Moon, RotateCcw, Sparkles, Zap } from 'lucide-react';
 import { SCENARIOS, type ScenarioKey } from '../../engine/scenarios';
 import { navigate } from '../lib/router';
 import { useWorkspace } from '../state/workspace';
@@ -10,7 +10,7 @@ import { Modal, StatusText } from './ui';
 import { VIEWS, type View } from '../lib/views';
 import { date } from '../lib/format';
 
-export function CommandPalette({ onClose, onSimulate, onShare }: { onClose: () => void; onSimulate: () => void; onShare: () => void }) {
+export function CommandPalette({ onClose, onSimulate, onShare, onAsk }: { onClose: () => void; onSimulate: () => void; onShare: () => void; onAsk: () => void }) {
   const { result, state, toggleScenario, reset } = useWorkspace();
   const [, toggleTheme] = useTheme();
   const toast = useToast();
@@ -60,6 +60,9 @@ export function CommandPalette({ onClose, onSimulate, onShare }: { onClose: () =
             </Command.Item>
           </Command.Group>
           <Command.Group heading="General">
+            <Command.Item value="ask ai assistant question chat" onSelect={run(onAsk)}>
+              <Sparkles size={16} /> Ask LaunchReady (AI)
+            </Command.Item>
             <Command.Item value="copy share link" onSelect={run(onShare)}>
               <Link2 size={16} /> Copy link to this view
             </Command.Item>
