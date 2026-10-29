@@ -3,6 +3,7 @@
 //   knockOn(before, after, d)  -> the chain of effects, in plain sentences
 //   explain(model, result, d)  -> one sentence a non-specialist can read
 import { addDays, fmtDate } from './dates';
+import { noteShipmentChange } from './scenarios';
 import type { Dataset, ModelResult, Result, SoftwareEta, Status, SupplyLine } from './types';
 
 export type LabMode = 'delay' | 'reject' | 'nodate';
@@ -23,9 +24,17 @@ export function applyLab(data: Dataset, lab: LabEdit): Dataset {
   const d = structuredClone(data);
   const del = d.deliveries.find((x) => x.id === lab.delivery);
   if (del) {
-    if (lab.mode === 'reject') Object.assign(del, { status: 'rejected', note: 'Rejected at inspection (what-if)' });
-    else if (lab.mode === 'nodate') Object.assign(del, { eta: null, status: 'unconfirmed', note: 'Supplier withdrew the date (what-if)' });
-    else if (lab.delay && del.eta) Object.assign(del, { eta: addDays(del.eta, lab.delay), status: lab.delay > 0 ? 'delayed' : del.status, note: `${lab.delay > 0 ? '+' : ''}${lab.delay} days (what-if)` });
+    const asOf = d.config.asOf;
+    if (lab.mode === 'reject') {
+      noteShipmentChange(del, 'what-if', 'What-if: lot rejected at incoming inspection.', asOf);
+      Object.assign(del, { status: 'rejected', note: 'Rejected at inspection (what-if)' });
+    } else if (lab.mode === 'nodate') {
+      noteShipmentChange(del, 'what-if', 'What-if: supplier withdrew the ship date.', asOf);
+      Object.assign(del, { eta: null, status: 'unconfirmed', note: 'Supplier withdrew the date (what-if)' });
+    } else if (lab.delay && del.eta) {
+      noteShipmentChange(del, 'what-if', `What-if: arrival moves ${lab.delay > 0 ? `${lab.delay} days later` : `${-lab.delay} days earlier`}.`, asOf, lab.delay);
+      Object.assign(del, { eta: addDays(del.eta, lab.delay), status: lab.delay > 0 ? 'delayed' : del.status, note: `${lab.delay > 0 ? '+' : ''}${lab.delay} days (what-if)` });
+    }
   }
   const m = d.models.find((x) => x.id === lab.model);
   if (m && lab.shift) m.launchDate = addDays(m.launchDate, lab.shift);

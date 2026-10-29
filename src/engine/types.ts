@@ -19,6 +19,8 @@ export interface Config {
   testWindowDays: { new: number; reused: number };
   stabilisationDays: { new: Range; reused: Range };
   fixDays: Record<Severity, Range>;
+  /** Days for the test lab to verify a fix after it lands. */
+  verifyDays: Range;
   transferDays: number;
   maxLaunchMoveDays: number;
 }
@@ -52,7 +54,15 @@ export interface Submission {
   submittedOn: IsoDate | null;
   expectedOn: IsoDate | null;
   newCodePct: number;
+  /** The team's latest note on its submission (why it is late, what is left). */
+  note?: string;
+  updatedOn?: IsoDate;
 }
+
+export type TicketSource = 'test-lab' | 'customer';
+export type Workflow = 'new' | 'triaged' | 'in-progress' | 'in-review' | 'verifying' | 'fixed';
+
+export interface TicketComment { at: IsoDate; by: string; text: string }
 
 export interface Ticket {
   id: string;
@@ -64,13 +74,63 @@ export interface Ticket {
   openedOn: IsoDate;
   fixedOn: IsoDate | null;
   title: string;
+  // Detail (optional so hand-built test data stays small).
+  source?: TicketSource;
+  workflow?: Workflow;
+  component?: string;
+  /** Found by the test lab: the suite, the step that failed and the run. */
+  testCase?: { suite: string; step: number; runId?: string };
+  /** Reported by customers with "Report this issue". */
+  report?: { units: number; firstSeen: IsoDate; firmware: string; devices: string; quote: string };
+  /** Excerpt of the TV log attached to the issue. */
+  log?: string[];
+  /** How it reached the team: the log signature and routing rule. */
+  triage?: { signature: string; rule: string; routedOn: IsoDate };
+  comments?: TicketComment[];
+  /** The team's fix date: committed dates feed the software-ready date. */
+  eta?: { fixBy: IsoDate; confidence: 'committed' | 'estimate' };
+}
+
+export interface TestSuite { id: string; name: string; hours: number; teams: string[]; steps: string[] }
+export interface TestRun {
+  id: string;
+  suite: string;
+  chipset: string;
+  rig: string;
+  startedOn: IsoDate;
+  hours: number;
+  result: 'pass' | 'fail' | 'running';
+  failedStep: number | null;
+  ticketIds: string[];
+  /** True when this run found a new issue (false for a repeat of a known one). */
+  newIssue: boolean;
 }
 
 export interface Part { id: string; name: string; category: string }
 export interface BomLine { chipset: string; part: string; qtyPerUnit: number }
 export interface Warehouse { id: string; name: string }
 export interface StockRow { part: string; warehouse: string; onHand: number; allocated: number }
-export interface Supplier { id: string; name: string }
+export interface Supplier {
+  id: string;
+  name: string;
+  region?: string;
+  leadTimeDays?: number;
+  /** Share of deliveries on time over the last 12 months (0–1). */
+  onTimeRate?: number;
+  avgDelayDays?: number;
+  /** Defective parts per million at incoming inspection. */
+  defectPpm?: number;
+  contact?: string;
+  latestNote?: string;
+}
+
+export interface ShipmentEvent {
+  at: IsoDate;
+  stage: 'ordered' | 'confirmed' | 'production' | 'shipped' | 'customs' | 'arrived' | 'inspection' | 'delayed' | 'what-if';
+  text: string;
+  /** A future step from the plan, not something that has happened. */
+  planned: boolean;
+}
 
 export type DeliveryStatus = 'confirmed' | 'delayed' | 'rejected' | 'unconfirmed';
 export interface Delivery {
@@ -83,6 +143,11 @@ export interface Delivery {
   status: DeliveryStatus;
   forChipset: string | null;
   note: string;
+  po?: { number: string; placedOn: IsoDate; unitCost: number; currency: string; incoterm: string };
+  transport?: { mode: 'air' | 'sea'; carrier: string; tracking: string };
+  events?: ShipmentEvent[];
+  inspection?: { sampled: number; failed: number; result: 'passed' | 'rejected'; reason?: string };
+  lastUpdate?: { at: IsoDate; text: string } | null;
 }
 
 export interface Substitute {
@@ -109,6 +174,8 @@ export interface Dataset {
   suppliers: Supplier[];
   deliveries: Delivery[];
   substitutes: Substitute[];
+  testSuites: TestSuite[];
+  testRuns: TestRun[];
 }
 
 // ---------- derived: supply ----------
@@ -179,6 +246,9 @@ export interface KnownEta extends EtaBase {
   slipDays: number;
   early: IsoDate;
   late: IsoDate;
+  /** Open tickets with a team-committed fix date, and the latest such date. */
+  committedFixes: number;
+  lastCommittedFix: IsoDate | null;
 }
 export interface UnknownEta extends EtaBase {
   known: false;

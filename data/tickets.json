@@ -8,7 +8,56 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": null,
-    "title": "Mouse lag on USB hub"
+    "title": "Mouse lag on USB hub",
+    "source": "test-lab",
+    "component": "USB input (HID)",
+    "testCase": {
+      "suite": "TS-PERIPH",
+      "step": 1,
+      "runId": "RUN-00238"
+    },
+    "log": [
+      "[  301.554012] hub 1-1:1.0: 4 ports detected",
+      "[  322.004101] hid-generic 0003:046D:C077: urb timeout (-110)",
+      "[  322.004530] input: pointer latency 412 ms"
+    ],
+    "triage": {
+      "signature": "hid-generic: urb timeout",
+      "rule": "USB input (HID) → USB team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"hid-generic: urb timeout\" matches the USB input (HID) rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 5 running Camera and USB peripherals. Looking at USB input (HID)."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "USB team",
+        "text": "Root cause: HID polling interval is reset to 64 ms behind powered hubs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.140; re-running Camera and USB peripherals on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4101",
@@ -19,7 +68,56 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-23",
     "fixedOn": null,
-    "title": "USB camera drops frames at 4K"
+    "title": "USB camera drops frames at 4K",
+    "source": "test-lab",
+    "component": "USB video class",
+    "testCase": {
+      "suite": "TS-PERIPH",
+      "step": 0,
+      "runId": "RUN-00116"
+    },
+    "log": [
+      "[ 1520.004311] uvcvideo: Found UVC 1.10 device NWV Cam 4K (2bd9:0410)",
+      "[ 1544.120876] uvcvideo: Dropped 214 frames (bandwidth)",
+      "[ 1544.121004] videocall: encoder starved, fps 17.2 (target 30)"
+    ],
+    "triage": {
+      "signature": "uvcvideo: Dropped frames",
+      "rule": "USB video class → USB team",
+      "routedOn": "2026-09-23"
+    },
+    "workflow": "in-review",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-23",
+        "by": "Triage bot",
+        "text": "Log signature \"uvcvideo: Dropped frames\" matches the USB video class rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-24",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 11 running Camera and USB peripherals. Looking at USB video class."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "USB team",
+        "text": "Root cause: isochronous bandwidth is reserved for USB 2 speeds on the shared root hub."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Fix up for review as change 51230."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4102",
@@ -30,7 +128,53 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-22",
     "fixedOn": null,
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00632"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-09-22"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-09-22",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 6 running Standby and wake cycling. Looking at USB host controller."
+      },
+      {
+        "at": "2026-09-24",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Rough estimate: 2026-10-08, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4103",
@@ -41,7 +185,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": "2026-10-02",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00225"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 8 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.141; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4104",
@@ -52,7 +232,47 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-26",
     "fixedOn": "2026-10-05",
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "customer",
+    "component": "USB host controller",
+    "report": {
+      "units": 306,
+      "firstSeen": "2026-09-26",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "My USB stick disappears every time I turn the TV back on."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 306 TVs",
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (USB host controller). Affects 306 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready. Fix merged in build 7.5.0.142; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4105",
@@ -63,7 +283,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-20",
     "fixedOn": "2026-09-28",
-    "title": "USB camera drops frames at 4K"
+    "title": "USB camera drops frames at 4K",
+    "source": "test-lab",
+    "component": "USB video class",
+    "testCase": {
+      "suite": "TS-PERIPH",
+      "step": 0,
+      "runId": "RUN-00063"
+    },
+    "log": [
+      "[ 1520.004311] uvcvideo: Found UVC 1.10 device NWV Cam 4K (2bd9:0410)",
+      "[ 1544.120876] uvcvideo: Dropped 214 frames (bandwidth)",
+      "[ 1544.121004] videocall: encoder starved, fps 17.2 (target 30)"
+    ],
+    "triage": {
+      "signature": "uvcvideo: Dropped frames",
+      "rule": "USB video class → USB team",
+      "routedOn": "2026-09-20"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-20",
+        "by": "Triage bot",
+        "text": "Log signature \"uvcvideo: Dropped frames\" matches the USB video class rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 3 running Camera and USB peripherals. Looking at USB video class."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "USB team",
+        "text": "Root cause: isochronous bandwidth is reserved for USB 2 speeds on the shared root hub. Fix merged in build 7.5.0.143; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4106",
@@ -74,7 +329,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00281"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 9 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks. Fix merged in build 7.5.0.144; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4107",
@@ -85,7 +376,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": "2026-10-05",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00225"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 6 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.145; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4108",
@@ -96,7 +423,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-22",
     "fixedOn": "2026-09-25",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00102"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-22"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-22",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 11 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.146; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4109",
@@ -107,7 +470,44 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-21",
     "fixedOn": "2026-09-30",
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00072"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-09-21"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-21",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 5 running Standby and wake cycling. Looking at USB host controller."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready. Fix merged in build 7.5.0.147; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4110",
@@ -118,7 +518,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-21",
     "fixedOn": "2026-09-22",
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00071"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-09-21"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-21",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 10 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks. Fix merged in build 7.5.0.148; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4111",
@@ -129,7 +565,46 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-28",
     "fixedOn": "2026-10-04",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "customer",
+    "component": "Software updater",
+    "report": {
+      "units": 288,
+      "firstSeen": "2026-09-28",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "Software update from USB stops at 90% and goes back to the old version."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 288 TVs",
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (Software updater). Affects 288 reports so far."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.149; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4112",
@@ -140,7 +615,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-18",
     "fixedOn": null,
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00023"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-09-18"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-09-18",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 2 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-09-20",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Rough estimate: 2026-10-08, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4113",
@@ -151,7 +670,55 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-19",
     "fixedOn": null,
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00041"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-09-19"
+    },
+    "workflow": "in-review",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-19",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 10 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Fix up for review as change 51231."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4114",
@@ -162,7 +729,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": "2026-10-01",
-    "title": "HDR tone mapping too bright"
+    "title": "HDR tone mapping too bright",
+    "source": "test-lab",
+    "component": "HDR tone mapping",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 1,
+      "runId": "RUN-00216"
+    },
+    "log": [
+      "[pq] clip=hdr10_1000nit_ramp",
+      "[pq] measured peak 1180 nits (target 1000 ±5%) FAIL",
+      "[pq] tone_curve=v3.2 panel_lut=2026A"
+    ],
+    "triage": {
+      "signature": "pq_check: hdr10_peak above target",
+      "rule": "HDR tone mapping → Display team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: hdr10_peak above target\" matches the HDR tone mapping rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 7 running Picture quality regression. Looking at HDR tone mapping."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Display team",
+        "text": "Root cause: tone curve uses last year's panel luminance table. Fix merged in build 7.5.0.150; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4115",
@@ -173,7 +775,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-05",
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "test-lab",
+    "component": "Variable refresh rate",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 2,
+      "runId": "RUN-00233"
+    },
+    "log": [
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 11 running Picture quality regression. Looking at Variable refresh rate."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes. Fix merged in build 7.5.0.151; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4116",
@@ -184,7 +821,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00268"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 1 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off. Fix merged in build 7.5.0.152; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4117",
@@ -195,7 +867,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "test-lab",
+    "component": "Variable refresh rate",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 2,
+      "runId": "RUN-00303"
+    },
+    "log": [
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 2 running Picture quality regression. Looking at Variable refresh rate."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes. Fix merged in build 7.5.0.153; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4118",
@@ -206,7 +913,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-23",
     "fixedOn": "2026-09-26",
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "test-lab",
+    "component": "Variable refresh rate",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 2,
+      "runId": "RUN-00111"
+    },
+    "log": [
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-09-23"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-23",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-23",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 9 running Picture quality regression. Looking at Variable refresh rate."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes. Fix merged in build 7.5.0.154; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4119",
@@ -217,7 +959,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-18",
     "fixedOn": "2026-09-21",
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00023"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-09-18"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-18",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-18",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 1 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects. Fix merged in build 7.5.0.155; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4120",
@@ -228,7 +1004,56 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-26",
     "fixedOn": null,
-    "title": "Dolby passthrough drops"
+    "title": "Dolby passthrough drops",
+    "source": "test-lab",
+    "component": "Audio passthrough",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 1,
+      "runId": "RUN-00161"
+    },
+    "log": [
+      "[audio_hal] passthrough E-AC3-JOC 768 kbps",
+      "[ 3611.220004] audio_hal: bitstream underrun, fallback to PCM",
+      "[ 3611.220090] earc: format changed, sink re-sync 1.4 s"
+    ],
+    "triage": {
+      "signature": "audio_hal: bitstream underrun, fallback to PCM",
+      "rule": "Audio passthrough → Audio team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_hal: bitstream underrun, fallback to PCM\" matches the Audio passthrough rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 10 running Audio output matrix. Looking at Audio passthrough."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "Audio team",
+        "text": "Root cause: passthrough buffer is sized for stereo bitrates."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.156; re-running Audio output matrix on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4121",
@@ -239,7 +1064,56 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-22",
     "fixedOn": null,
-    "title": "Audio out of sync over eARC"
+    "title": "Audio out of sync over eARC",
+    "source": "test-lab",
+    "component": "HDMI eARC audio",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 0,
+      "runId": "RUN-00091"
+    },
+    "log": [
+      "[audio] sink=eARC soundbar (Brand B, fw 3.1)",
+      "[av_sync] measured offset +142 ms (limit ±40 ms) FAIL",
+      "[audio_hal] latency report from sink ignored"
+    ],
+    "triage": {
+      "signature": "av_sync: offset above limit",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-09-22"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-22",
+        "by": "Triage bot",
+        "text": "Log signature \"av_sync: offset above limit\" matches the HDMI eARC audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 1 running Audio output matrix. Looking at HDMI eARC audio."
+      },
+      {
+        "at": "2026-09-24",
+        "by": "Audio team",
+        "text": "Root cause: the latency the soundbar reports over eARC is not applied to video."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.157; re-running Audio output matrix on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Committed: fix in a release build by 2026-10-06."
+      }
+    ]
   },
   {
     "id": "NWV-4122",
@@ -250,7 +1124,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Pop noise at power on"
+    "title": "Pop noise at power on",
+    "source": "test-lab",
+    "component": "Audio amplifier control",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 5,
+      "runId": "RUN-00633"
+    },
+    "log": [
+      "[    0.912004] amp: unmute at t=0.40 s",
+      "[audio_probe] transient 18 dB above noise floor at t=0.41 s FAIL"
+    ],
+    "triage": {
+      "signature": "audio_probe: power-on transient",
+      "rule": "Audio amplifier control → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_probe: power-on transient\" matches the Audio amplifier control rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 8 running Standby and wake cycling. Looking at Audio amplifier control."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Root cause: amplifier is unmuted before the DC offset settles. Fix merged in build 7.5.0.158; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4123",
@@ -261,7 +1169,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-22",
     "fixedOn": "2026-09-28",
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "test-lab",
+    "component": "Audio policy",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 3,
+      "runId": "RUN-00091"
+    },
+    "log": [
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-09-22"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-22",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 5 running Audio output matrix. Looking at Audio policy."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Audio team",
+        "text": "Root cause: per-input volume table is not loaded before the source switch. Fix merged in build 7.5.0.159; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4124",
@@ -272,7 +1214,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-19",
     "fixedOn": "2026-10-03",
-    "title": "Audio out of sync over eARC"
+    "title": "Audio out of sync over eARC",
+    "source": "test-lab",
+    "component": "HDMI eARC audio",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 0,
+      "runId": "RUN-00039"
+    },
+    "log": [
+      "[audio] sink=eARC soundbar (Brand B, fw 3.1)",
+      "[av_sync] measured offset +142 ms (limit ±40 ms) FAIL",
+      "[audio_hal] latency report from sink ignored"
+    ],
+    "triage": {
+      "signature": "av_sync: offset above limit",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-09-19"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-19",
+        "by": "Triage bot",
+        "text": "Log signature \"av_sync: offset above limit\" matches the HDMI eARC audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 2 running Audio output matrix. Looking at HDMI eARC audio."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Audio team",
+        "text": "Root cause: the latency the soundbar reports over eARC is not applied to video. Fix merged in build 7.5.0.160; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4125",
@@ -283,7 +1260,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-18",
     "fixedOn": "2026-09-22",
-    "title": "Audio out of sync over eARC"
+    "title": "Audio out of sync over eARC",
+    "source": "test-lab",
+    "component": "HDMI eARC audio",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 0,
+      "runId": "RUN-00021"
+    },
+    "log": [
+      "[audio] sink=eARC soundbar (Brand B, fw 3.1)",
+      "[av_sync] measured offset +142 ms (limit ±40 ms) FAIL",
+      "[audio_hal] latency report from sink ignored"
+    ],
+    "triage": {
+      "signature": "av_sync: offset above limit",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-09-18"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-18",
+        "by": "Triage bot",
+        "text": "Log signature \"av_sync: offset above limit\" matches the HDMI eARC audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 9 running Audio output matrix. Looking at HDMI eARC audio."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "Audio team",
+        "text": "Root cause: the latency the soundbar reports over eARC is not applied to video. Fix merged in build 7.5.0.161; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4126",
@@ -294,7 +1306,44 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-10-05",
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "customer",
+    "component": "Audio policy",
+    "report": {
+      "units": 146,
+      "firstSeen": "2026-09-25",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "Volume suddenly gets very loud when I switch inputs."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 146 TVs",
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "Audio team",
+        "text": "Reproduced on a lab TV with the customer logs (Audio policy). Affects 146 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Root cause: per-input volume table is not loaded before the source switch. Fix merged in build 7.5.0.162; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4127",
@@ -305,7 +1354,40 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "Screen mirroring fails on 5 GHz"
+    "title": "Screen mirroring fails on 5 GHz",
+    "source": "customer",
+    "component": "Wi-Fi Direct (mirroring)",
+    "report": {
+      "units": 361,
+      "firstSeen": "2026-10-01",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "Screen mirroring from my phone doesn't connect."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 361 TVs",
+      "[p2p] invite from Phone-QA-12 on ch 149",
+      "[ 402.110922] p2p0: GO negotiation failed, status=7",
+      "[cast] session aborted: no group"
+    ],
+    "triage": {
+      "signature": "p2p0: GO negotiation failed",
+      "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"p2p0: GO negotiation failed\" matches the Wi-Fi Direct (mirroring) rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Wi-Fi Direct (mirroring)). Affects 361 reports so far."
+      }
+    ]
   },
   {
     "id": "NWV-4128",
@@ -316,7 +1398,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Screen mirroring fails on 5 GHz"
+    "title": "Screen mirroring fails on 5 GHz",
+    "source": "customer",
+    "component": "Wi-Fi Direct (mirroring)",
+    "report": {
+      "units": 196,
+      "firstSeen": "2026-10-04",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "Screen mirroring from my phone doesn't connect."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 196 TVs",
+      "[p2p] invite from Phone-QA-12 on ch 149",
+      "[ 402.110922] p2p0: GO negotiation failed, status=7",
+      "[cast] session aborted: no group"
+    ],
+    "triage": {
+      "signature": "p2p0: GO negotiation failed",
+      "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"p2p0: GO negotiation failed\" matches the Wi-Fi Direct (mirroring) rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Wi-Fi Direct (mirroring)). Affects 196 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: channel list for the group owner excludes UNII-3. Fix merged in build 7.5.0.163; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4129",
@@ -327,7 +1447,44 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Wi-Fi scan misses DFS channels"
+    "title": "Wi-Fi scan misses DFS channels",
+    "source": "customer",
+    "component": "Wi-Fi regulatory",
+    "report": {
+      "units": 65,
+      "firstSeen": "2026-10-02",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "My TV can't see my 5 GHz network."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 65 TVs",
+      "[wifi] regdomain=US",
+      "[wifi] scan results missing ch 52-64 (DFS)"
+    ],
+    "triage": {
+      "signature": "wlan0: scan results missing DFS channels",
+      "rule": "Wi-Fi regulatory → Connectivity team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"wlan0: scan results missing DFS channels\" matches the Wi-Fi regulatory rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Wi-Fi regulatory). Affects 65 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: passive scan dwell time on DFS channels is too short. Fix merged in build 7.5.0.164; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4130",
@@ -338,7 +1495,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-22",
     "fixedOn": "2026-10-04",
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00634"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-09-22"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-22",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-09-22",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 12 running Standby and wake cycling. Looking at Bluetooth."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby. Fix merged in build 7.5.0.165; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4131",
@@ -349,7 +1540,44 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-20",
     "fixedOn": "2026-09-24",
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "customer",
+    "component": "Bluetooth",
+    "report": {
+      "units": 356,
+      "firstSeen": "2026-09-20",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "The remote stops working and has to be paired again."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 356 TVs",
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-09-20"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-20",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Bluetooth). Affects 356 reports so far."
+      },
+      {
+        "at": "2026-09-24",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby. Fix merged in build 7.5.0.166; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4132",
@@ -360,7 +1588,59 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-18",
     "fixedOn": null,
-    "title": "Boot time over target"
+    "title": "Boot time over target",
+    "source": "customer",
+    "component": "Boot and startup",
+    "report": {
+      "units": 240,
+      "firstSeen": "2026-09-18",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "The TV takes a long time to start."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 240 TVs",
+      "[    0.000000] boot: NWV-OS 7.5.0 cold boot",
+      "[   14.812004] boot: home ready at 14.8 s (target 10 s)",
+      "[boot] slowest: media_index 3.9 s, app_store 2.2 s"
+    ],
+    "triage": {
+      "signature": "boot: home ready above target",
+      "rule": "Boot and startup → Platform team",
+      "routedOn": "2026-09-18"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-18",
+        "by": "Triage bot",
+        "text": "Log signature \"boot: home ready above target\" matches the Boot and startup rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Platform team",
+        "text": "Reproduced on a lab TV with the customer logs (Boot and startup). Affects 240 reports so far."
+      },
+      {
+        "at": "2026-09-20",
+        "by": "Platform team",
+        "text": "Root cause: media indexing runs before the home screen is shown."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.167; re-running Standby and wake cycling on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Committed: fix in a release build by 2026-10-06."
+      }
+    ]
   },
   {
     "id": "NWV-4133",
@@ -371,7 +1651,50 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-18",
     "fixedOn": null,
-    "title": "Wakes from standby by itself"
+    "title": "Wakes from standby by itself",
+    "source": "test-lab",
+    "component": "Power management",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 6,
+      "runId": "RUN-00635"
+    },
+    "log": [
+      "[28812.004101] pm: wakeup source: hdmi_cec (unexpected)",
+      "[28812.004330] cec: <Image View On> from logical addr 4"
+    ],
+    "triage": {
+      "signature": "pm: unexpected wakeup source",
+      "rule": "Power management → Platform team",
+      "routedOn": "2026-09-18"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-18",
+        "by": "Triage bot",
+        "text": "Log signature \"pm: unexpected wakeup source\" matches the Power management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-19",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 6 running Standby and wake cycling. Looking at Power management."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "Platform team",
+        "text": "Root cause: CEC wake requests from playback devices are not filtered in eco mode."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Committed: fix in a release build by 2026-10-08."
+      }
+    ]
   },
   {
     "id": "NWV-4134",
@@ -382,7 +1705,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-09-30",
-    "title": "Wakes from standby by itself"
+    "title": "Wakes from standby by itself",
+    "source": "test-lab",
+    "component": "Power management",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 6,
+      "runId": "RUN-00142"
+    },
+    "log": [
+      "[28812.004101] pm: wakeup source: hdmi_cec (unexpected)",
+      "[28812.004330] cec: <Image View On> from logical addr 4"
+    ],
+    "triage": {
+      "signature": "pm: unexpected wakeup source",
+      "rule": "Power management → Platform team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"pm: unexpected wakeup source\" matches the Power management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 12 running Standby and wake cycling. Looking at Power management."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Root cause: CEC wake requests from playback devices are not filtered in eco mode. Fix merged in build 7.5.0.168; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4135",
@@ -393,7 +1750,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-09-27",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "customer",
+    "component": "Media player memory",
+    "report": {
+      "units": 340,
+      "firstSeen": "2026-09-25",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 43\"/50\" (same software branch)",
+      "quote": "The TV gets slow and the menu restarts after watching all day."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 340 TVs",
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Platform team",
+        "text": "Reproduced on a lab TV with the customer logs (Media player memory). Affects 340 reports so far."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.169; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4136",
@@ -404,7 +1799,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00283"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 10 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.170; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4137",
@@ -415,7 +1845,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": "2026-10-05",
-    "title": "Boot time over target"
+    "title": "Boot time over target",
+    "source": "test-lab",
+    "component": "Boot and startup",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 0,
+      "runId": "RUN-00212"
+    },
+    "log": [
+      "[    0.000000] boot: NWV-OS 7.5.0 cold boot",
+      "[   14.812004] boot: home ready at 14.8 s (target 10 s)",
+      "[boot] slowest: media_index 3.9 s, app_store 2.2 s"
+    ],
+    "triage": {
+      "signature": "boot: home ready above target",
+      "rule": "Boot and startup → Platform team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"boot: home ready above target\" matches the Boot and startup rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 1 running Standby and wake cycling. Looking at Boot and startup."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: media indexing runs before the home screen is shown. Fix merged in build 7.5.0.171; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4138",
@@ -426,7 +1891,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-05",
-    "title": "Thermal throttling in demo mode"
+    "title": "Thermal throttling in demo mode",
+    "source": "test-lab",
+    "component": "Thermal management",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 3,
+      "runId": "RUN-00230"
+    },
+    "log": [
+      "[demo] store loop brightness 100%",
+      "[thermal] cpu throttled at 92 C",
+      "[demo] animation fps 41 (target 60)"
+    ],
+    "triage": {
+      "signature": "thermal: cpu throttled",
+      "rule": "Thermal management → Platform team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"thermal: cpu throttled\" matches the Thermal management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 5 running Streaming endurance. Looking at Thermal management."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: demo mode forces max brightness and the fan curve ignores it. Fix merged in build 7.5.0.172; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4139",
@@ -437,7 +1937,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-10-03",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00143"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 11 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.173; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4140",
@@ -448,7 +1983,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-20",
     "fixedOn": "2026-09-28",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00055"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-09-20"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-20",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-21",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 8 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.174; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4141",
@@ -459,7 +2029,39 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00475"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 12 running Standby and wake cycling. Looking at USB host controller."
+      }
+    ]
   },
   {
     "id": "NWV-4142",
@@ -470,7 +2072,57 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-26",
     "fixedOn": null,
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00383"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 11 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.175; re-running Software update and settings on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4143",
@@ -481,7 +2133,61 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-28",
     "fixedOn": null,
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "customer",
+    "component": "USB host controller",
+    "report": {
+      "units": 268,
+      "firstSeen": "2026-09-28",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "My USB stick disappears every time I turn the TV back on."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 268 TVs",
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (USB host controller). Affects 268 reports so far."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.176; re-running Standby and wake cycling on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Committed: fix in a release build by 2026-10-06."
+      }
+    ]
   },
   {
     "id": "NWV-4144",
@@ -492,7 +2198,53 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00636"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-10",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 6 running Standby and wake cycling. Looking at USB host controller."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Rough estimate: 2026-10-10, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4145",
@@ -503,7 +2255,52 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-24",
     "fixedOn": null,
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00334"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-09-24"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-09-24",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 2 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Rough estimate: 2026-10-06, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4146",
@@ -514,7 +2311,38 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00523"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 9 running Software update and settings. Looking at Software updater."
+      }
+    ]
   },
   {
     "id": "NWV-4147",
@@ -525,7 +2353,52 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00470"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 1 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Committed: fix in a release build by 2026-10-08."
+      }
+    ]
   },
   {
     "id": "NWV-4148",
@@ -536,7 +2409,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "USB camera drops frames at 4K"
+    "title": "USB camera drops frames at 4K",
+    "source": "customer",
+    "component": "USB video class",
+    "report": {
+      "units": 308,
+      "firstSeen": "2026-10-03",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Video calls get choppy after a few minutes."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 308 TVs",
+      "[ 1520.004311] uvcvideo: Found UVC 1.10 device NWV Cam 4K (2bd9:0410)",
+      "[ 1544.120876] uvcvideo: Dropped 214 frames (bandwidth)",
+      "[ 1544.121004] videocall: encoder starved, fps 17.2 (target 30)"
+    ],
+    "triage": {
+      "signature": "uvcvideo: Dropped frames",
+      "rule": "USB video class → USB team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"uvcvideo: Dropped frames\" matches the USB video class rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (USB video class). Affects 308 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: isochronous bandwidth is reserved for USB 2 speeds on the shared root hub. Fix merged in build 7.5.0.177; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4149",
@@ -547,7 +2458,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-28",
     "fixedOn": "2026-10-05",
-    "title": "USB camera drops frames at 4K"
+    "title": "USB camera drops frames at 4K",
+    "source": "customer",
+    "component": "USB video class",
+    "report": {
+      "units": 138,
+      "firstSeen": "2026-09-28",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Video calls get choppy after a few minutes."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 138 TVs",
+      "[ 1520.004311] uvcvideo: Found UVC 1.10 device NWV Cam 4K (2bd9:0410)",
+      "[ 1544.120876] uvcvideo: Dropped 214 frames (bandwidth)",
+      "[ 1544.121004] videocall: encoder starved, fps 17.2 (target 30)"
+    ],
+    "triage": {
+      "signature": "uvcvideo: Dropped frames",
+      "rule": "USB video class → USB team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"uvcvideo: Dropped frames\" matches the USB video class rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (USB video class). Affects 138 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: isochronous bandwidth is reserved for USB 2 speeds on the shared root hub. Fix merged in build 7.5.0.178; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4150",
@@ -558,7 +2507,46 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-10-03",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "customer",
+    "component": "Software updater",
+    "report": {
+      "units": 342,
+      "firstSeen": "2026-09-25",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Software update from USB stops at 90% and goes back to the old version."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 342 TVs",
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (Software updater). Affects 342 reports so far."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.179; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4151",
@@ -569,7 +2557,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00492"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 9 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks. Fix merged in build 7.5.0.180; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4152",
@@ -580,7 +2604,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-26",
     "fixedOn": "2026-09-27",
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00369"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 5 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks. Fix merged in build 7.5.0.181; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4153",
@@ -591,7 +2651,46 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-05",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "customer",
+    "component": "Software updater",
+    "report": {
+      "units": 375,
+      "firstSeen": "2026-10-01",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Software update from USB stops at 90% and goes back to the old version."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 375 TVs",
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (Software updater). Affects 375 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.182; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4154",
@@ -602,7 +2701,44 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-05",
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00637"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 5 running Standby and wake cycling. Looking at USB host controller."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready. Fix merged in build 7.5.0.183; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4155",
@@ -613,7 +2749,46 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-24",
     "fixedOn": "2026-09-30",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "customer",
+    "component": "Software updater",
+    "report": {
+      "units": 28,
+      "firstSeen": "2026-09-24",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Software update from USB stops at 90% and goes back to the old version."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 28 TVs",
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-09-24"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-24",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "USB team",
+        "text": "Reproduced on a lab TV with the customer logs (Software updater). Affects 28 reports so far."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.184; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4156",
@@ -624,7 +2799,54 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-27",
     "fixedOn": null,
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "customer",
+    "component": "Variable refresh rate",
+    "report": {
+      "units": 92,
+      "firstSeen": "2026-09-27",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "The screen flickers when I play games at 120 Hz."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 92 TVs",
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-09-27"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-27",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Display team",
+        "text": "Reproduced on a lab TV with the customer logs (Variable refresh rate). Affects 92 reports so far."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4157",
@@ -635,7 +2857,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00496"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 4 running Picture quality regression. Looking at Local dimming."
+      }
+    ]
   },
   {
     "id": "NWV-4158",
@@ -646,7 +2897,59 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-28",
     "fixedOn": null,
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "customer",
+    "component": "Picture processing",
+    "report": {
+      "units": 137,
+      "firstSeen": "2026-09-28",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "I see stripes in dark scenes."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 137 TVs",
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "in-review",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Display team",
+        "text": "Reproduced on a lab TV with the customer logs (Picture processing). Affects 137 reports so far."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Fix up for review as change 51232."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4159",
@@ -657,7 +2960,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "test-lab",
+    "component": "Variable refresh rate",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 2,
+      "runId": "RUN-00496"
+    },
+    "log": [
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 5 running Picture quality regression. Looking at Variable refresh rate."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Rough estimate: 2026-10-08, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4160",
@@ -668,7 +3015,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Picture mode resets after reboot"
+    "title": "Picture mode resets after reboot",
+    "source": "test-lab",
+    "component": "Settings storage",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 4,
+      "runId": "RUN-00510"
+    },
+    "log": [
+      "[    3.410221] settings: loading user profile 0",
+      "[    3.411004] settings: picture_mode reverted to Standard (expected Movie)",
+      "[    3.411110] settings: profile checksum mismatch, using defaults"
+    ],
+    "triage": {
+      "signature": "settings: picture_mode reverted",
+      "rule": "Settings storage → Display team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"settings: picture_mode reverted\" matches the Settings storage rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 12 running Standby and wake cycling. Looking at Settings storage."
+      }
+    ]
   },
   {
     "id": "NWV-4161",
@@ -679,7 +3056,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-05",
-    "title": "HDR tone mapping too bright"
+    "title": "HDR tone mapping too bright",
+    "source": "test-lab",
+    "component": "HDR tone mapping",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 1,
+      "runId": "RUN-00461"
+    },
+    "log": [
+      "[pq] clip=hdr10_1000nit_ramp",
+      "[pq] measured peak 1180 nits (target 1000 ±5%) FAIL",
+      "[pq] tone_curve=v3.2 panel_lut=2026A"
+    ],
+    "triage": {
+      "signature": "pq_check: hdr10_peak above target",
+      "rule": "HDR tone mapping → Display team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: hdr10_peak above target\" matches the HDR tone mapping rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 12 running Picture quality regression. Looking at HDR tone mapping."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: tone curve uses last year's panel luminance table. Fix merged in build 7.5.0.185; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4162",
@@ -690,7 +3102,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-10-04",
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "customer",
+    "component": "Variable refresh rate",
+    "report": {
+      "units": 240,
+      "firstSeen": "2026-09-25",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "The screen flickers when I play games at 120 Hz."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 240 TVs",
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Display team",
+        "text": "Reproduced on a lab TV with the customer logs (Variable refresh rate). Affects 240 reports so far."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes. Fix merged in build 7.5.0.186; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4163",
@@ -701,7 +3151,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-05",
-    "title": "HDR tone mapping too bright"
+    "title": "HDR tone mapping too bright",
+    "source": "test-lab",
+    "component": "HDR tone mapping",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 1,
+      "runId": "RUN-00444"
+    },
+    "log": [
+      "[pq] clip=hdr10_1000nit_ramp",
+      "[pq] measured peak 1180 nits (target 1000 ±5%) FAIL",
+      "[pq] tone_curve=v3.2 panel_lut=2026A"
+    ],
+    "triage": {
+      "signature": "pq_check: hdr10_peak above target",
+      "rule": "HDR tone mapping → Display team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: hdr10_peak above target\" matches the HDR tone mapping rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 2 running Picture quality regression. Looking at HDR tone mapping."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: tone curve uses last year's panel luminance table. Fix merged in build 7.5.0.187; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4164",
@@ -712,7 +3197,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-28",
     "fixedOn": "2026-10-03",
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00409"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 7 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects. Fix merged in build 7.5.0.188; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4165",
@@ -723,7 +3242,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-24",
     "fixedOn": "2026-09-29",
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00339"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-09-24"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-24",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-09-24",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 10 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off. Fix merged in build 7.5.0.189; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4166",
@@ -734,7 +3288,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-05",
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00461"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 8 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects. Fix merged in build 7.5.0.190; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4167",
@@ -745,7 +3333,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "HDR tone mapping too bright"
+    "title": "HDR tone mapping too bright",
+    "source": "customer",
+    "component": "HDR tone mapping",
+    "report": {
+      "units": 87,
+      "firstSeen": "2026-10-02",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "HDR movies look washed out and too bright."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 87 TVs",
+      "[pq] clip=hdr10_1000nit_ramp",
+      "[pq] measured peak 1180 nits (target 1000 ±5%) FAIL",
+      "[pq] tone_curve=v3.2 panel_lut=2026A"
+    ],
+    "triage": {
+      "signature": "pq_check: hdr10_peak above target",
+      "rule": "HDR tone mapping → Display team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: hdr10_peak above target\" matches the HDR tone mapping rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Display team",
+        "text": "Reproduced on a lab TV with the customer logs (HDR tone mapping). Affects 87 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: tone curve uses last year's panel luminance table. Fix merged in build 7.5.0.191; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4168",
@@ -756,7 +3382,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-26",
     "fixedOn": null,
-    "title": "Bluetooth headphones choppy"
+    "title": "Bluetooth headphones choppy",
+    "source": "customer",
+    "component": "Bluetooth audio",
+    "report": {
+      "units": 234,
+      "firstSeen": "2026-09-26",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "My Bluetooth headphones keep cutting out."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 234 TVs",
+      "[bt] a2dp sink=Headphones (SBC 328 kbps)",
+      "[bt_a2dp] 23 packet drops in 60 s",
+      "[coex] wlan 2.4 GHz duty 71% bt 29%"
+    ],
+    "triage": {
+      "signature": "bt_a2dp: packet drops",
+      "rule": "Bluetooth audio → Audio team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "in-progress",
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"bt_a2dp: packet drops\" matches the Bluetooth audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Audio team",
+        "text": "Reproduced on a lab TV with the customer logs (Bluetooth audio). Affects 234 reports so far."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Audio team",
+        "text": "Root cause: Wi-Fi/Bluetooth coexistence gives Bluetooth too little airtime on 2.4 GHz."
+      }
+    ]
   },
   {
     "id": "NWV-4169",
@@ -767,7 +3431,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Audio out of sync over eARC"
+    "title": "Audio out of sync over eARC",
+    "source": "test-lab",
+    "component": "HDMI eARC audio",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 0,
+      "runId": "RUN-00512"
+    },
+    "log": [
+      "[audio] sink=eARC soundbar (Brand B, fw 3.1)",
+      "[av_sync] measured offset +142 ms (limit ±40 ms) FAIL",
+      "[audio_hal] latency report from sink ignored"
+    ],
+    "triage": {
+      "signature": "av_sync: offset above limit",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"av_sync: offset above limit\" matches the HDMI eARC audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 2 running Audio output matrix. Looking at HDMI eARC audio."
+      }
+    ]
   },
   {
     "id": "NWV-4170",
@@ -778,7 +3472,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "test-lab",
+    "component": "Audio policy",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 3,
+      "runId": "RUN-00512"
+    },
+    "log": [
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 11 running Audio output matrix. Looking at Audio policy."
+      }
+    ]
   },
   {
     "id": "NWV-4171",
@@ -789,7 +3512,44 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-29",
     "fixedOn": "2026-10-03",
-    "title": "Pop noise at power on"
+    "title": "Pop noise at power on",
+    "source": "customer",
+    "component": "Audio amplifier control",
+    "report": {
+      "units": 131,
+      "firstSeen": "2026-09-29",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "There is a loud pop when I turn the TV on."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 131 TVs",
+      "[    0.912004] amp: unmute at t=0.40 s",
+      "[audio_probe] transient 18 dB above noise floor at t=0.41 s FAIL"
+    ],
+    "triage": {
+      "signature": "audio_probe: power-on transient",
+      "rule": "Audio amplifier control → Audio team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_probe: power-on transient\" matches the Audio amplifier control rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Audio team",
+        "text": "Reproduced on a lab TV with the customer logs (Audio amplifier control). Affects 131 reports so far."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Audio team",
+        "text": "Root cause: amplifier is unmuted before the DC offset settles. Fix merged in build 7.5.0.192; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4172",
@@ -800,7 +3560,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-28",
     "fixedOn": "2026-10-05",
-    "title": "Pop noise at power on"
+    "title": "Pop noise at power on",
+    "source": "test-lab",
+    "component": "Audio amplifier control",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 5,
+      "runId": "RUN-00405"
+    },
+    "log": [
+      "[    0.912004] amp: unmute at t=0.40 s",
+      "[audio_probe] transient 18 dB above noise floor at t=0.41 s FAIL"
+    ],
+    "triage": {
+      "signature": "audio_probe: power-on transient",
+      "rule": "Audio amplifier control → Audio team",
+      "routedOn": "2026-09-28"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-28",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_probe: power-on transient\" matches the Audio amplifier control rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 11 running Standby and wake cycling. Looking at Audio amplifier control."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Root cause: amplifier is unmuted before the DC offset settles. Fix merged in build 7.5.0.193; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4173",
@@ -811,7 +3605,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-01",
-    "title": "Pop noise at power on"
+    "title": "Pop noise at power on",
+    "source": "test-lab",
+    "component": "Audio amplifier control",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 5,
+      "runId": "RUN-00440"
+    },
+    "log": [
+      "[    0.912004] amp: unmute at t=0.40 s",
+      "[audio_probe] transient 18 dB above noise floor at t=0.41 s FAIL"
+    ],
+    "triage": {
+      "signature": "audio_probe: power-on transient",
+      "rule": "Audio amplifier control → Audio team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_probe: power-on transient\" matches the Audio amplifier control rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 5 running Standby and wake cycling. Looking at Audio amplifier control."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Audio team",
+        "text": "Root cause: amplifier is unmuted before the DC offset settles. Fix merged in build 7.5.0.194; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4174",
@@ -822,7 +3650,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "test-lab",
+    "component": "Audio policy",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 3,
+      "runId": "RUN-00512"
+    },
+    "log": [
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 12 running Audio output matrix. Looking at Audio policy."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Root cause: per-input volume table is not loaded before the source switch. Fix merged in build 7.5.0.195; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4175",
@@ -833,7 +3695,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "Network stalls during streaming"
+    "title": "Network stalls during streaming",
+    "source": "test-lab",
+    "component": "Network stack",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 1,
+      "runId": "RUN-00476"
+    },
+    "log": [
+      "[stream] 4K 25 Mbps session 6h12m",
+      "[net] tcp retransmits 3.2% (limit 1%)",
+      "[player] buffer underrun, rebuffering 6.1 s"
+    ],
+    "triage": {
+      "signature": "net: tcp retransmits above limit",
+      "rule": "Network stack → Connectivity team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-09",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"net: tcp retransmits above limit\" matches the Network stack rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 2 running Streaming endurance. Looking at Network stack."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: receive buffer is not tuned for high-bitrate streams on Wi-Fi 6."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Rough estimate: 2026-10-09, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4176",
@@ -844,7 +3750,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Wi-Fi scan misses DFS channels"
+    "title": "Wi-Fi scan misses DFS channels",
+    "source": "test-lab",
+    "component": "Wi-Fi regulatory",
+    "testCase": {
+      "suite": "TS-WIFI",
+      "step": 2,
+      "runId": "RUN-00517"
+    },
+    "log": [
+      "[wifi] regdomain=US",
+      "[wifi] scan results missing ch 52-64 (DFS)"
+    ],
+    "triage": {
+      "signature": "wlan0: scan results missing DFS channels",
+      "rule": "Wi-Fi regulatory → Connectivity team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"wlan0: scan results missing DFS channels\" matches the Wi-Fi regulatory rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 5 running Wi-Fi and screen mirroring. Looking at Wi-Fi regulatory."
+      }
+    ]
   },
   {
     "id": "NWV-4177",
@@ -855,7 +3790,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "Wi-Fi scan misses DFS channels"
+    "title": "Wi-Fi scan misses DFS channels",
+    "source": "test-lab",
+    "component": "Wi-Fi regulatory",
+    "testCase": {
+      "suite": "TS-WIFI",
+      "step": 2,
+      "runId": "RUN-00464"
+    },
+    "log": [
+      "[wifi] regdomain=US",
+      "[wifi] scan results missing ch 52-64 (DFS)"
+    ],
+    "triage": {
+      "signature": "wlan0: scan results missing DFS channels",
+      "rule": "Wi-Fi regulatory → Connectivity team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"wlan0: scan results missing DFS channels\" matches the Wi-Fi regulatory rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 4 running Wi-Fi and screen mirroring. Looking at Wi-Fi regulatory."
+      }
+    ]
   },
   {
     "id": "NWV-4178",
@@ -866,7 +3830,55 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": null,
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00638"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "verifying",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 11 running Standby and wake cycling. Looking at Bluetooth."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Test lab",
+        "text": "Fix in build 7.5.0.196; re-running Standby and wake cycling on 3 rigs."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Committed: fix in a release build by 2026-10-07."
+      }
+    ]
   },
   {
     "id": "NWV-4179",
@@ -877,7 +3889,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Network stalls during streaming"
+    "title": "Network stalls during streaming",
+    "source": "test-lab",
+    "component": "Network stack",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 1,
+      "runId": "RUN-00493"
+    },
+    "log": [
+      "[stream] 4K 25 Mbps session 6h12m",
+      "[net] tcp retransmits 3.2% (limit 1%)",
+      "[player] buffer underrun, rebuffering 6.1 s"
+    ],
+    "triage": {
+      "signature": "net: tcp retransmits above limit",
+      "rule": "Network stack → Connectivity team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"net: tcp retransmits above limit\" matches the Network stack rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 8 running Streaming endurance. Looking at Network stack."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: receive buffer is not tuned for high-bitrate streams on Wi-Fi 6. Fix merged in build 7.5.0.197; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4180",
@@ -888,7 +3935,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Screen mirroring fails on 5 GHz"
+    "title": "Screen mirroring fails on 5 GHz",
+    "source": "customer",
+    "component": "Wi-Fi Direct (mirroring)",
+    "report": {
+      "units": 189,
+      "firstSeen": "2026-10-02",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Screen mirroring from my phone doesn't connect."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 189 TVs",
+      "[p2p] invite from Phone-QA-12 on ch 149",
+      "[ 402.110922] p2p0: GO negotiation failed, status=7",
+      "[cast] session aborted: no group"
+    ],
+    "triage": {
+      "signature": "p2p0: GO negotiation failed",
+      "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"p2p0: GO negotiation failed\" matches the Wi-Fi Direct (mirroring) rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Wi-Fi Direct (mirroring)). Affects 189 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: channel list for the group owner excludes UNII-3. Fix merged in build 7.5.0.198; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4181",
@@ -899,7 +3984,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-25",
     "fixedOn": "2026-10-01",
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00639"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-09-25"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-25",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-09-26",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 1 running Standby and wake cycling. Looking at Bluetooth."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby. Fix merged in build 7.5.0.199; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4182",
@@ -910,7 +4029,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-24",
     "fixedOn": "2026-09-29",
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00335"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-09-24"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-24",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-09-25",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 2 running Standby and wake cycling. Looking at Bluetooth."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby. Fix merged in build 7.5.0.200; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4183",
@@ -921,7 +4074,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Network stalls during streaming"
+    "title": "Network stalls during streaming",
+    "source": "customer",
+    "component": "Network stack",
+    "report": {
+      "units": 207,
+      "firstSeen": "2026-10-02",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Streaming apps keep buffering in 4K."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 207 TVs",
+      "[stream] 4K 25 Mbps session 6h12m",
+      "[net] tcp retransmits 3.2% (limit 1%)",
+      "[player] buffer underrun, rebuffering 6.1 s"
+    ],
+    "triage": {
+      "signature": "net: tcp retransmits above limit",
+      "rule": "Network stack → Connectivity team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"net: tcp retransmits above limit\" matches the Network stack rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Connectivity team",
+        "text": "Reproduced on a lab TV with the customer logs (Network stack). Affects 207 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: receive buffer is not tuned for high-bitrate streams on Wi-Fi 6. Fix merged in build 7.5.0.201; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4184",
@@ -932,7 +4123,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-29",
     "fixedOn": null,
-    "title": "Thermal throttling in demo mode"
+    "title": "Thermal throttling in demo mode",
+    "source": "test-lab",
+    "component": "Thermal management",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 3,
+      "runId": "RUN-00423"
+    },
+    "log": [
+      "[demo] store loop brightness 100%",
+      "[thermal] cpu throttled at 92 C",
+      "[demo] animation fps 41 (target 60)"
+    ],
+    "triage": {
+      "signature": "thermal: cpu throttled",
+      "rule": "Thermal management → Platform team",
+      "routedOn": "2026-09-29"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-09",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-29",
+        "by": "Triage bot",
+        "text": "Log signature \"thermal: cpu throttled\" matches the Thermal management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-29",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 9 running Streaming endurance. Looking at Thermal management."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Platform team",
+        "text": "Root cause: demo mode forces max brightness and the fan curve ignores it."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Committed: fix in a release build by 2026-10-09."
+      }
+    ]
   },
   {
     "id": "NWV-4185",
@@ -943,7 +4178,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00476"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-08",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 6 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Committed: fix in a release build by 2026-10-08."
+      }
+    ]
   },
   {
     "id": "NWV-4186",
@@ -954,7 +4233,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-27",
     "fixedOn": null,
-    "title": "Thermal throttling in demo mode"
+    "title": "Thermal throttling in demo mode",
+    "source": "test-lab",
+    "component": "Thermal management",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 3,
+      "runId": "RUN-00388"
+    },
+    "log": [
+      "[demo] store loop brightness 100%",
+      "[thermal] cpu throttled at 92 C",
+      "[demo] animation fps 41 (target 60)"
+    ],
+    "triage": {
+      "signature": "thermal: cpu throttled",
+      "rule": "Thermal management → Platform team",
+      "routedOn": "2026-09-27"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-09-27",
+        "by": "Triage bot",
+        "text": "Log signature \"thermal: cpu throttled\" matches the Thermal management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 9 running Streaming endurance. Looking at Thermal management."
+      },
+      {
+        "at": "2026-09-28",
+        "by": "Platform team",
+        "text": "Root cause: demo mode forces max brightness and the fan curve ignores it."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Rough estimate: 2026-10-06, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4187",
@@ -965,7 +4288,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": null,
-    "title": "Crash when changing language"
+    "title": "Crash when changing language",
+    "source": "test-lab",
+    "component": "Settings app",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 2,
+      "runId": "RUN-00453"
+    },
+    "log": [
+      "[ui] locale change en-US -> de-DE",
+      "FATAL EXCEPTION: main com.nwv.settings",
+      "java.lang.NullPointerException at LocaleRepo.apply(LocaleRepo.kt:88)"
+    ],
+    "triage": {
+      "signature": "FATAL: com.nwv.settings NullPointerException",
+      "rule": "Settings app → Platform team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"FATAL: com.nwv.settings NullPointerException\" matches the Settings app rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 2 running Software update and settings. Looking at Settings app."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Platform team",
+        "text": "Root cause: region list is read before the new locale resources are loaded."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Rough estimate: 2026-10-07, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4188",
@@ -976,7 +4343,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Boot time over target"
+    "title": "Boot time over target",
+    "source": "test-lab",
+    "component": "Boot and startup",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 0,
+      "runId": "RUN-00475"
+    },
+    "log": [
+      "[    0.000000] boot: NWV-OS 7.5.0 cold boot",
+      "[   14.812004] boot: home ready at 14.8 s (target 10 s)",
+      "[boot] slowest: media_index 3.9 s, app_store 2.2 s"
+    ],
+    "triage": {
+      "signature": "boot: home ready above target",
+      "rule": "Boot and startup → Platform team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"boot: home ready above target\" matches the Boot and startup rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 6 running Standby and wake cycling. Looking at Boot and startup."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: media indexing runs before the home screen is shown. Fix merged in build 7.5.0.202; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4189",
@@ -987,7 +4389,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Wakes from standby by itself"
+    "title": "Wakes from standby by itself",
+    "source": "test-lab",
+    "component": "Power management",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 6,
+      "runId": "RUN-00510"
+    },
+    "log": [
+      "[28812.004101] pm: wakeup source: hdmi_cec (unexpected)",
+      "[28812.004330] cec: <Image View On> from logical addr 4"
+    ],
+    "triage": {
+      "signature": "pm: unexpected wakeup source",
+      "rule": "Power management → Platform team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"pm: unexpected wakeup source\" matches the Power management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 7 running Standby and wake cycling. Looking at Power management."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: CEC wake requests from playback devices are not filtered in eco mode. Fix merged in build 7.5.0.203; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4190",
@@ -998,7 +4434,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-05",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "customer",
+    "component": "Media player memory",
+    "report": {
+      "units": 211,
+      "firstSeen": "2026-10-02",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "The TV gets slow and the menu restarts after watching all day."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 211 TVs",
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Platform team",
+        "text": "Reproduced on a lab TV with the customer logs (Media player memory). Affects 211 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.204; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4191",
@@ -1009,7 +4483,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "customer",
+    "component": "Media player memory",
+    "report": {
+      "units": 351,
+      "firstSeen": "2026-10-03",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "The TV gets slow and the menu restarts after watching all day."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 351 TVs",
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Reproduced on a lab TV with the customer logs (Media player memory). Affects 351 reports so far."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.205; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4192",
@@ -1020,7 +4532,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-05",
-    "title": "Boot time over target"
+    "title": "Boot time over target",
+    "source": "test-lab",
+    "component": "Boot and startup",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 0,
+      "runId": "RUN-00440"
+    },
+    "log": [
+      "[    0.000000] boot: NWV-OS 7.5.0 cold boot",
+      "[   14.812004] boot: home ready at 14.8 s (target 10 s)",
+      "[boot] slowest: media_index 3.9 s, app_store 2.2 s"
+    ],
+    "triage": {
+      "signature": "boot: home ready above target",
+      "rule": "Boot and startup → Platform team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"boot: home ready above target\" matches the Boot and startup rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 7 running Standby and wake cycling. Looking at Boot and startup."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: media indexing runs before the home screen is shown. Fix merged in build 7.5.0.206; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4193",
@@ -1031,7 +4578,45 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-30",
     "fixedOn": "2026-10-04",
-    "title": "Crash when changing language"
+    "title": "Crash when changing language",
+    "source": "customer",
+    "component": "Settings app",
+    "report": {
+      "units": 38,
+      "firstSeen": "2026-09-30",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Aurora 2025 55\"–75\" (same software branch)",
+      "quote": "Settings crash when I change the language."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 38 TVs",
+      "[ui] locale change en-US -> de-DE",
+      "FATAL EXCEPTION: main com.nwv.settings",
+      "java.lang.NullPointerException at LocaleRepo.apply(LocaleRepo.kt:88)"
+    ],
+    "triage": {
+      "signature": "FATAL: com.nwv.settings NullPointerException",
+      "rule": "Settings app → Platform team",
+      "routedOn": "2026-09-30"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-09-30",
+        "by": "Triage bot",
+        "text": "Log signature \"FATAL: com.nwv.settings NullPointerException\" matches the Settings app rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Platform team",
+        "text": "Reproduced on a lab TV with the customer logs (Settings app). Affects 38 reports so far."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Platform team",
+        "text": "Root cause: region list is read before the new locale resources are loaded. Fix merged in build 7.5.0.207; rolling out with the next update."
+      }
+    ]
   },
   {
     "id": "NWV-4194",
@@ -1042,7 +4627,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "USB camera drops frames at 4K"
+    "title": "USB camera drops frames at 4K",
+    "source": "test-lab",
+    "component": "USB video class",
+    "testCase": {
+      "suite": "TS-PERIPH",
+      "step": 0,
+      "runId": "RUN-00606"
+    },
+    "log": [
+      "[ 1520.004311] uvcvideo: Found UVC 1.10 device NWV Cam 4K (2bd9:0410)",
+      "[ 1544.120876] uvcvideo: Dropped 214 frames (bandwidth)",
+      "[ 1544.121004] videocall: encoder starved, fps 17.2 (target 30)"
+    ],
+    "triage": {
+      "signature": "uvcvideo: Dropped frames",
+      "rule": "USB video class → USB team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"uvcvideo: Dropped frames\" matches the USB video class rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 5 running Camera and USB peripherals. Looking at USB video class."
+      }
+    ]
   },
   {
     "id": "NWV-4195",
@@ -1053,7 +4668,39 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00640"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 8 running Standby and wake cycling. Looking at USB host controller."
+      }
+    ]
   },
   {
     "id": "NWV-4196",
@@ -1064,7 +4711,38 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00593"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 3 running Software update and settings. Looking at Software updater."
+      }
+    ]
   },
   {
     "id": "NWV-4197",
@@ -1075,7 +4753,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-02",
-    "title": "Firmware update over USB fails at 90%"
+    "title": "Firmware update over USB fails at 90%",
+    "source": "test-lab",
+    "component": "Software updater",
+    "testCase": {
+      "suite": "TS-UPDATE",
+      "step": 1,
+      "runId": "RUN-00558"
+    },
+    "log": [
+      "[  44.100002] swupdate: package NWV-OS 7.5.0 (2.1 GB) found on /mnt/usb0",
+      "[ 611.230981] swupdate: writing chunk 18/20",
+      "[ 640.004412] swupdate: verify chunk 18/20 failed: CRC mismatch",
+      "[ 640.004600] swupdate: rolling back to slot A"
+    ],
+    "triage": {
+      "signature": "swupdate: verify chunk failed: CRC mismatch",
+      "rule": "Software updater → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"swupdate: verify chunk failed: CRC mismatch\" matches the Software updater rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 11 running Software update and settings. Looking at Software updater."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Root cause: read-ahead buffer is reused before verification finishes on large files. Fix merged in build 7.5.0.208; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4198",
@@ -1086,7 +4800,43 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-03",
-    "title": "Hard-disk recording stops after 2 h"
+    "title": "Hard-disk recording stops after 2 h",
+    "source": "test-lab",
+    "component": "USB mass storage",
+    "testCase": {
+      "suite": "TS-USB-MEDIA",
+      "step": 4,
+      "runId": "RUN-00544"
+    },
+    "log": [
+      "[ 7204.330019] pvr: recording ch 101 to /mnt/usb1/rec/0412.ts",
+      "[ 7212.001842] usb 1-2: reset high-speed USB device number 5 using xhci-hcd",
+      "[ 7212.402311] blk_update_request: I/O error, dev sda, sector 23488312",
+      "[ 7212.402900] pvr: write failed, recording stopped"
+    ],
+    "triage": {
+      "signature": "usb-storage: reset high-speed USB device",
+      "rule": "USB mass storage → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"usb-storage: reset high-speed USB device\" matches the USB mass storage rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 4 running USB media playback soak. Looking at USB mass storage."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "USB team",
+        "text": "Root cause: USB autosuspend kicks in during long sequential writes to spinning disks. Fix merged in build 7.5.0.209; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4199",
@@ -1097,7 +4847,44 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-04",
-    "title": "USB drive not detected after standby"
+    "title": "USB drive not detected after standby",
+    "source": "test-lab",
+    "component": "USB host controller",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 3,
+      "runId": "RUN-00545"
+    },
+    "log": [
+      "[  812.402118] pm: resume from standby complete",
+      "[  812.733901] usb 1-1: new high-speed USB device number 4 using xhci-hcd",
+      "[  817.940222] usb 1-1: device descriptor read/64, error -71",
+      "[  818.112009] usb 1-1: device not accepting address 4, error -71",
+      "[  818.112450] mediascan: no storage volumes found"
+    ],
+    "triage": {
+      "signature": "usb 1-1: device descriptor read/64, error -71",
+      "rule": "USB host controller → USB team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"usb 1-1: device descriptor read/64, error -71\" matches the USB host controller rule. Routed to the USB team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "USB team",
+        "text": "Reproduced on bench rig 11 running Standby and wake cycling. Looking at USB host controller."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "USB team",
+        "text": "Root cause: xHCI controller is powered up 300 ms after the port; the drive enumerates before the link is ready. Fix merged in build 7.5.0.210; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4200",
@@ -1108,7 +4895,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00584"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 7 running Picture quality regression. Looking at Local dimming."
+      }
+    ]
   },
   {
     "id": "NWV-4201",
@@ -1119,7 +4935,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00566"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 12 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Rough estimate: 2026-10-07, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4202",
@@ -1130,7 +4990,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00584"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "in-progress",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 6 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off."
+      }
+    ]
   },
   {
     "id": "NWV-4203",
@@ -1141,7 +5036,51 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Picture mode resets after reboot"
+    "title": "Picture mode resets after reboot",
+    "source": "test-lab",
+    "component": "Settings storage",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 4,
+      "runId": "RUN-00580"
+    },
+    "log": [
+      "[    3.410221] settings: loading user profile 0",
+      "[    3.411004] settings: picture_mode reverted to Standard (expected Movie)",
+      "[    3.411110] settings: profile checksum mismatch, using defaults"
+    ],
+    "triage": {
+      "signature": "settings: picture_mode reverted",
+      "rule": "Settings storage → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-06",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"settings: picture_mode reverted\" matches the Settings storage rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 3 running Standby and wake cycling. Looking at Settings storage."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: settings file is written after the power rail drops on fast shutdown."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Rough estimate: 2026-10-06, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4204",
@@ -1152,7 +5091,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00584"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 5 running Picture quality regression. Looking at Local dimming."
+      }
+    ]
   },
   {
     "id": "NWV-4205",
@@ -1163,7 +5131,50 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00566"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "in-progress",
+    "eta": {
+      "fixBy": "2026-10-07",
+      "confidence": "estimate"
+    },
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 10 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Rough estimate: 2026-10-07, depends on what the fix review finds."
+      }
+    ]
   },
   {
     "id": "NWV-4206",
@@ -1174,7 +5185,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": null,
-    "title": "Picture mode resets after reboot"
+    "title": "Picture mode resets after reboot",
+    "source": "test-lab",
+    "component": "Settings storage",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 4,
+      "runId": "RUN-00580"
+    },
+    "log": [
+      "[    3.410221] settings: loading user profile 0",
+      "[    3.411004] settings: picture_mode reverted to Standard (expected Movie)",
+      "[    3.411110] settings: profile checksum mismatch, using defaults"
+    ],
+    "triage": {
+      "signature": "settings: picture_mode reverted",
+      "rule": "Settings storage → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "in-progress",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"settings: picture_mode reverted\" matches the Settings storage rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 8 running Standby and wake cycling. Looking at Settings storage."
+      },
+      {
+        "at": "2026-10-06",
+        "by": "Display team",
+        "text": "Root cause: settings file is written after the power rail drops on fast shutdown."
+      }
+    ]
   },
   {
     "id": "NWV-4207",
@@ -1185,7 +5231,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-02",
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00549"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 4 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects. Fix merged in build 7.5.0.211; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4208",
@@ -1196,7 +5276,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-02",
-    "title": "Banding in dark gradients"
+    "title": "Banding in dark gradients",
+    "source": "test-lab",
+    "component": "Picture processing",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 0,
+      "runId": "RUN-00549"
+    },
+    "log": [
+      "[pq] pattern=gradient_dark_10bit capture=bench-07",
+      "[pq] delta-E 4.8 (limit 3.0) FAIL",
+      "[pq] suspected: dither disabled in low-latency path"
+    ],
+    "triage": {
+      "signature": "pq_check: gradient_dark delta-E above limit",
+      "rule": "Picture processing → Display team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: gradient_dark delta-E above limit\" matches the Picture processing rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 11 running Picture quality regression. Looking at Picture processing."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Display team",
+        "text": "Root cause: temporal dithering is skipped when the noise filter is off. Fix merged in build 7.5.0.212; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4209",
@@ -1207,7 +5322,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Local dimming halo on subtitles"
+    "title": "Local dimming halo on subtitles",
+    "source": "test-lab",
+    "component": "Local dimming",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 3,
+      "runId": "RUN-00584"
+    },
+    "log": [
+      "[pq] clip=subtitles_dark_scene dimming=high",
+      "[pq] halo_score 0.31 (limit 0.15) FAIL"
+    ],
+    "triage": {
+      "signature": "pq_check: halo_score above limit",
+      "rule": "Local dimming → Display team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"pq_check: halo_score above limit\" matches the Local dimming rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 9 running Picture quality regression. Looking at Local dimming."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: zone spread filter is too wide for small bright objects. Fix merged in build 7.5.0.213; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4210",
@@ -1218,7 +5367,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Flicker at 120 Hz with game mode"
+    "title": "Flicker at 120 Hz with game mode",
+    "source": "test-lab",
+    "component": "Variable refresh rate",
+    "testCase": {
+      "suite": "TS-PQ",
+      "step": 2,
+      "runId": "RUN-00601"
+    },
+    "log": [
+      "[vrr] input=HDMI2 4K/120 VRR on",
+      "[vrr] frame pacing jitter 7.9 ms (limit 2 ms) FAIL",
+      "[vrr] panel_od table switched mid-frame"
+    ],
+    "triage": {
+      "signature": "vrr: frame pacing jitter above limit",
+      "rule": "Variable refresh rate → Display team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"vrr: frame pacing jitter above limit\" matches the Variable refresh rate rule. Routed to the Display team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Reproduced on bench rig 7 running Picture quality regression. Looking at Variable refresh rate."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Display team",
+        "text": "Root cause: overdrive table switches mid-frame when the refresh rate changes. Fix merged in build 7.5.0.214; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4211",
@@ -1229,7 +5413,60 @@
     "raisedBy": "Client",
     "openedOn": "2026-09-26",
     "fixedOn": null,
-    "title": "No sound over eARC with soundbars from two brands"
+    "title": "No sound over eARC with soundbars from two brands",
+    "source": "customer",
+    "component": "HDMI eARC audio",
+    "report": {
+      "units": 1240,
+      "firstSeen": "2026-09-26",
+      "firmware": "NWV-OS 7.4.2",
+      "devices": "Zenith 2025 55\"/65\" (same software branch)",
+      "quote": "No sound from my soundbar since the last update; I have to unplug HDMI to get it back."
+    },
+    "log": [
+      "# logs uploaded with \"Report this issue\" from 1,240 TVs",
+      "[  41.220004] cec: <Report Physical Address> 1.0.0.0 from soundbar",
+      "[  43.221980] earc: capability handshake timeout (2000 ms)",
+      "[  43.222004] audio_hal: route fallback to TV speakers muted",
+      "[uploaded] same signature in logs from 1,240 TVs"
+    ],
+    "triage": {
+      "signature": "earc: capability handshake timeout",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-09-26"
+    },
+    "workflow": "in-review",
+    "eta": {
+      "fixBy": "2026-10-09",
+      "confidence": "committed"
+    },
+    "comments": [
+      {
+        "at": "2026-09-26",
+        "by": "Triage bot",
+        "text": "Log signature \"earc: capability handshake timeout\" in 214 uploads in 6 hours. Matches the HDMI eARC audio rule. Routed to the Audio team. Marked critical: customer-facing, no workaround."
+      },
+      {
+        "at": "2026-09-27",
+        "by": "Audio team",
+        "text": "Reproduced with two soundbar brands (B and K). Does not happen on 7.4.1, so it came in with 7.4.2."
+      },
+      {
+        "at": "2026-09-30",
+        "by": "Audio team",
+        "text": "Root cause: CEC retry timing changed in 7.4.2; these soundbars answer after the new 2 s timeout."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Customer support",
+        "text": "1,240 reports so far. Workaround shared: unplug HDMI for 10 s. Escalation from two retail partners."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Fix up for review (change 51199): timeout back to 5 s with a retry. Committed: in a release build by 2026-10-09; test lab verification 1–3 days after."
+      }
+    ]
   },
   {
     "id": "NWV-4212",
@@ -1240,7 +5477,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "test-lab",
+    "component": "Audio policy",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 3,
+      "runId": "RUN-00599"
+    },
+    "log": [
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 8 running Audio output matrix. Looking at Audio policy."
+      }
+    ]
   },
   {
     "id": "NWV-4213",
@@ -1251,7 +5517,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Volume jumps on input switch"
+    "title": "Volume jumps on input switch",
+    "source": "test-lab",
+    "component": "Audio policy",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 3,
+      "runId": "RUN-00599"
+    },
+    "log": [
+      "[audio_policy] source HDMI1 -> HDMI2",
+      "[audio_policy] volume reset 12 -> 35 on source change FAIL"
+    ],
+    "triage": {
+      "signature": "audio_policy: volume reset on source change",
+      "rule": "Audio policy → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_policy: volume reset on source change\" matches the Audio policy rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 5 running Audio output matrix. Looking at Audio policy."
+      }
+    ]
   },
   {
     "id": "NWV-4214",
@@ -1262,7 +5557,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Pop noise at power on"
+    "title": "Pop noise at power on",
+    "source": "test-lab",
+    "component": "Audio amplifier control",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 5,
+      "runId": "RUN-00641"
+    },
+    "log": [
+      "[    0.912004] amp: unmute at t=0.40 s",
+      "[audio_probe] transient 18 dB above noise floor at t=0.41 s FAIL"
+    ],
+    "triage": {
+      "signature": "audio_probe: power-on transient",
+      "rule": "Audio amplifier control → Audio team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_probe: power-on transient\" matches the Audio amplifier control rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 5 running Standby and wake cycling. Looking at Audio amplifier control."
+      }
+    ]
   },
   {
     "id": "NWV-4215",
@@ -1273,7 +5597,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-03",
-    "title": "Audio out of sync over eARC"
+    "title": "Audio out of sync over eARC",
+    "source": "test-lab",
+    "component": "HDMI eARC audio",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 0,
+      "runId": "RUN-00564"
+    },
+    "log": [
+      "[audio] sink=eARC soundbar (Brand B, fw 3.1)",
+      "[av_sync] measured offset +142 ms (limit ±40 ms) FAIL",
+      "[audio_hal] latency report from sink ignored"
+    ],
+    "triage": {
+      "signature": "av_sync: offset above limit",
+      "rule": "HDMI eARC audio → Audio team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"av_sync: offset above limit\" matches the HDMI eARC audio rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 3 running Audio output matrix. Looking at HDMI eARC audio."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Audio team",
+        "text": "Root cause: the latency the soundbar reports over eARC is not applied to video. Fix merged in build 7.5.0.216; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4216",
@@ -1284,7 +5643,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Dolby passthrough drops"
+    "title": "Dolby passthrough drops",
+    "source": "test-lab",
+    "component": "Audio passthrough",
+    "testCase": {
+      "suite": "TS-AUDIO",
+      "step": 1,
+      "runId": "RUN-00582"
+    },
+    "log": [
+      "[audio_hal] passthrough E-AC3-JOC 768 kbps",
+      "[ 3611.220004] audio_hal: bitstream underrun, fallback to PCM",
+      "[ 3611.220090] earc: format changed, sink re-sync 1.4 s"
+    ],
+    "triage": {
+      "signature": "audio_hal: bitstream underrun, fallback to PCM",
+      "rule": "Audio passthrough → Audio team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"audio_hal: bitstream underrun, fallback to PCM\" matches the Audio passthrough rule. Routed to the Audio team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Audio team",
+        "text": "Reproduced on bench rig 8 running Audio output matrix. Looking at Audio passthrough."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Audio team",
+        "text": "Root cause: passthrough buffer is sized for stereo bitrates. Fix merged in build 7.5.0.217; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4217",
@@ -1295,7 +5689,36 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00642"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 1 running Standby and wake cycling. Looking at Bluetooth."
+      }
+    ]
   },
   {
     "id": "NWV-4218",
@@ -1306,7 +5729,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": null,
-    "title": "Wi-Fi reconnect takes 40 s"
+    "title": "Wi-Fi reconnect takes 40 s",
+    "source": "test-lab",
+    "component": "Wi-Fi driver",
+    "testCase": {
+      "suite": "TS-WIFI",
+      "step": 0,
+      "runId": "RUN-00604"
+    },
+    "log": [
+      "[  990.100221] wlan0: deauthenticated from 3c:84:6a:..:21 (reason 3)",
+      "[ 1031.322019] wlan0: associated",
+      "[ 1031.322400] wlan0: association took 41.2 s (target 10 s)"
+    ],
+    "triage": {
+      "signature": "wlan0: association took too long",
+      "rule": "Wi-Fi driver → Connectivity team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "new",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"wlan0: association took too long\" matches the Wi-Fi driver rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 10 running Wi-Fi and screen mirroring. Looking at Wi-Fi driver."
+      }
+    ]
   },
   {
     "id": "NWV-4219",
@@ -1317,7 +5770,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "Screen mirroring fails on 5 GHz"
+    "title": "Screen mirroring fails on 5 GHz",
+    "source": "test-lab",
+    "component": "Wi-Fi Direct (mirroring)",
+    "testCase": {
+      "suite": "TS-WIFI",
+      "step": 1,
+      "runId": "RUN-00552"
+    },
+    "log": [
+      "[p2p] invite from Phone-QA-12 on ch 149",
+      "[ 402.110922] p2p0: GO negotiation failed, status=7",
+      "[cast] session aborted: no group"
+    ],
+    "triage": {
+      "signature": "p2p0: GO negotiation failed",
+      "rule": "Wi-Fi Direct (mirroring) → Connectivity team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"p2p0: GO negotiation failed\" matches the Wi-Fi Direct (mirroring) rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 3 running Wi-Fi and screen mirroring. Looking at Wi-Fi Direct (mirroring)."
+      }
+    ]
   },
   {
     "id": "NWV-4220",
@@ -1328,7 +5811,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Network stalls during streaming"
+    "title": "Network stalls during streaming",
+    "source": "test-lab",
+    "component": "Network stack",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 1,
+      "runId": "RUN-00598"
+    },
+    "log": [
+      "[stream] 4K 25 Mbps session 6h12m",
+      "[net] tcp retransmits 3.2% (limit 1%)",
+      "[player] buffer underrun, rebuffering 6.1 s"
+    ],
+    "triage": {
+      "signature": "net: tcp retransmits above limit",
+      "rule": "Network stack → Connectivity team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"net: tcp retransmits above limit\" matches the Network stack rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 4 running Streaming endurance. Looking at Network stack."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Connectivity team",
+        "text": "Root cause: receive buffer is not tuned for high-bitrate streams on Wi-Fi 6. Fix merged in build 7.5.0.218; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4221",
@@ -1339,7 +5857,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": "2026-10-03",
-    "title": "BT remote pairing lost"
+    "title": "BT remote pairing lost",
+    "source": "test-lab",
+    "component": "Bluetooth",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 2,
+      "runId": "RUN-00643"
+    },
+    "log": [
+      "[bt] wake source: remote (le)",
+      "[bt] link key missing for remote E4:5F:..:0A, pairing required"
+    ],
+    "triage": {
+      "signature": "bt: link key missing for remote",
+      "rule": "Bluetooth → Connectivity team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"bt: link key missing for remote\" matches the Bluetooth rule. Routed to the Connectivity team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Connectivity team",
+        "text": "Reproduced on bench rig 3 running Standby and wake cycling. Looking at Bluetooth."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Connectivity team",
+        "text": "Root cause: link keys live in a cache that is cleared on deep standby. Fix merged in build 7.5.0.219; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4222",
@@ -1350,7 +5902,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": null,
-    "title": "Boot time over target"
+    "title": "Boot time over target",
+    "source": "test-lab",
+    "component": "Boot and startup",
+    "testCase": {
+      "suite": "TS-STANDBY",
+      "step": 0,
+      "runId": "RUN-00545"
+    },
+    "log": [
+      "[    0.000000] boot: NWV-OS 7.5.0 cold boot",
+      "[   14.812004] boot: home ready at 14.8 s (target 10 s)",
+      "[boot] slowest: media_index 3.9 s, app_store 2.2 s"
+    ],
+    "triage": {
+      "signature": "boot: home ready above target",
+      "rule": "Boot and startup → Platform team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"boot: home ready above target\" matches the Boot and startup rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 11 running Standby and wake cycling. Looking at Boot and startup."
+      }
+    ]
   },
   {
     "id": "NWV-4223",
@@ -1361,7 +5943,37 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-02",
     "fixedOn": null,
-    "title": "Thermal throttling in demo mode"
+    "title": "Thermal throttling in demo mode",
+    "source": "test-lab",
+    "component": "Thermal management",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 3,
+      "runId": "RUN-00563"
+    },
+    "log": [
+      "[demo] store loop brightness 100%",
+      "[thermal] cpu throttled at 92 C",
+      "[demo] animation fps 41 (target 60)"
+    ],
+    "triage": {
+      "signature": "thermal: cpu throttled",
+      "rule": "Thermal management → Platform team",
+      "routedOn": "2026-10-02"
+    },
+    "workflow": "triaged",
+    "comments": [
+      {
+        "at": "2026-10-02",
+        "by": "Triage bot",
+        "text": "Log signature \"thermal: cpu throttled\" matches the Thermal management rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-03",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 8 running Streaming endurance. Looking at Thermal management."
+      }
+    ]
   },
   {
     "id": "NWV-4224",
@@ -1372,7 +5984,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-01",
     "fixedOn": "2026-10-02",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00546"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-01"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-01",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-01",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 2 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-02",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.220; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4225",
@@ -1383,7 +6030,42 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-03",
     "fixedOn": "2026-10-05",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00581"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-03"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-03",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-04",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 5 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.221; re-test passed."
+      }
+    ]
   },
   {
     "id": "NWV-4226",
@@ -1394,6 +6076,41 @@
     "raisedBy": "Testing",
     "openedOn": "2026-10-04",
     "fixedOn": "2026-10-05",
-    "title": "Memory leak after 24 h playback"
+    "title": "Memory leak after 24 h playback",
+    "source": "test-lab",
+    "component": "Media player memory",
+    "testCase": {
+      "suite": "TS-STREAM",
+      "step": 2,
+      "runId": "RUN-00598"
+    },
+    "log": [
+      "[86400.000210] meminfo: free 38 MB (start 610 MB)",
+      "[86400.120004] lowmemorykiller: killing com.nwv.home (adj 0)",
+      "[player] texture pool 412 MB (expected < 120 MB)"
+    ],
+    "triage": {
+      "signature": "lowmemorykiller: killing home app",
+      "rule": "Media player memory → Platform team",
+      "routedOn": "2026-10-04"
+    },
+    "workflow": "fixed",
+    "comments": [
+      {
+        "at": "2026-10-04",
+        "by": "Triage bot",
+        "text": "Log signature \"lowmemorykiller: killing home app\" matches the Media player memory rule. Routed to the Platform team."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Reproduced on bench rig 7 running Streaming endurance. Looking at Media player memory."
+      },
+      {
+        "at": "2026-10-05",
+        "by": "Platform team",
+        "text": "Root cause: subtitle textures are never released after each segment. Fix merged in build 7.5.0.222; re-test passed."
+      }
+    ]
   }
 ]
